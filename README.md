@@ -1,4 +1,4 @@
-python-JDFTx
+pythonJDFTx
 ===========================
 This is a computational quantum chemistry tool, written in [Cython](http://cython.org),
 which brings a fast C++ package (`JDFTx`)
@@ -8,7 +8,7 @@ JDFT stands for Joint Density Functional Theory and `JDFTx` is the implementatio
 theory which lives at http://sourceforge.net/p/jdftx/wiki/Home/ . Feel free to visit and
 investigate the code and appreciate its great capabilities such as GPU parallelization.
 
-`python-JDFTx` is a Python wrapper that provides a calculator interface for [ASE
+`pythonJDFTx` is a Python wrapper that provides a calculator interface for [ASE
 (Atomic Simulation Environment)](https://wiki.fysik.dtu.dk/ase/). ASE makes it possible
 to use many other calculators, aside from JDFTx, using the same syntax. This way, a PhD
 student such as myself, does not need to read through the documentation of many other
@@ -22,7 +22,7 @@ Technical details
 
 Installation
 ---------------------------
-`python-JDFTx` needs both ASE and JDFTx installed on your computer. Right now, it has not
+`pythonJDFTx` needs both ASE and JDFTx installed on your computer. Right now, it has not
 been tested in Python 2.7 (works in Python 3.4). Also small changes in `JDFTx` is needed
 to make some class variables and methods public and accessible in Python. You can find a
 `diff` file that you can patch to JDFTx source tree before compilation.
@@ -38,7 +38,7 @@ modification if you cloned this folder in your `build` directory.
 Pseudopotential Files
 ---------------------------
 Support for Ultrasoft Pseudopotential format has been implemented. Support for
-norm conserving pseudo-potentials is under development. `python-JDFTx` looks for
+norm conserving pseudo-potentials is under development. `pythonJDFTx` looks for
 an environmental variable, `PSEUDOPOT_HOME`, at runtime. Make sure this variable shows
 the path to the pseudo-potential files and the files are named all lowercase with
 extension `.uspp`.
