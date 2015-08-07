@@ -23,3 +23,6 @@ cdef extern from "electronic/common.h" nogil:
     cdef cppclass InverseKohnSham
     cdef cppclass VanDerWaals
     cdef cppclass Vibrations
+
+cdef extern from "electronic/ColumnBundle.h" nogil:
+    pass

@@ -4,31 +4,32 @@
 {
     "distutils": {
         "depends": [
-            "../../jdftx/electronic/Control.h",
-            "../../jdftx/commands/command.h",
-            "../../jdftx/electronic/ExCorr.h",
-            "../../jdftx/electronic/IonicMinimizer.h",
-            "../../jdftx/electronic/Energies.h",
-            "../../jdftx/electronic/Everything.h",
-            "../../jdftx/electronic/Dump.h",
-            "../../jdftx/electronic/common.h",
-            "../../jdftx/core/string.h",
             "../../jdftx/electronic/Basis.h",
-            "../../jdftx/core/MinimizeParams.h",
+            "../../jdftx/commands/command.h",
+            "../../jdftx/electronic/ColumnBundle.h",
             "../../jdftx/electronic/SpeciesInfo.h",
-            "../../jdftx/electronic/ElecInfo.h",
-            "../../jdftx/core/MPIUtil.h",
+            "../../jdftx/electronic/Dump.h",
+            "../../jdftx/electronic/Everything.h",
+            "../../jdftx/electronic/ExCorr.h",
             "../../jdftx/core/GridInfo.h",
-            "../../jdftx/electronic/IonInfo.h",
-            "../../jdftx/fluid/FluidSolverParams.h",
-            "../../jdftx/core/matrix3.h",
-            "../../jdftx/core/vector3.h",
-            "../../jdftx/core/Coulomb.h",
-            "../../jdftx/core/EnergyComponents.h",
             "../../jdftx/core/Util.h",
+            "../../jdftx/electronic/IonInfo.h",
+            "../../jdftx/electronic/common.h",
+            "../../jdftx/fluid/FluidSolverParams.h",
+            "../../jdftx/core/vector3.h",
+            "../../jdftx/electronic/Energies.h",
+            "../../jdftx/core/Coulomb.h",
+            "../../jdftx/electronic/Control.h",
             "../../jdftx/fluid/FluidComponent.h",
+            "../../jdftx/core/EnergyComponents.h",
+            "../../jdftx/core/MPIUtil.h",
+            "../../jdftx/electronic/IonicMinimizer.h",
+            "../../jdftx/electronic/ElecVars.h",
+            "../../jdftx/electronic/ElecInfo.h",
+            "../../jdftx/core/string.h",
+            "../../jdftx/core/MinimizeParams.h",
             "../../jdftx/electronic/Symmetries.h",
-            "../../jdftx/electronic/ElecVars.h"
+            "../../jdftx/core/matrix3.h"
         ],
         "extra_compile_args": [
             "-std=c++11"
@@ -42,7 +43,7 @@
             "jdftx"
         ],
         "library_dirs": [
-            "/home/zatarra/JDFT_latest/build"
+            "../build"
         ]
     }
 }
@@ -297,8 +298,8 @@ class __Pyx_FakeReference {
 #define _USE_MATH_DEFINES
 #endif
 #include <math.h>
-#define __PYX_HAVE__PyDFT__JDFTCalculator
-#define __PYX_HAVE_API__PyDFT__JDFTCalculator
+#define __PYX_HAVE__pythonJDFTx__JDFTCalculator
+#define __PYX_HAVE_API__pythonJDFTx__JDFTCalculator
 #include <utility>
 #include "ios"
 #include "new"
@@ -312,6 +313,7 @@ class __Pyx_FakeReference {
 #include <vector>
 #include "core/Coulomb.h"
 #include "electronic/common.h"
+#include "electronic/ColumnBundle.h"
 #include "core/GridInfo.h"
 #include "core/MinimizeParams.h"
 #include <map>
@@ -528,8 +530,8 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "PyDFT/JDFTCalculator.pyx",
-  "PyDFT/stringsource",
+  "pythonJDFTx/JDFTCalculator.pyx",
+  "pythonJDFTx/stringsource",
 };
 struct __pyx_memoryview_obj;
 typedef struct {
@@ -624,20 +626,20 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
 
 
 /*--- Type declarations ---*/
-struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator;
+struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
 
-/* "PyDFT/JDFTCalculator.pyx":68
+/* "pythonJDFTx/JDFTCalculator.pyx":68
  *     return specie
  * 
  * cdef class JDFTCalculator:             # <<<<<<<<<<<<<<
  *     # cdef VerletParams v
  *     cdef Everything e
  */
-struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator {
+struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator {
   PyObject_HEAD
   Everything e;
   string inputFilename;
@@ -1264,20 +1266,20 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
 
 /* Module declarations from 'core.Util' */
 
-/* Module declarations from 'PyDFT.JDFTCalculator' */
-static PyTypeObject *__pyx_ptype_5PyDFT_14JDFTCalculator_JDFTCalculator = 0;
+/* Module declarations from 'pythonJDFTx.JDFTCalculator' */
+static PyTypeObject *__pyx_ptype_11pythonJDFTx_14JDFTCalculator_JDFTCalculator = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
 static PyTypeObject *__pyx_memoryviewslice_type = 0;
-static double __pyx_v_5PyDFT_14JDFTCalculator_cBohr;
-static double __pyx_v_5PyDFT_14JDFTCalculator_cHartree;
+static double __pyx_v_11pythonJDFTx_14JDFTCalculator_cBohr;
+static double __pyx_v_11pythonJDFTx_14JDFTCalculator_cHartree;
 static PyObject *generic = 0;
 static PyObject *strided = 0;
 static PyObject *indirect = 0;
 static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
-static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSpecie(string, char *, vector3<double> ); /*proto*/
+static std::shared_ptr<SpeciesInfo>  __pyx_f_11pythonJDFTx_14JDFTCalculator_createNewSpecie(string, char *, vector3<double> ); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1311,10 +1313,10 @@ static void __pyx_memoryview_refcount_objects_in_slice(char *, Py_ssize_t *, Py_
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size_t, void *, int); /*proto*/
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "PyDFT.JDFTCalculator"
-int __pyx_module_is_main_PyDFT__JDFTCalculator = 0;
+#define __Pyx_MODULE_NAME "pythonJDFTx.JDFTCalculator"
+int __pyx_module_is_main_pythonJDFTx__JDFTCalculator = 0;
 
-/* Implementation of 'PyDFT.JDFTCalculator' */
+/* Implementation of 'pythonJDFTx.JDFTCalculator' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_MemoryError;
@@ -1323,24 +1325,24 @@ static PyObject *__pyx_builtin_Ellipsis;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_symbol); /* proto */
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs); /* proto */
-static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(CYTHON_UNUSED struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_atom); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, __Pyx_memviewslice __pyx_v_dpos); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_symbol); /* proto */
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator___cinit__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs); /* proto */
+static void __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value); /* proto */
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4__init__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_6disableLog(CYTHON_UNUSED struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_8add_ion(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_atom); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_10setup(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, __Pyx_memviewslice __pyx_v_dpos); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_16runElecMin(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_20readForces(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -1373,7 +1375,7 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
 static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22copy_fortran(struct __pyx_memoryview_obj *__pyx_v_self); /* proto */
 static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewslice___dealloc__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__(struct __pyx_memoryviewslice_obj *__pyx_v_self); /* proto */
-static PyObject *__pyx_tp_new_5PyDFT_14JDFTCalculator_JDFTCalculator(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_11pythonJDFTx_14JDFTCalculator_JDFTCalculator(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -1451,7 +1453,6 @@ static char __pyx_k_PSEUDOPOT_HOME[] = "PSEUDOPOT_HOME";
 static char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static char __pyx_k_strided_and_direct[] = "<strided and direct>";
-static char __pyx_k_PyDFT_JDFTCalculator[] = "PyDFT.JDFTCalculator";
 static char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
@@ -1463,10 +1464,11 @@ static char __pyx_k_Dimension_d_is_not_direct[] = "Dimension %d is not direct";
 static char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
 static char __pyx_k_Index_out_of_bounds_axis_d[] = "Index out of bounds (axis %d)";
 static char __pyx_k_ase_calculators_calculator[] = "ase.calculators.calculator";
+static char __pyx_k_pythonJDFTx_JDFTCalculator[] = "pythonJDFTx.JDFTCalculator";
 static char __pyx_k_Step_may_not_be_zero_axis_d[] = "Step may not be zero (axis %d)";
 static char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
 static char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
-static char __pyx_k_home_zatarra_JDFT_latest_build[] = "/home/zatarra/JDFT_latest/build/PyDFT/JDFTCalculator.pyx";
+static char __pyx_k_home_zatarra_JDFT_latest_build[] = "/home/zatarra/JDFT_latest/build/pythonJDFTx/JDFTCalculator.pyx";
 static char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static char __pyx_k_In_order_to_match_the_conventio[] = " In order to match the convention of ASE, skip 0 when counting\n        1: Unpolarized calculation\n        2: Spin-polarized calculation\n        3: Non-collinear magnetism (supports spin-orbit coupling)\n        4: Non-collinear without magnetization, to allow for spin-orbit";
 static char __pyx_k_All_dimensions_preceding_dimensi[] = "All dimensions preceding dimension %d must be indexed and not sliced";
@@ -1501,7 +1503,6 @@ static PyObject *__pyx_kp_s_MemoryView_of_r_object;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_u_PSEUDOPOT_HOME;
-static PyObject *__pyx_n_s_PyDFT_JDFTCalculator;
 static PyObject *__pyx_n_s_R;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
@@ -1555,6 +1556,7 @@ static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_path;
 static PyObject *__pyx_n_s_position;
 static PyObject *__pyx_n_s_pspFolder;
+static PyObject *__pyx_n_s_pythonJDFTx_JDFTCalculator;
 static PyObject *__pyx_n_s_pyx_getbuffer;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_range;
@@ -1604,7 +1606,7 @@ static PyObject *__pyx_tuple__21;
 static PyObject *__pyx_tuple__22;
 static PyObject *__pyx_codeobj__17;
 
-/* "PyDFT/JDFTCalculator.pyx":53
+/* "pythonJDFTx/JDFTCalculator.pyx":53
  * 
  * 
  * def _makePspPath(symbol):             # <<<<<<<<<<<<<<
@@ -1613,20 +1615,20 @@ static PyObject *__pyx_codeobj__17;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_1_makePspPath(PyObject *__pyx_self, PyObject *__pyx_v_symbol); /*proto*/
-static PyMethodDef __pyx_mdef_5PyDFT_14JDFTCalculator_1_makePspPath = {"_makePspPath", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_1_makePspPath, METH_O, 0};
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_1_makePspPath(PyObject *__pyx_self, PyObject *__pyx_v_symbol) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_1_makePspPath(PyObject *__pyx_self, PyObject *__pyx_v_symbol); /*proto*/
+static PyMethodDef __pyx_mdef_11pythonJDFTx_14JDFTCalculator_1_makePspPath = {"_makePspPath", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_1_makePspPath, METH_O, 0};
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_1_makePspPath(PyObject *__pyx_self, PyObject *__pyx_v_symbol) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_makePspPath (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(__pyx_self, ((PyObject *)__pyx_v_symbol));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator__makePspPath(__pyx_self, ((PyObject *)__pyx_v_symbol));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_symbol) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_symbol) {
   PyObject *__pyx_v_os = NULL;
   PyObject *__pyx_v_pspFolder = NULL;
   PyObject *__pyx_r = NULL;
@@ -1642,7 +1644,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_makePspPath", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":54
+  /* "pythonJDFTx/JDFTCalculator.pyx":54
  * 
  * def _makePspPath(symbol):
  *     import os             # <<<<<<<<<<<<<<
@@ -1654,7 +1656,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   __pyx_v_os = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":55
+  /* "pythonJDFTx/JDFTCalculator.pyx":55
  * def _makePspPath(symbol):
  *     import os
  *     pspFolder = os.getenv("PSEUDOPOT_HOME")             # <<<<<<<<<<<<<<
@@ -1669,7 +1671,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   __pyx_v_pspFolder = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":56
+  /* "pythonJDFTx/JDFTCalculator.pyx":56
  *     import os
  *     pspFolder = os.getenv("PSEUDOPOT_HOME")
  *     return bytes(os.path.join(pspFolder, symbol.lower() + ".uspp"), "utf-8")             # <<<<<<<<<<<<<<
@@ -1747,7 +1749,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":53
+  /* "pythonJDFTx/JDFTCalculator.pyx":53
  * 
  * 
  * def _makePspPath(symbol):             # <<<<<<<<<<<<<<
@@ -1762,7 +1764,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator._makePspPath", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator._makePspPath", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_os);
@@ -1772,7 +1774,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":58
+/* "pythonJDFTx/JDFTCalculator.pyx":58
  *     return bytes(os.path.join(pspFolder, symbol.lower() + ".uspp"), "utf-8")
  * 
  * cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile,             # <<<<<<<<<<<<<<
@@ -1780,7 +1782,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator__makePspPath(CYTHON_UNUSED PyO
  *     cdef SpeciesInfo* speciePtr = new SpeciesInfo()
  */
 
-static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSpecie(string __pyx_v_id, char *__pyx_v_pspFile, CYTHON_UNUSED vector3<double>  __pyx_v_pos) {
+static std::shared_ptr<SpeciesInfo>  __pyx_f_11pythonJDFTx_14JDFTCalculator_createNewSpecie(string __pyx_v_id, char *__pyx_v_pspFile, CYTHON_UNUSED vector3<double>  __pyx_v_pos) {
   SpeciesInfo *__pyx_v_speciePtr;
   std::shared_ptr<SpeciesInfo>  __pyx_v_specie;
   std::shared_ptr<SpeciesInfo>  __pyx_r;
@@ -1791,7 +1793,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("createNewSpecie", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":60
+  /* "pythonJDFTx/JDFTCalculator.pyx":60
  * cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile,
  *                                              vector3[double] pos):
  *     cdef SpeciesInfo* speciePtr = new SpeciesInfo()             # <<<<<<<<<<<<<<
@@ -1806,7 +1808,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
   }
   __pyx_v_speciePtr = __pyx_t_1;
 
-  /* "PyDFT/JDFTCalculator.pyx":61
+  /* "pythonJDFTx/JDFTCalculator.pyx":61
  *                                              vector3[double] pos):
  *     cdef SpeciesInfo* speciePtr = new SpeciesInfo()
  *     cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](speciePtr)             # <<<<<<<<<<<<<<
@@ -1815,7 +1817,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
  */
   __pyx_v_specie = std::shared_ptr<SpeciesInfo> (__pyx_v_speciePtr);
 
-  /* "PyDFT/JDFTCalculator.pyx":62
+  /* "pythonJDFTx/JDFTCalculator.pyx":62
  *     cdef SpeciesInfo* speciePtr = new SpeciesInfo()
  *     cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](speciePtr)
  *     deref(specie).potfilename.assign(pspFile)             # <<<<<<<<<<<<<<
@@ -1829,7 +1831,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":63
+  /* "pythonJDFTx/JDFTCalculator.pyx":63
  *     cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](speciePtr)
  *     deref(specie).potfilename.assign(pspFile)
  *     deref(specie).fromWildcard = False             # <<<<<<<<<<<<<<
@@ -1838,7 +1840,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
  */
   (*__pyx_v_specie).fromWildcard = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":64
+  /* "pythonJDFTx/JDFTCalculator.pyx":64
  *     deref(specie).potfilename.assign(pspFile)
  *     deref(specie).fromWildcard = False
  *     deref(specie).name = id             # <<<<<<<<<<<<<<
@@ -1847,7 +1849,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
  */
   (*__pyx_v_specie).name = __pyx_v_id;
 
-  /* "PyDFT/JDFTCalculator.pyx":65
+  /* "pythonJDFTx/JDFTCalculator.pyx":65
  *     deref(specie).fromWildcard = False
  *     deref(specie).name = id
  *     deref(specie).pspFormat = PseudoPotentialFormat_Uspp             # <<<<<<<<<<<<<<
@@ -1856,7 +1858,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
  */
   (*__pyx_v_specie).pspFormat = SpeciesInfo::Uspp;
 
-  /* "PyDFT/JDFTCalculator.pyx":66
+  /* "pythonJDFTx/JDFTCalculator.pyx":66
  *     deref(specie).name = id
  *     deref(specie).pspFormat = PseudoPotentialFormat_Uspp
  *     return specie             # <<<<<<<<<<<<<<
@@ -1866,7 +1868,7 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
   __pyx_r = __pyx_v_specie;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":58
+  /* "pythonJDFTx/JDFTCalculator.pyx":58
  *     return bytes(os.path.join(pspFolder, symbol.lower() + ".uspp"), "utf-8")
  * 
  * cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile,             # <<<<<<<<<<<<<<
@@ -1876,13 +1878,13 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("PyDFT.JDFTCalculator.createNewSpecie", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __Pyx_WriteUnraisable("pythonJDFTx.JDFTCalculator.createNewSpecie", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":76
+/* "pythonJDFTx/JDFTCalculator.pyx":76
  * 
  *     #c level functions
  *     def __cinit__(self,*args,**kwargs):             # <<<<<<<<<<<<<<
@@ -1891,8 +1893,8 @@ static std::shared_ptr<SpeciesInfo>  __pyx_f_5PyDFT_14JDFTCalculator_createNewSp
  */
 
 /* Python wrapper */
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   CYTHON_UNUSED PyObject *__pyx_v_args = 0;
   CYTHON_UNUSED PyObject *__pyx_v_kwargs = 0;
   int __pyx_r;
@@ -1904,7 +1906,7 @@ static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject
   __Pyx_GOTREF(__pyx_v_kwargs);
   __Pyx_INCREF(__pyx_args);
   __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator___cinit__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
 
   /* function exit code */
   __Pyx_XDECREF(__pyx_v_args);
@@ -1913,7 +1915,7 @@ static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1__cinit__(PyObject
   return __pyx_r;
 }
 
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator___cinit__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
   int __pyx_v_mpiArgc;
   char *__pyx_v_mpiArgv[0];
   QuantumNumber __pyx_v_qnum;
@@ -1927,7 +1929,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":77
+  /* "pythonJDFTx/JDFTCalculator.pyx":77
  *     #c level functions
  *     def __cinit__(self,*args,**kwargs):
  *         cdef int mpiArgc = 0             # <<<<<<<<<<<<<<
@@ -1936,7 +1938,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_mpiArgc = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":81
+  /* "pythonJDFTx/JDFTCalculator.pyx":81
  *         global mpiUtil, globalLog, nullLog
  * 
  *         nullLog = fopen("/dev/null","w")             # <<<<<<<<<<<<<<
@@ -1945,7 +1947,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   nullLog = fopen(__pyx_k_dev_null, __pyx_k_w);
 
-  /* "PyDFT/JDFTCalculator.pyx":83
+  /* "pythonJDFTx/JDFTCalculator.pyx":83
  *         nullLog = fopen("/dev/null","w")
  *         # globalLog = nullLog
  *         mpiUtil = new MPIUtil(mpiArgc,mpiArgv) #initSystemCmdLine             # <<<<<<<<<<<<<<
@@ -1954,7 +1956,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   mpiUtil = new MPIUtil(__pyx_v_mpiArgc, __pyx_v_mpiArgv);
 
-  /* "PyDFT/JDFTCalculator.pyx":87
+  /* "pythonJDFTx/JDFTCalculator.pyx":87
  *         #Default commands that sets some variables up at the beginning:
  *         #basis kpoint-dependent
  *         self.e.cntrl.basisKdep = BasisKdep_BasisKpointDep             # <<<<<<<<<<<<<<
@@ -1963,7 +1965,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.basisKdep = BasisKpointDep;
 
-  /* "PyDFT/JDFTCalculator.pyx":90
+  /* "pythonJDFTx/JDFTCalculator.pyx":90
  * 
  *         #coords-type Cartesian
  *         self.e.iInfo.coordsType = CoordsType_CoordsCartesian             # <<<<<<<<<<<<<<
@@ -1972,7 +1974,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.iInfo.coordsType = CoordsCartesian;
 
-  /* "PyDFT/JDFTCalculator.pyx":93
+  /* "pythonJDFTx/JDFTCalculator.pyx":93
  * 
  *         #core-overlap-check vector
  *         self.e.iInfo.coreOverlapCondition = Condition_vector             # <<<<<<<<<<<<<<
@@ -1981,7 +1983,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.iInfo.coreOverlapCondition = vector;
 
-  /* "PyDFT/JDFTCalculator.pyx":96
+  /* "pythonJDFTx/JDFTCalculator.pyx":96
  * 
  *         #coulomb-interaction Periodic
  *         self.e.coulombParams.geometry =  Geometry_Periodic             # <<<<<<<<<<<<<<
@@ -1990,7 +1992,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.coulombParams.geometry = CoulombParams::Periodic;
 
-  /* "PyDFT/JDFTCalculator.pyx":99
+  /* "pythonJDFTx/JDFTCalculator.pyx":99
  * 
  *         #dump End None
  *         self.e.dump.insert(pair[DumpFrequency,DumpVariable](DumpFreq_End, DumpNone))             # <<<<<<<<<<<<<<
@@ -2010,7 +2012,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":102
+  /* "pythonJDFTx/JDFTCalculator.pyx":102
  * 
  *         #elec-cutoff 20
  *         self.e.cntrl.Ecut = 20.0             # <<<<<<<<<<<<<<
@@ -2019,7 +2021,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.Ecut = 20.0;
 
-  /* "PyDFT/JDFTCalculator.pyx":103
+  /* "pythonJDFTx/JDFTCalculator.pyx":103
  *         #elec-cutoff 20
  *         self.e.cntrl.Ecut = 20.0
  *         self.e.cntrl.EcutRho = 0.0             # <<<<<<<<<<<<<<
@@ -2028,7 +2030,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.EcutRho = 0.0;
 
-  /* "PyDFT/JDFTCalculator.pyx":106
+  /* "pythonJDFTx/JDFTCalculator.pyx":106
  * 
  *         #elec-eigen-algo Davidson
  *         self.e.cntrl.elecEigenAlgo = ElecEigenDavidson             # <<<<<<<<<<<<<<
@@ -2037,7 +2039,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.elecEigenAlgo = ElecEigenDavidson;
 
-  /* "PyDFT/JDFTCalculator.pyx":112
+  /* "pythonJDFTx/JDFTCalculator.pyx":112
  * 
  *         #electronic-minimize energyDiffThreshold  1e-08
  *         self.e.elecMinParams.energyDiffThreshold = 1e-8             # <<<<<<<<<<<<<<
@@ -2046,7 +2048,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.elecMinParams.energyDiffThreshold = 1e-8;
 
-  /* "PyDFT/JDFTCalculator.pyx":115
+  /* "pythonJDFTx/JDFTCalculator.pyx":115
  * 
  *         #exchange-regularization WignerSeitzTruncated
  *         self.e.coulombParams.exchangeRegularization = XReg_WignerSeitzTruncated             # <<<<<<<<<<<<<<
@@ -2055,7 +2057,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.coulombParams.exchangeRegularization = CoulombParams::WignerSeitzTruncated;
 
-  /* "PyDFT/JDFTCalculator.pyx":118
+  /* "pythonJDFTx/JDFTCalculator.pyx":118
  * 
  *         #fluid None
  *         self.e.eVars.fluidParams.fluidType = FluidType_FluidNone             # <<<<<<<<<<<<<<
@@ -2064,7 +2066,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.fluidParams.fluidType = FluidNone;
 
-  /* "PyDFT/JDFTCalculator.pyx":121
+  /* "pythonJDFTx/JDFTCalculator.pyx":121
  * 
  *         #fluid-ex-corr lda-TF gga-PBE
  *         self.e.eVars.fluidParams.exCorr.kineticType = ExCorr_KineticTF             # <<<<<<<<<<<<<<
@@ -2073,7 +2075,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.fluidParams.exCorr.kineticType = KineticTF;
 
-  /* "PyDFT/JDFTCalculator.pyx":122
+  /* "pythonJDFTx/JDFTCalculator.pyx":122
  *         #fluid-ex-corr lda-TF gga-PBE
  *         self.e.eVars.fluidParams.exCorr.kineticType = ExCorr_KineticTF
  *         self.e.eVars.fluidParams.exCorr.exCorrType = ExCorr_ExCorrLDA_PZ             # <<<<<<<<<<<<<<
@@ -2082,7 +2084,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.fluidParams.exCorr.exCorrType = ExCorrLDA_PZ;
 
-  /* "PyDFT/JDFTCalculator.pyx":125
+  /* "pythonJDFTx/JDFTCalculator.pyx":125
  * 
  *         #fluid-gummel-loop 10 1.000000e-05
  *         self.e.cntrl.fluidGummel_nIterations = 10             # <<<<<<<<<<<<<<
@@ -2091,7 +2093,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.fluidGummel_nIterations = 10;
 
-  /* "PyDFT/JDFTCalculator.pyx":126
+  /* "pythonJDFTx/JDFTCalculator.pyx":126
  *         #fluid-gummel-loop 10 1.000000e-05
  *         self.e.cntrl.fluidGummel_nIterations = 10
  *         self.e.cntrl.fluidGummel_Atol = 1e-5             # <<<<<<<<<<<<<<
@@ -2100,7 +2102,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.fluidGummel_Atol = 1e-5;
 
-  /* "PyDFT/JDFTCalculator.pyx":129
+  /* "pythonJDFTx/JDFTCalculator.pyx":129
  * 
  *         #forces-output-coords Positions
  *         self.e.iInfo.forcesOutputCoords = ForcesOutput_Cartesian             # <<<<<<<<<<<<<<
@@ -2109,7 +2111,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.iInfo.forcesOutputCoords = ForcesCoordsCartesian;
 
-  /* "PyDFT/JDFTCalculator.pyx":132
+  /* "pythonJDFTx/JDFTCalculator.pyx":132
  * 
  *         #ion-width 0
  *         self.e.iInfo.ionWidthMethod = IonWidthManual             # <<<<<<<<<<<<<<
@@ -2118,7 +2120,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.iInfo.ionWidthMethod = IonInfo::IonWidthManual;
 
-  /* "PyDFT/JDFTCalculator.pyx":135
+  /* "pythonJDFTx/JDFTCalculator.pyx":135
  * 
  *         #ionic-minimize nIterations 0
  *         self.e.ionicMinParams.nIterations = 0             # <<<<<<<<<<<<<<
@@ -2127,7 +2129,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.ionicMinParams.nIterations = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":139
+  /* "pythonJDFTx/JDFTCalculator.pyx":139
  *         #kpoint   0.000000000000   0.000000000000   0.000000000000  1.00000000000000
  *         cdef QuantumNumber qnum
  *         for i in range(3):             # <<<<<<<<<<<<<<
@@ -2137,7 +2139,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   for (__pyx_t_2 = 0; __pyx_t_2 < 3; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "PyDFT/JDFTCalculator.pyx":140
+    /* "pythonJDFTx/JDFTCalculator.pyx":140
  *         cdef QuantumNumber qnum
  *         for i in range(3):
  *             (&(qnum.k[i]))[0] = 0.0             # <<<<<<<<<<<<<<
@@ -2146,7 +2148,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
     ((&(__pyx_v_qnum.k[__pyx_v_i]))[0]) = 0.0;
 
-    /* "PyDFT/JDFTCalculator.pyx":141
+    /* "pythonJDFTx/JDFTCalculator.pyx":141
  *         for i in range(3):
  *             (&(qnum.k[i]))[0] = 0.0
  *             qnum.weight = 1.0             # <<<<<<<<<<<<<<
@@ -2156,7 +2158,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     __pyx_v_qnum.weight = 1.0;
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":142
+  /* "pythonJDFTx/JDFTCalculator.pyx":142
  *             (&(qnum.k[i]))[0] = 0.0
  *             qnum.weight = 1.0
  *         self.e.eInfo.qnums.push_back(qnum)             # <<<<<<<<<<<<<<
@@ -2170,7 +2172,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":143
+  /* "pythonJDFTx/JDFTCalculator.pyx":143
  *             qnum.weight = 1.0
  *         self.e.eInfo.qnums.push_back(qnum)
  *         self.e.eInfo.nStates = self.e.eInfo.qnums.size()             # <<<<<<<<<<<<<<
@@ -2179,7 +2181,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eInfo.nStates = __pyx_v_self->e.eInfo.qnums.size();
 
-  /* "PyDFT/JDFTCalculator.pyx":146
+  /* "pythonJDFTx/JDFTCalculator.pyx":146
  * 
  *         # kpoint-folding 1 1 1
  *         for i in range(3):             # <<<<<<<<<<<<<<
@@ -2189,7 +2191,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   for (__pyx_t_2 = 0; __pyx_t_2 < 3; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "PyDFT/JDFTCalculator.pyx":147
+    /* "pythonJDFTx/JDFTCalculator.pyx":147
  *         # kpoint-folding 1 1 1
  *         for i in range(3):
  *             self.e.eInfo.kfold[i] = 1             # <<<<<<<<<<<<<<
@@ -2199,7 +2201,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     (__pyx_v_self->e.eInfo.kfold[__pyx_v_i]) = 1;
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":150
+  /* "pythonJDFTx/JDFTCalculator.pyx":150
  * 
  *         # latt-move-scale 1 1 1
  *         for i in range(3):             # <<<<<<<<<<<<<<
@@ -2209,7 +2211,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   for (__pyx_t_2 = 0; __pyx_t_2 < 3; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "PyDFT/JDFTCalculator.pyx":151
+    /* "pythonJDFTx/JDFTCalculator.pyx":151
  *         # latt-move-scale 1 1 1
  *         for i in range(3):
  *             self.e.cntrl.lattMoveScale[i] = 1.0             # <<<<<<<<<<<<<<
@@ -2219,7 +2221,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     (__pyx_v_self->e.cntrl.lattMoveScale[__pyx_v_i]) = 1.0;
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":154
+  /* "pythonJDFTx/JDFTCalculator.pyx":154
  * 
  *         # latt-scale 1 1 1
  *         for i in range(3):             # <<<<<<<<<<<<<<
@@ -2229,7 +2231,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   for (__pyx_t_2 = 0; __pyx_t_2 < 3; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "PyDFT/JDFTCalculator.pyx":155
+    /* "pythonJDFTx/JDFTCalculator.pyx":155
  *         # latt-scale 1 1 1
  *         for i in range(3):
  *             self.e.gInfo.lattScale[i] = 1.0             # <<<<<<<<<<<<<<
@@ -2239,7 +2241,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
     (__pyx_v_self->e.gInfo.lattScale[__pyx_v_i]) = 1.0;
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":159
+  /* "pythonJDFTx/JDFTCalculator.pyx":159
  *         # lcao-params -1 1e-06 0.001
  *         # nIteration is set to 3 by the constructor of ElecVars::LCAO()
  *         self.e.eVars.lcaoIter = 3             # <<<<<<<<<<<<<<
@@ -2248,7 +2250,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.lcaoIter = 3;
 
-  /* "PyDFT/JDFTCalculator.pyx":160
+  /* "pythonJDFTx/JDFTCalculator.pyx":160
  *         # nIteration is set to 3 by the constructor of ElecVars::LCAO()
  *         self.e.eVars.lcaoIter = 3
  *         self.e.eVars.lcaoTol = 1e-06             # <<<<<<<<<<<<<<
@@ -2257,7 +2259,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.lcaoTol = 1e-06;
 
-  /* "PyDFT/JDFTCalculator.pyx":161
+  /* "pythonJDFTx/JDFTCalculator.pyx":161
  *         self.e.eVars.lcaoIter = 3
  *         self.e.eVars.lcaoTol = 1e-06
  *         self.e.eInfo.kT = 1e-3             # <<<<<<<<<<<<<<
@@ -2266,7 +2268,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eInfo.kT = 1e-3;
 
-  /* "PyDFT/JDFTCalculator.pyx":166
+  /* "pythonJDFTx/JDFTCalculator.pyx":166
  * 
  *         #reorthogonalize-orbitals 20 1.5
  *         self.e.cntrl.overlapCheckInterval = 20             # <<<<<<<<<<<<<<
@@ -2275,7 +2277,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.overlapCheckInterval = 20;
 
-  /* "PyDFT/JDFTCalculator.pyx":167
+  /* "pythonJDFTx/JDFTCalculator.pyx":167
  *         #reorthogonalize-orbitals 20 1.5
  *         self.e.cntrl.overlapCheckInterval = 20
  *         self.e.cntrl.overlapConditionThreshold = 1.5             # <<<<<<<<<<<<<<
@@ -2284,7 +2286,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.cntrl.overlapConditionThreshold = 1.5;
 
-  /* "PyDFT/JDFTCalculator.pyx":172
+  /* "pythonJDFTx/JDFTCalculator.pyx":172
  * 
  *         # subspace-rotation-factor 30
  *         self.e.eVars.subspaceRotationFactor = 30.0             # <<<<<<<<<<<<<<
@@ -2293,7 +2295,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.eVars.subspaceRotationFactor = 30.0;
 
-  /* "PyDFT/JDFTCalculator.pyx":175
+  /* "pythonJDFTx/JDFTCalculator.pyx":175
  * 
  *         # symmetries automatic no
  *         self.e.symm.mode = SymmetryMode_None             # <<<<<<<<<<<<<<
@@ -2302,7 +2304,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.symm.mode = SymmetriesNone;
 
-  /* "PyDFT/JDFTCalculator.pyx":176
+  /* "pythonJDFTx/JDFTCalculator.pyx":176
  *         # symmetries automatic no
  *         self.e.symm.mode = SymmetryMode_None
  *         self.e.symm.shouldMoveAtoms = False             # <<<<<<<<<<<<<<
@@ -2311,7 +2313,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->e.symm.shouldMoveAtoms = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":178
+  /* "pythonJDFTx/JDFTCalculator.pyx":178
  *         self.e.symm.shouldMoveAtoms = False
  * 
  *         self.imin = new IonicMinimizer(self.e)             # <<<<<<<<<<<<<<
@@ -2320,7 +2322,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
   __pyx_v_self->imin = new IonicMinimizer(__pyx_v_self->e);
 
-  /* "PyDFT/JDFTCalculator.pyx":76
+  /* "pythonJDFTx/JDFTCalculator.pyx":76
  * 
  *     #c level functions
  *     def __cinit__(self,*args,**kwargs):             # <<<<<<<<<<<<<<
@@ -2332,14 +2334,14 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":180
+/* "pythonJDFTx/JDFTCalculator.pyx":180
  *         self.imin = new IonicMinimizer(self.e)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2348,21 +2350,21 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator___cinit__(struct __
  */
 
 /* Python wrapper */
-static void __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_3__dealloc__(PyObject *__pyx_v_self) {
+static void __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_3__dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_2__dealloc__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
 
-static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static void __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":183
+  /* "pythonJDFTx/JDFTCalculator.pyx":183
  *         """finalizeSystem()"""
  *         global mpiUtil
  *         del mpiUtil             # <<<<<<<<<<<<<<
@@ -2371,7 +2373,7 @@ static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struc
  */
   delete mpiUtil;
 
-  /* "PyDFT/JDFTCalculator.pyx":184
+  /* "pythonJDFTx/JDFTCalculator.pyx":184
  *         global mpiUtil
  *         del mpiUtil
  *         del self.imin             # <<<<<<<<<<<<<<
@@ -2380,7 +2382,7 @@ static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struc
  */
   delete __pyx_v_self->imin;
 
-  /* "PyDFT/JDFTCalculator.pyx":180
+  /* "pythonJDFTx/JDFTCalculator.pyx":180
  *         self.imin = new IonicMinimizer(self.e)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -2392,7 +2394,7 @@ static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struc
   __Pyx_RefNannyFinishContext();
 }
 
-/* "PyDFT/JDFTCalculator.pyx":189
+/* "pythonJDFTx/JDFTCalculator.pyx":189
  *     property R:
  *         """Lattice vectors in Angstrom. Handles the conversion internally."""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2401,19 +2403,19 @@ static void __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_2__dealloc__(struc
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R___get__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   double __pyx_v_unitConvertedEntry;
   PyObject *__pyx_v_out = NULL;
   long __pyx_v_i;
@@ -2431,7 +2433,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":191
+  /* "pythonJDFTx/JDFTCalculator.pyx":191
  *         def __get__(self):
  *             cdef double unitConvertedEntry
  *             out = np.zeros((3,3), dtype=np.double)             # <<<<<<<<<<<<<<
@@ -2459,7 +2461,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   __pyx_v_out = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":192
+  /* "pythonJDFTx/JDFTCalculator.pyx":192
  *             cdef double unitConvertedEntry
  *             out = np.zeros((3,3), dtype=np.double)
  *             for i in range(3):             # <<<<<<<<<<<<<<
@@ -2469,7 +2471,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   for (__pyx_t_5 = 0; __pyx_t_5 < 3; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "PyDFT/JDFTCalculator.pyx":193
+    /* "pythonJDFTx/JDFTCalculator.pyx":193
  *             out = np.zeros((3,3), dtype=np.double)
  *             for i in range(3):
  *                 for j in range(3):             # <<<<<<<<<<<<<<
@@ -2479,16 +2481,16 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
     for (__pyx_t_6 = 0; __pyx_t_6 < 3; __pyx_t_6+=1) {
       __pyx_v_j = __pyx_t_6;
 
-      /* "PyDFT/JDFTCalculator.pyx":194
+      /* "pythonJDFTx/JDFTCalculator.pyx":194
  *             for i in range(3):
  *                 for j in range(3):
  *                     unitConvertedEntry = self.e.gInfo.R(i,j) * cBohr             # <<<<<<<<<<<<<<
  *                     out[i,j] = unitConvertedEntry
  *             return out
  */
-      __pyx_v_unitConvertedEntry = (__pyx_v_self->e.gInfo.R(__pyx_v_i, __pyx_v_j) * __pyx_v_5PyDFT_14JDFTCalculator_cBohr);
+      __pyx_v_unitConvertedEntry = (__pyx_v_self->e.gInfo.R(__pyx_v_i, __pyx_v_j) * __pyx_v_11pythonJDFTx_14JDFTCalculator_cBohr);
 
-      /* "PyDFT/JDFTCalculator.pyx":195
+      /* "pythonJDFTx/JDFTCalculator.pyx":195
  *                 for j in range(3):
  *                     unitConvertedEntry = self.e.gInfo.R(i,j) * cBohr
  *                     out[i,j] = unitConvertedEntry             # <<<<<<<<<<<<<<
@@ -2515,7 +2517,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
     }
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":196
+  /* "pythonJDFTx/JDFTCalculator.pyx":196
  *                     unitConvertedEntry = self.e.gInfo.R(i,j) * cBohr
  *                     out[i,j] = unitConvertedEntry
  *             return out             # <<<<<<<<<<<<<<
@@ -2527,7 +2529,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   __pyx_r = __pyx_v_out;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":189
+  /* "pythonJDFTx/JDFTCalculator.pyx":189
  *     property R:
  *         """Lattice vectors in Angstrom. Handles the conversion internally."""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2541,7 +2543,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.R.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.R.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_out);
@@ -2550,7 +2552,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":198
+/* "pythonJDFTx/JDFTCalculator.pyx":198
  *             return out
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2559,19 +2561,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R___get__(st
  */
 
 /* Python wrapper */
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_2__set__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
   double __pyx_v_unitConvertedEntry;
   long __pyx_v_i;
   long __pyx_v_j;
@@ -2588,7 +2590,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":201
+  /* "pythonJDFTx/JDFTCalculator.pyx":201
  *             cdef double unitConvertedEntry
  *             cdef double& tmpR
  *             for i in range(3):             # <<<<<<<<<<<<<<
@@ -2598,7 +2600,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
   for (__pyx_t_1 = 0; __pyx_t_1 < 3; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
 
-    /* "PyDFT/JDFTCalculator.pyx":202
+    /* "pythonJDFTx/JDFTCalculator.pyx":202
  *             cdef double& tmpR
  *             for i in range(3):
  *                 for j in range(3):             # <<<<<<<<<<<<<<
@@ -2608,7 +2610,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
     for (__pyx_t_2 = 0; __pyx_t_2 < 3; __pyx_t_2+=1) {
       __pyx_v_j = __pyx_t_2;
 
-      /* "PyDFT/JDFTCalculator.pyx":203
+      /* "pythonJDFTx/JDFTCalculator.pyx":203
  *             for i in range(3):
  *                 for j in range(3):
  *                     unitConvertedEntry = value[i,j] / cBohr             # <<<<<<<<<<<<<<
@@ -2630,7 +2632,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
       __pyx_t_4 = PyObject_GetItem(__pyx_v_value, __pyx_t_5); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = PyFloat_FromDouble(__pyx_v_5PyDFT_14JDFTCalculator_cBohr); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyFloat_FromDouble(__pyx_v_11pythonJDFTx_14JDFTCalculator_cBohr); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_3 = __Pyx_PyNumber_Divide(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
@@ -2640,7 +2642,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_v_unitConvertedEntry = __pyx_t_6;
 
-      /* "PyDFT/JDFTCalculator.pyx":205
+      /* "pythonJDFTx/JDFTCalculator.pyx":205
  *                     unitConvertedEntry = value[i,j] / cBohr
  *                     # self.e.gInfo.R(i,j) = unitConvertedEntry
  *                     (&self.e.gInfo.R(i,j))[0] = unitConvertedEntry             # <<<<<<<<<<<<<<
@@ -2651,7 +2653,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
     }
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":198
+  /* "pythonJDFTx/JDFTCalculator.pyx":198
  *             return out
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2666,14 +2668,14 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.R.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.R.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":213
+/* "pythonJDFTx/JDFTCalculator.pyx":213
  *         3: Non-collinear magnetism (supports spin-orbit coupling)
  *         4: Non-collinear without magnetization, to allow for spin-orbit"""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2682,19 +2684,19 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_2__set__(struct 
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin___get__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2703,7 +2705,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":214
+  /* "pythonJDFTx/JDFTCalculator.pyx":214
  *         4: Non-collinear without magnetization, to allow for spin-orbit"""
  *         def __get__(self):
  *             return self.e.eInfo.spinType + 1             # <<<<<<<<<<<<<<
@@ -2717,7 +2719,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":213
+  /* "pythonJDFTx/JDFTCalculator.pyx":213
  *         3: Non-collinear magnetism (supports spin-orbit coupling)
  *         4: Non-collinear without magnetization, to allow for spin-orbit"""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2728,7 +2730,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.spin.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.spin.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2736,7 +2738,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":216
+/* "pythonJDFTx/JDFTCalculator.pyx":216
  *             return self.e.eInfo.spinType + 1
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2745,19 +2747,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin___get__
  */
 
 /* Python wrapper */
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2767,7 +2769,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":217
+  /* "pythonJDFTx/JDFTCalculator.pyx":217
  * 
  *         def __set__(self, value):
  *             self.e.eInfo.spinType = value - 1             # <<<<<<<<<<<<<<
@@ -2780,7 +2782,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(stru
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->e.eInfo.spinType = __pyx_t_2;
 
-  /* "PyDFT/JDFTCalculator.pyx":216
+  /* "pythonJDFTx/JDFTCalculator.pyx":216
  *             return self.e.eInfo.spinType + 1
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2793,14 +2795,14 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(stru
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.spin.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.spin.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":222
+/* "pythonJDFTx/JDFTCalculator.pyx":222
  *         """Drag wavefunctions when ions are moved using
  *         atomic orbital projections (yes by default)."""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2809,19 +2811,19 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_2__set__(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions___get__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2830,7 +2832,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefun
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":223
+  /* "pythonJDFTx/JDFTCalculator.pyx":223
  *         atomic orbital projections (yes by default)."""
  *         def __get__(self):
  *             return self.e.cntrl.dragWavefunctions             # <<<<<<<<<<<<<<
@@ -2844,7 +2846,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefun
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":222
+  /* "pythonJDFTx/JDFTCalculator.pyx":222
  *         """Drag wavefunctions when ions are moved using
  *         atomic orbital projections (yes by default)."""
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -2855,7 +2857,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefun
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.dragWavefunctions.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.dragWavefunctions.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2863,7 +2865,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefun
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":225
+/* "pythonJDFTx/JDFTCalculator.pyx":225
  *             return self.e.cntrl.dragWavefunctions
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2872,19 +2874,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefun
  */
 
 /* Python wrapper */
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value); /*proto*/
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(PyObject *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__set__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_2__set__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_value) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   bool __pyx_t_1;
@@ -2893,7 +2895,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__set__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":226
+  /* "pythonJDFTx/JDFTCalculator.pyx":226
  * 
  *         def __set__(self, value):
  *             self.e.cntrl.dragWavefunctions = <bool>value             # <<<<<<<<<<<<<<
@@ -2903,7 +2905,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions
   __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_1 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 226; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_self->e.cntrl.dragWavefunctions = ((bool)__pyx_t_1);
 
-  /* "PyDFT/JDFTCalculator.pyx":225
+  /* "pythonJDFTx/JDFTCalculator.pyx":225
  *             return self.e.cntrl.dragWavefunctions
  * 
  *         def __set__(self, value):             # <<<<<<<<<<<<<<
@@ -2915,14 +2917,14 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.dragWavefunctions.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.dragWavefunctions.__set__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":229
+/* "pythonJDFTx/JDFTCalculator.pyx":229
  * 
  *     #python level functions
  *     def __init__(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -2931,8 +2933,8 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions
  */
 
 /* Python wrapper */
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   CYTHON_UNUSED PyObject *__pyx_v_args = 0;
   CYTHON_UNUSED PyObject *__pyx_v_kwargs = 0;
   int __pyx_r;
@@ -2944,7 +2946,7 @@ static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject 
   __Pyx_GOTREF(__pyx_v_kwargs);
   __Pyx_INCREF(__pyx_args);
   __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4__init__(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
 
   /* function exit code */
   __Pyx_XDECREF(__pyx_v_args);
@@ -2953,7 +2955,7 @@ static int __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_5__init__(PyObject 
   return __pyx_r;
 }
 
-static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
+static int __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4__init__(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v_args, CYTHON_UNUSED PyObject *__pyx_v_kwargs) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -2961,7 +2963,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":230
+  /* "pythonJDFTx/JDFTCalculator.pyx":230
  *     #python level functions
  *     def __init__(self, *args, **kwargs):
  *         self.spin = 1             # <<<<<<<<<<<<<<
@@ -2970,7 +2972,7 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __
  */
   if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_spin, __pyx_int_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "PyDFT/JDFTCalculator.pyx":229
+  /* "pythonJDFTx/JDFTCalculator.pyx":229
  * 
  *     #python level functions
  *     def __init__(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -2982,14 +2984,14 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":232
+/* "pythonJDFTx/JDFTCalculator.pyx":232
  *         self.spin = 1
  * 
  *     def disableLog(self):             # <<<<<<<<<<<<<<
@@ -2998,24 +3000,24 @@ static int __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_4__init__(struct __
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_7disableLog(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_7disableLog(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_7disableLog(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_7disableLog(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("disableLog (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_6disableLog(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(CYTHON_UNUSED struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_6disableLog(CYTHON_UNUSED struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("disableLog", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":234
+  /* "pythonJDFTx/JDFTCalculator.pyx":234
  *     def disableLog(self):
  *         global globalLog, nullLog
  *         globalLog = nullLog             # <<<<<<<<<<<<<<
@@ -3024,7 +3026,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(C
  */
   globalLog = nullLog;
 
-  /* "PyDFT/JDFTCalculator.pyx":232
+  /* "pythonJDFTx/JDFTCalculator.pyx":232
  *         self.spin = 1
  * 
  *     def disableLog(self):             # <<<<<<<<<<<<<<
@@ -3039,7 +3041,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(C
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":236
+/* "pythonJDFTx/JDFTCalculator.pyx":236
  *         globalLog = nullLog
  * 
  *     def add_ion(self, atom):             # <<<<<<<<<<<<<<
@@ -3048,19 +3050,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_6disableLog(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_9add_ion(PyObject *__pyx_v_self, PyObject *__pyx_v_atom); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_9add_ion(PyObject *__pyx_v_self, PyObject *__pyx_v_atom) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_9add_ion(PyObject *__pyx_v_self, PyObject *__pyx_v_atom); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_9add_ion(PyObject *__pyx_v_self, PyObject *__pyx_v_atom) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("add_ion (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_atom));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_8add_ion(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), ((PyObject *)__pyx_v_atom));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_atom) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_8add_ion(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, PyObject *__pyx_v_atom) {
   PyObject *__pyx_v_symbol = NULL;
   string __pyx_v_id;
   vector3<double>  __pyx_v_pos;
@@ -3086,7 +3088,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("add_ion", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":237
+  /* "pythonJDFTx/JDFTCalculator.pyx":237
  * 
  *     def add_ion(self, atom):
  *         symbol = bytes(atom.symbol, "utf-8")             # <<<<<<<<<<<<<<
@@ -3109,7 +3111,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   __pyx_v_symbol = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":241
+  /* "pythonJDFTx/JDFTCalculator.pyx":241
  *         cdef string id
  *         cdef vector3[double] pos
  *         id.assign(<char*>symbol)             # <<<<<<<<<<<<<<
@@ -3124,7 +3126,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":243
+  /* "pythonJDFTx/JDFTCalculator.pyx":243
  *         id.assign(<char*>symbol)
  *         cdef shared_ptr[SpeciesInfo] sp
  *         sp = findSpecies(id, self.e)             # <<<<<<<<<<<<<<
@@ -3133,7 +3135,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
  */
   __pyx_v_sp = findSpecies(__pyx_v_id, __pyx_v_self->e);
 
-  /* "PyDFT/JDFTCalculator.pyx":245
+  /* "pythonJDFTx/JDFTCalculator.pyx":245
  *         sp = findSpecies(id, self.e)
  * 
  *         invR = np.linalg.inv(self.R)             # <<<<<<<<<<<<<<
@@ -3179,7 +3181,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   __pyx_v_invR = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":246
+  /* "pythonJDFTx/JDFTCalculator.pyx":246
  * 
  *         invR = np.linalg.inv(self.R)
  *         positionInLatticeCoordinates = invR.dot(atom.position)             # <<<<<<<<<<<<<<
@@ -3219,7 +3221,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   __pyx_v_positionInLatticeCoordinates = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":247
+  /* "pythonJDFTx/JDFTCalculator.pyx":247
  *         invR = np.linalg.inv(self.R)
  *         positionInLatticeCoordinates = invR.dot(atom.position)
  *         for i in range(3):             # <<<<<<<<<<<<<<
@@ -3229,7 +3231,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   for (__pyx_t_7 = 0; __pyx_t_7 < 3; __pyx_t_7+=1) {
     __pyx_v_i = __pyx_t_7;
 
-    /* "PyDFT/JDFTCalculator.pyx":248
+    /* "pythonJDFTx/JDFTCalculator.pyx":248
  *         positionInLatticeCoordinates = invR.dot(atom.position)
  *         for i in range(3):
  *             pos[i] = <double>positionInLatticeCoordinates[i]             # <<<<<<<<<<<<<<
@@ -3243,7 +3245,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
     (__pyx_v_pos[__pyx_v_i]) = ((double)__pyx_t_8);
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":250
+  /* "pythonJDFTx/JDFTCalculator.pyx":250
  *             pos[i] = <double>positionInLatticeCoordinates[i]
  * 
  *         if sp != 0:             # <<<<<<<<<<<<<<
@@ -3253,7 +3255,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   __pyx_t_9 = ((__pyx_v_sp != 0) != 0);
   if (__pyx_t_9) {
 
-    /* "PyDFT/JDFTCalculator.pyx":251
+    /* "pythonJDFTx/JDFTCalculator.pyx":251
  * 
  *         if sp != 0:
  *             deref(sp).atpos.push_back(pos)             # <<<<<<<<<<<<<<
@@ -3270,7 +3272,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   }
   /*else*/ {
 
-    /* "PyDFT/JDFTCalculator.pyx":253
+    /* "pythonJDFTx/JDFTCalculator.pyx":253
  *             deref(sp).atpos.push_back(pos)
  *         else:
  *             pspFile = _makePspPath(atom.symbol)             # <<<<<<<<<<<<<<
@@ -3310,7 +3312,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
     __pyx_v_pspFile = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "PyDFT/JDFTCalculator.pyx":254
+    /* "pythonJDFTx/JDFTCalculator.pyx":254
  *         else:
  *             pspFile = _makePspPath(atom.symbol)
  *             sp = createNewSpecie(id, <char*>pspFile, pos)             # <<<<<<<<<<<<<<
@@ -3318,9 +3320,9 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
  *             deref(sp).atpos.push_back(pos)
  */
     __pyx_t_3 = __Pyx_PyObject_AsString(__pyx_v_pspFile); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_sp = __pyx_f_5PyDFT_14JDFTCalculator_createNewSpecie(__pyx_v_id, ((char *)__pyx_t_3), __pyx_v_pos);
+    __pyx_v_sp = __pyx_f_11pythonJDFTx_14JDFTCalculator_createNewSpecie(__pyx_v_id, ((char *)__pyx_t_3), __pyx_v_pos);
 
-    /* "PyDFT/JDFTCalculator.pyx":255
+    /* "pythonJDFTx/JDFTCalculator.pyx":255
  *             pspFile = _makePspPath(atom.symbol)
  *             sp = createNewSpecie(id, <char*>pspFile, pos)
  *             self.e.iInfo.species.push_back(sp)             # <<<<<<<<<<<<<<
@@ -3334,7 +3336,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "PyDFT/JDFTCalculator.pyx":256
+    /* "pythonJDFTx/JDFTCalculator.pyx":256
  *             sp = createNewSpecie(id, <char*>pspFile, pos)
  *             self.e.iInfo.species.push_back(sp)
  *             deref(sp).atpos.push_back(pos)             # <<<<<<<<<<<<<<
@@ -3350,7 +3352,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   }
   __pyx_L5:;
 
-  /* "PyDFT/JDFTCalculator.pyx":259
+  /* "pythonJDFTx/JDFTCalculator.pyx":259
  * 
  *         cdef Species_Constraint constraint
  *         constraint.moveScale = 0.0             # <<<<<<<<<<<<<<
@@ -3359,7 +3361,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
  */
   __pyx_v_constraint.moveScale = 0.0;
 
-  /* "PyDFT/JDFTCalculator.pyx":260
+  /* "pythonJDFTx/JDFTCalculator.pyx":260
  *         cdef Species_Constraint constraint
  *         constraint.moveScale = 0.0
  *         constraint.type = Species_Constraint_None             # <<<<<<<<<<<<<<
@@ -3368,7 +3370,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
  */
   __pyx_v_constraint.type = SpeciesInfo::Constraint::None;
 
-  /* "PyDFT/JDFTCalculator.pyx":261
+  /* "pythonJDFTx/JDFTCalculator.pyx":261
  *         constraint.moveScale = 0.0
  *         constraint.type = Species_Constraint_None
  *         deref(sp).constraints.push_back(constraint)             # <<<<<<<<<<<<<<
@@ -3382,7 +3384,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
     {__pyx_filename = __pyx_f[0]; __pyx_lineno = 261; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":236
+  /* "pythonJDFTx/JDFTCalculator.pyx":236
  *         globalLog = nullLog
  * 
  *     def add_ion(self, atom):             # <<<<<<<<<<<<<<
@@ -3399,7 +3401,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.add_ion", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.add_ion", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_symbol);
@@ -3411,7 +3413,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":263
+/* "pythonJDFTx/JDFTCalculator.pyx":263
  *         deref(sp).constraints.push_back(constraint)
  * 
  *     def setup(self):             # <<<<<<<<<<<<<<
@@ -3420,20 +3422,20 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_8add_ion(stru
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_11setup(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup[] = "Runs Everything.setup()";
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_11setup(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_11setup(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_10setup[] = "Runs Everything.setup()";
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_11setup(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("setup (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_10setup(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_10setup(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_lineno = 0;
@@ -3441,7 +3443,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("setup", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":265
+  /* "pythonJDFTx/JDFTCalculator.pyx":265
  *     def setup(self):
  *         "Runs Everything.setup()"
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3455,7 +3457,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
       #endif
       /*try:*/ {
 
-        /* "PyDFT/JDFTCalculator.pyx":266
+        /* "pythonJDFTx/JDFTCalculator.pyx":266
  *         "Runs Everything.setup()"
  *         with nogil:
  *             self.e.setup()             # <<<<<<<<<<<<<<
@@ -3476,7 +3478,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
         }
       }
 
-      /* "PyDFT/JDFTCalculator.pyx":265
+      /* "pythonJDFTx/JDFTCalculator.pyx":265
  *     def setup(self):
  *         "Runs Everything.setup()"
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3500,7 +3502,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
       }
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":263
+  /* "pythonJDFTx/JDFTCalculator.pyx":263
  *         deref(sp).constraints.push_back(constraint)
  * 
  *     def setup(self):             # <<<<<<<<<<<<<<
@@ -3512,7 +3514,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.setup", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.setup", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3520,7 +3522,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":268
+/* "pythonJDFTx/JDFTCalculator.pyx":268
  *             self.e.setup()
  * 
  *     def readIonicPositions(self):             # <<<<<<<<<<<<<<
@@ -3529,19 +3531,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup(struc
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_13readIonicPositions(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_13readIonicPositions(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_13readIonicPositions(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_13readIonicPositions(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readIonicPositions (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_12readIonicPositions(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   std::shared_ptr<SpeciesInfo>  __pyx_v_sp;
   PyObject *__pyx_v_atpos = NULL;
   size_t __pyx_v_i;
@@ -3566,7 +3568,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("readIonicPositions", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":271
+  /* "pythonJDFTx/JDFTCalculator.pyx":271
  *         cdef extern vector3[double] operator*(matrix3[double], vector3[double]&)
  *         cdef shared_ptr[SpeciesInfo] sp
  *         atpos = []             # <<<<<<<<<<<<<<
@@ -3578,7 +3580,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   __pyx_v_atpos = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":272
+  /* "pythonJDFTx/JDFTCalculator.pyx":272
  *         cdef shared_ptr[SpeciesInfo] sp
  *         atpos = []
  *         for i in range(self.e.iInfo.species.size()):             # <<<<<<<<<<<<<<
@@ -3589,7 +3591,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "PyDFT/JDFTCalculator.pyx":273
+    /* "pythonJDFTx/JDFTCalculator.pyx":273
  *         atpos = []
  *         for i in range(self.e.iInfo.species.size()):
  *             sp = self.e.iInfo.species[i]             # <<<<<<<<<<<<<<
@@ -3598,7 +3600,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
  */
     __pyx_v_sp = (__pyx_v_self->e.iInfo.species[__pyx_v_i]);
 
-    /* "PyDFT/JDFTCalculator.pyx":274
+    /* "pythonJDFTx/JDFTCalculator.pyx":274
  *         for i in range(self.e.iInfo.species.size()):
  *             sp = self.e.iInfo.species[i]
  *             for j in range(deref(sp).atpos.size()):             # <<<<<<<<<<<<<<
@@ -3609,7 +3611,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_j = __pyx_t_5;
 
-      /* "PyDFT/JDFTCalculator.pyx":275
+      /* "pythonJDFTx/JDFTCalculator.pyx":275
  *             sp = self.e.iInfo.species[i]
  *             for j in range(deref(sp).atpos.size()):
  *                 for k in range(3):             # <<<<<<<<<<<<<<
@@ -3619,7 +3621,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
       for (__pyx_t_6 = 0; __pyx_t_6 < 3; __pyx_t_6+=1) {
         __pyx_v_k = __pyx_t_6;
 
-        /* "PyDFT/JDFTCalculator.pyx":276
+        /* "pythonJDFTx/JDFTCalculator.pyx":276
  *             for j in range(deref(sp).atpos.size()):
  *                 for k in range(3):
  *                     atpos.append((self.e.gInfo.R * deref(sp).atpos[j])[k])             # <<<<<<<<<<<<<<
@@ -3634,7 +3636,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
     }
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":277
+  /* "pythonJDFTx/JDFTCalculator.pyx":277
  *                 for k in range(3):
  *                     atpos.append((self.e.gInfo.R * deref(sp).atpos[j])[k])
  *         atpos = np.asarray(atpos, dtype = np.double)             # <<<<<<<<<<<<<<
@@ -3668,7 +3670,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   __Pyx_DECREF_SET(__pyx_v_atpos, __pyx_t_11);
   __pyx_t_11 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":278
+  /* "pythonJDFTx/JDFTCalculator.pyx":278
  *                     atpos.append((self.e.gInfo.R * deref(sp).atpos[j])[k])
  *         atpos = np.asarray(atpos, dtype = np.double)
  *         atpos.resize((len(atpos)/3,3))             # <<<<<<<<<<<<<<
@@ -3716,7 +3718,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":279
+  /* "pythonJDFTx/JDFTCalculator.pyx":279
  *         atpos = np.asarray(atpos, dtype = np.double)
  *         atpos.resize((len(atpos)/3,3))
  *         return atpos             # <<<<<<<<<<<<<<
@@ -3728,7 +3730,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   __pyx_r = __pyx_v_atpos;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":268
+  /* "pythonJDFTx/JDFTCalculator.pyx":268
  *             self.e.setup()
  * 
  *     def readIonicPositions(self):             # <<<<<<<<<<<<<<
@@ -3743,7 +3745,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.readIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.readIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_atpos);
@@ -3752,7 +3754,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":281
+/* "pythonJDFTx/JDFTCalculator.pyx":281
  *         return atpos
  * 
  *     def updateIonicPositions(self,double[:,:] dpos):             # <<<<<<<<<<<<<<
@@ -3761,8 +3763,8 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_12readIonicPo
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions(PyObject *__pyx_v_self, PyObject *__pyx_arg_dpos); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions(PyObject *__pyx_v_self, PyObject *__pyx_arg_dpos) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions(PyObject *__pyx_v_self, PyObject *__pyx_arg_dpos); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions(PyObject *__pyx_v_self, PyObject *__pyx_arg_dpos) {
   __Pyx_memviewslice __pyx_v_dpos = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -3775,18 +3777,18 @@ static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_15updateIonic
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.updateIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.updateIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_dpos);
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self), __pyx_v_dpos);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self, __Pyx_memviewslice __pyx_v_dpos) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_14updateIonicPositions(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self, __Pyx_memviewslice __pyx_v_dpos) {
   IonicGradient __pyx_v_d;
   int __pyx_v_row;
   size_t __pyx_v_i;
@@ -3807,7 +3809,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("updateIonicPositions", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":283
+  /* "pythonJDFTx/JDFTCalculator.pyx":283
  *     def updateIonicPositions(self,double[:,:] dpos):
  *         cdef IonicGradient d
  *         cdef int row = 0             # <<<<<<<<<<<<<<
@@ -3816,7 +3818,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
  */
   __pyx_v_row = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":284
+  /* "pythonJDFTx/JDFTCalculator.pyx":284
  *         cdef IonicGradient d
  *         cdef int row = 0
  *         d.init(self.e.iInfo)             # <<<<<<<<<<<<<<
@@ -3825,7 +3827,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
  */
   __pyx_v_d.init(__pyx_v_self->e.iInfo);
 
-  /* "PyDFT/JDFTCalculator.pyx":285
+  /* "pythonJDFTx/JDFTCalculator.pyx":285
  *         cdef int row = 0
  *         d.init(self.e.iInfo)
  *         for i in range(d.size()):             # <<<<<<<<<<<<<<
@@ -3836,7 +3838,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "PyDFT/JDFTCalculator.pyx":286
+    /* "pythonJDFTx/JDFTCalculator.pyx":286
  *         d.init(self.e.iInfo)
  *         for i in range(d.size()):
  *             for j in range(d[i].size()):             # <<<<<<<<<<<<<<
@@ -3847,7 +3849,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "PyDFT/JDFTCalculator.pyx":287
+      /* "pythonJDFTx/JDFTCalculator.pyx":287
  *         for i in range(d.size()):
  *             for j in range(d[i].size()):
  *                 for k in range(3):             # <<<<<<<<<<<<<<
@@ -3857,7 +3859,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_14updateIonic
       for (__pyx_t_5 = 0; __pyx_t_5 < 3; __pyx_t_5+=1) {
         __pyx_v_k = __pyx_t_5;
 
-        /* "PyDFT/JDFTCalculator.pyx":288
+        /* "pythonJDFTx/JDFTCalculator.pyx":288
  *             for j in range(d[i].size()):
  *                 for k in range(3):
  *                     d[i][j][k] = dpos[row][k]             # <<<<<<<<<<<<<<
@@ -3898,7 +3900,7 @@ __pyx_t_7 = __pyx_v_k;
         __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
       }
 
-      /* "PyDFT/JDFTCalculator.pyx":289
+      /* "pythonJDFTx/JDFTCalculator.pyx":289
  *                 for k in range(3):
  *                     d[i][j][k] = dpos[row][k]
  *                 row += 1             # <<<<<<<<<<<<<<
@@ -3909,7 +3911,7 @@ __pyx_t_7 = __pyx_v_k;
     }
   }
 
-  /* "PyDFT/JDFTCalculator.pyx":290
+  /* "pythonJDFTx/JDFTCalculator.pyx":290
  *                     d[i][j][k] = dpos[row][k]
  *                 row += 1
  *         self.imin.step(d, 1.0)             # <<<<<<<<<<<<<<
@@ -3918,7 +3920,7 @@ __pyx_t_7 = __pyx_v_k;
  */
   __pyx_v_self->imin->step(__pyx_v_d, 1.0);
 
-  /* "PyDFT/JDFTCalculator.pyx":281
+  /* "pythonJDFTx/JDFTCalculator.pyx":281
  *         return atpos
  * 
  *     def updateIonicPositions(self,double[:,:] dpos):             # <<<<<<<<<<<<<<
@@ -3931,7 +3933,7 @@ __pyx_t_7 = __pyx_v_k;
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.updateIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.updateIonicPositions", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_dpos, 1);
@@ -3940,7 +3942,7 @@ __pyx_t_7 = __pyx_v_k;
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":292
+/* "pythonJDFTx/JDFTCalculator.pyx":292
  *         self.imin.step(d, 1.0)
  * 
  *     def runElecMin(self):             # <<<<<<<<<<<<<<
@@ -3949,24 +3951,24 @@ __pyx_t_7 = __pyx_v_k;
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17runElecMin(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17runElecMin(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17runElecMin(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17runElecMin(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("runElecMin (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_16runElecMin(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_16runElecMin(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("runElecMin", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":293
+  /* "pythonJDFTx/JDFTCalculator.pyx":293
  * 
  *     def runElecMin(self):
  *         self.imin.minimize(self.e.ionicMinParams)             # <<<<<<<<<<<<<<
@@ -3975,7 +3977,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(
  */
   __pyx_v_self->imin->minimize(__pyx_v_self->e.ionicMinParams);
 
-  /* "PyDFT/JDFTCalculator.pyx":292
+  /* "pythonJDFTx/JDFTCalculator.pyx":292
  *         self.imin.step(d, 1.0)
  * 
  *     def runElecMin(self):             # <<<<<<<<<<<<<<
@@ -3990,7 +3992,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":295
+/* "pythonJDFTx/JDFTCalculator.pyx":295
  *         self.imin.minimize(self.e.ionicMinParams)
  * 
  *     def readTotalEnergy(self):             # <<<<<<<<<<<<<<
@@ -3999,19 +4001,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_16runElecMin(
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readTotalEnergy (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_18readTotalEnergy(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -4020,7 +4022,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEn
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("readTotalEnergy", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":297
+  /* "pythonJDFTx/JDFTCalculator.pyx":297
  *     def readTotalEnergy(self):
  *         cdef extern double double(EnergyComponents)
  *         return double(self.e.ener.E)             # <<<<<<<<<<<<<<
@@ -4034,7 +4036,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEn
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":295
+  /* "pythonJDFTx/JDFTCalculator.pyx":295
  *         self.imin.minimize(self.e.ionicMinParams)
  * 
  *     def readTotalEnergy(self):             # <<<<<<<<<<<<<<
@@ -4045,7 +4047,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEn
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.readTotalEnergy", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.readTotalEnergy", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4053,7 +4055,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEn
   return __pyx_r;
 }
 
-/* "PyDFT/JDFTCalculator.pyx":299
+/* "pythonJDFTx/JDFTCalculator.pyx":299
  *         return double(self.e.ener.E)
  * 
  *     def readForces(self):             # <<<<<<<<<<<<<<
@@ -4062,19 +4064,19 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_18readTotalEn
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_21readForces(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_21readForces(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_21readForces(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_21readForces(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("readForces (wrapper)", 0);
-  __pyx_r = __pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
+  __pyx_r = __pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_20readForces(((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
+static PyObject *__pyx_pf_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_20readForces(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *__pyx_v_self) {
   PyObject *__pyx_v_forces = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_v_j = NULL;
@@ -4097,7 +4099,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("readForces", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":301
+  /* "pythonJDFTx/JDFTCalculator.pyx":301
  *     def readForces(self):
  *         cdef extern vector3[double] operator*(matrix3[double], vector3[double]&)
  *         forces = []             # <<<<<<<<<<<<<<
@@ -4109,7 +4111,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
   __pyx_v_forces = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":303
+  /* "pythonJDFTx/JDFTCalculator.pyx":303
  *         forces = []
  *         # cdef size_t i, j, k
  *         for i in range(int(self.e.iInfo.forces.size())):             # <<<<<<<<<<<<<<
@@ -4177,7 +4179,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "PyDFT/JDFTCalculator.pyx":304
+    /* "pythonJDFTx/JDFTCalculator.pyx":304
  *         # cdef size_t i, j, k
  *         for i in range(int(self.e.iInfo.forces.size())):
  *             for j in range(int(self.e.iInfo.forces[i].size())):             # <<<<<<<<<<<<<<
@@ -4246,7 +4248,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
       __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "PyDFT/JDFTCalculator.pyx":305
+      /* "pythonJDFTx/JDFTCalculator.pyx":305
  *         for i in range(int(self.e.iInfo.forces.size())):
  *             for j in range(int(self.e.iInfo.forces[i].size())):
  *                 for k in range(3):             # <<<<<<<<<<<<<<
@@ -4256,7 +4258,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
       for (__pyx_t_9 = 0; __pyx_t_9 < 3; __pyx_t_9+=1) {
         __pyx_v_k = __pyx_t_9;
 
-        /* "PyDFT/JDFTCalculator.pyx":306
+        /* "pythonJDFTx/JDFTCalculator.pyx":306
  *             for j in range(int(self.e.iInfo.forces[i].size())):
  *                 for k in range(3):
  *                     forces.append((self.e.gInfo.invRT * self.e.iInfo.forces[i][j])[k])             # <<<<<<<<<<<<<<
@@ -4270,7 +4272,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       }
 
-      /* "PyDFT/JDFTCalculator.pyx":304
+      /* "pythonJDFTx/JDFTCalculator.pyx":304
  *         # cdef size_t i, j, k
  *         for i in range(int(self.e.iInfo.forces.size())):
  *             for j in range(int(self.e.iInfo.forces[i].size())):             # <<<<<<<<<<<<<<
@@ -4280,7 +4282,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "PyDFT/JDFTCalculator.pyx":303
+    /* "pythonJDFTx/JDFTCalculator.pyx":303
  *         forces = []
  *         # cdef size_t i, j, k
  *         for i in range(int(self.e.iInfo.forces.size())):             # <<<<<<<<<<<<<<
@@ -4290,7 +4292,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":307
+  /* "pythonJDFTx/JDFTCalculator.pyx":307
  *                 for k in range(3):
  *                     forces.append((self.e.gInfo.invRT * self.e.iInfo.forces[i][j])[k])
  *         return forces             # <<<<<<<<<<<<<<
@@ -4300,7 +4302,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
   __pyx_r = __pyx_v_forces;
   goto __pyx_L0;
 
-  /* "PyDFT/JDFTCalculator.pyx":299
+  /* "pythonJDFTx/JDFTCalculator.pyx":299
  *         return double(self.e.ener.E)
  * 
  *     def readForces(self):             # <<<<<<<<<<<<<<
@@ -4313,7 +4315,7 @@ static PyObject *__pyx_pf_5PyDFT_14JDFTCalculator_14JDFTCalculator_20readForces(
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("PyDFT.JDFTCalculator.JDFTCalculator.readForces", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("pythonJDFTx.JDFTCalculator.JDFTCalculator.readForces", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_forces);
@@ -14962,8 +14964,8 @@ static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t
   /* function exit code */
 }
 
-static PyObject *__pyx_tp_new_5PyDFT_14JDFTCalculator_JDFTCalculator(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *p;
+static PyObject *__pyx_tp_new_11pythonJDFTx_14JDFTCalculator_JDFTCalculator(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -14971,17 +14973,17 @@ static PyObject *__pyx_tp_new_5PyDFT_14JDFTCalculator_JDFTCalculator(PyTypeObjec
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)o);
+  p = ((struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)o);
   new((void*)&(p->e)) Everything();
   new((void*)&(p->inputFilename)) string();
-  if (unlikely(__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1__cinit__(o, a, k) < 0)) {
+  if (unlikely(__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1__cinit__(o, a, k) < 0)) {
     Py_DECREF(o); o = 0;
   }
   return o;
 }
 
-static void __pyx_tp_dealloc_5PyDFT_14JDFTCalculator_JDFTCalculator(PyObject *o) {
-  struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *p = (struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator *)o;
+static void __pyx_tp_dealloc_11pythonJDFTx_14JDFTCalculator_JDFTCalculator(PyObject *o) {
+  struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *p = (struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -14991,7 +14993,7 @@ static void __pyx_tp_dealloc_5PyDFT_14JDFTCalculator_JDFTCalculator(PyObject *o)
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_3__dealloc__(o);
+    __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_3__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
@@ -15000,13 +15002,13 @@ static void __pyx_tp_dealloc_5PyDFT_14JDFTCalculator_JDFTCalculator(PyObject *o)
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyObject *__pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_R(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_1__get__(o);
+static PyObject *__pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_R(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_1__get__(o);
 }
 
-static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_R(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_R(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_1R_3__set__(o, v);
+    return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_1R_3__set__(o, v);
   }
   else {
     PyErr_SetString(PyExc_NotImplementedError, "__del__");
@@ -15014,13 +15016,13 @@ static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_R(PyObject *o,
   }
 }
 
-static PyObject *__pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_spin(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(o);
+static PyObject *__pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_spin(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_1__get__(o);
 }
 
-static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_spin(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_spin(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(o, v);
+    return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_4spin_3__set__(o, v);
   }
   else {
     PyErr_SetString(PyExc_NotImplementedError, "__del__");
@@ -15028,13 +15030,13 @@ static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_spin(PyObject 
   }
 }
 
-static PyObject *__pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_dragWavefunctions(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(o);
+static PyObject *__pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_dragWavefunctions(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_1__get__(o);
 }
 
-static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_dragWavefunctions(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
+static int __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_dragWavefunctions(PyObject *o, PyObject *v, CYTHON_UNUSED void *x) {
   if (v) {
-    return __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(o, v);
+    return __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17dragWavefunctions_3__set__(o, v);
   }
   else {
     PyErr_SetString(PyExc_NotImplementedError, "__del__");
@@ -15042,31 +15044,31 @@ static int __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_dragWavefuncti
   }
 }
 
-static PyMethodDef __pyx_methods_5PyDFT_14JDFTCalculator_JDFTCalculator[] = {
-  {"disableLog", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_7disableLog, METH_NOARGS, 0},
-  {"add_ion", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_9add_ion, METH_O, 0},
-  {"setup", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_11setup, METH_NOARGS, __pyx_doc_5PyDFT_14JDFTCalculator_14JDFTCalculator_10setup},
-  {"readIonicPositions", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_13readIonicPositions, METH_NOARGS, 0},
-  {"updateIonicPositions", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions, METH_O, 0},
-  {"runElecMin", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_17runElecMin, METH_NOARGS, 0},
-  {"readTotalEnergy", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy, METH_NOARGS, 0},
-  {"readForces", (PyCFunction)__pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_21readForces, METH_NOARGS, 0},
+static PyMethodDef __pyx_methods_11pythonJDFTx_14JDFTCalculator_JDFTCalculator[] = {
+  {"disableLog", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_7disableLog, METH_NOARGS, 0},
+  {"add_ion", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_9add_ion, METH_O, 0},
+  {"setup", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_11setup, METH_NOARGS, __pyx_doc_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_10setup},
+  {"readIonicPositions", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_13readIonicPositions, METH_NOARGS, 0},
+  {"updateIonicPositions", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_15updateIonicPositions, METH_O, 0},
+  {"runElecMin", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_17runElecMin, METH_NOARGS, 0},
+  {"readTotalEnergy", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_19readTotalEnergy, METH_NOARGS, 0},
+  {"readForces", (PyCFunction)__pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_21readForces, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_5PyDFT_14JDFTCalculator_JDFTCalculator[] = {
-  {(char *)"R", __pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_R, __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_R, __pyx_k_Lattice_vectors_in_Angstrom_Hand, 0},
-  {(char *)"spin", __pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_spin, __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_spin, __pyx_k_In_order_to_match_the_conventio, 0},
-  {(char *)"dragWavefunctions", __pyx_getprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_dragWavefunctions, __pyx_setprop_5PyDFT_14JDFTCalculator_14JDFTCalculator_dragWavefunctions, __pyx_k_Drag_wavefunctions_when_ions_are, 0},
+static struct PyGetSetDef __pyx_getsets_11pythonJDFTx_14JDFTCalculator_JDFTCalculator[] = {
+  {(char *)"R", __pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_R, __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_R, __pyx_k_Lattice_vectors_in_Angstrom_Hand, 0},
+  {(char *)"spin", __pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_spin, __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_spin, __pyx_k_In_order_to_match_the_conventio, 0},
+  {(char *)"dragWavefunctions", __pyx_getprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_dragWavefunctions, __pyx_setprop_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_dragWavefunctions, __pyx_k_Drag_wavefunctions_when_ions_are, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator = {
+static PyTypeObject __pyx_type_11pythonJDFTx_14JDFTCalculator_JDFTCalculator = {
   PyVarObject_HEAD_INIT(0, 0)
-  "PyDFT.JDFTCalculator.JDFTCalculator", /*tp_name*/
-  sizeof(struct __pyx_obj_5PyDFT_14JDFTCalculator_JDFTCalculator), /*tp_basicsize*/
+  "pythonJDFTx.JDFTCalculator.JDFTCalculator", /*tp_name*/
+  sizeof(struct __pyx_obj_11pythonJDFTx_14JDFTCalculator_JDFTCalculator), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5PyDFT_14JDFTCalculator_JDFTCalculator, /*tp_dealloc*/
+  __pyx_tp_dealloc_11pythonJDFTx_14JDFTCalculator_JDFTCalculator, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -15093,17 +15095,17 @@ static PyTypeObject __pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator = {
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_5PyDFT_14JDFTCalculator_JDFTCalculator, /*tp_methods*/
+  __pyx_methods_11pythonJDFTx_14JDFTCalculator_JDFTCalculator, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_5PyDFT_14JDFTCalculator_JDFTCalculator, /*tp_getset*/
+  __pyx_getsets_11pythonJDFTx_14JDFTCalculator_JDFTCalculator, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_5PyDFT_14JDFTCalculator_14JDFTCalculator_5__init__, /*tp_init*/
+  __pyx_pw_11pythonJDFTx_14JDFTCalculator_14JDFTCalculator_5__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_5PyDFT_14JDFTCalculator_JDFTCalculator, /*tp_new*/
+  __pyx_tp_new_11pythonJDFTx_14JDFTCalculator_JDFTCalculator, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -15235,7 +15237,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "PyDFT.JDFTCalculator.array", /*tp_name*/
+  "pythonJDFTx.JDFTCalculator.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -15340,7 +15342,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "PyDFT.JDFTCalculator.Enum", /*tp_name*/
+  "pythonJDFTx.JDFTCalculator.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -15586,7 +15588,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "PyDFT.JDFTCalculator.memoryview", /*tp_name*/
+  "pythonJDFTx.JDFTCalculator.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -15710,7 +15712,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "PyDFT.JDFTCalculator._memoryviewslice", /*tp_name*/
+  "pythonJDFTx.JDFTCalculator._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -15815,7 +15817,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_u_PSEUDOPOT_HOME, __pyx_k_PSEUDOPOT_HOME, sizeof(__pyx_k_PSEUDOPOT_HOME), 0, 1, 0, 1},
-  {&__pyx_n_s_PyDFT_JDFTCalculator, __pyx_k_PyDFT_JDFTCalculator, sizeof(__pyx_k_PyDFT_JDFTCalculator), 0, 0, 1, 1},
   {&__pyx_n_s_R, __pyx_k_R, sizeof(__pyx_k_R), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
@@ -15869,6 +15870,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_path, __pyx_k_path, sizeof(__pyx_k_path), 0, 0, 1, 1},
   {&__pyx_n_s_position, __pyx_k_position, sizeof(__pyx_k_position), 0, 0, 1, 1},
   {&__pyx_n_s_pspFolder, __pyx_k_pspFolder, sizeof(__pyx_k_pspFolder), 0, 0, 1, 1},
+  {&__pyx_n_s_pythonJDFTx_JDFTCalculator, __pyx_k_pythonJDFTx_JDFTCalculator, sizeof(__pyx_k_pythonJDFTx_JDFTCalculator), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
@@ -15911,7 +15913,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "PyDFT/JDFTCalculator.pyx":55
+  /* "pythonJDFTx/JDFTCalculator.pyx":55
  * def _makePspPath(symbol):
  *     import os
  *     pspFolder = os.getenv("PSEUDOPOT_HOME")             # <<<<<<<<<<<<<<
@@ -15922,7 +15924,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "PyDFT/JDFTCalculator.pyx":191
+  /* "pythonJDFTx/JDFTCalculator.pyx":191
  *         def __get__(self):
  *             cdef double unitConvertedEntry
  *             out = np.zeros((3,3), dtype=np.double)             # <<<<<<<<<<<<<<
@@ -16071,7 +16073,7 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
-  /* "PyDFT/JDFTCalculator.pyx":53
+  /* "pythonJDFTx/JDFTCalculator.pyx":53
  * 
  * 
  * def _makePspPath(symbol):             # <<<<<<<<<<<<<<
@@ -16218,14 +16220,14 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_PyDFT__JDFTCalculator) {
+  if (__pyx_module_is_main_pythonJDFTx__JDFTCalculator) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "PyDFT.JDFTCalculator")) {
-      if (unlikely(PyDict_SetItemString(modules, "PyDFT.JDFTCalculator", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "pythonJDFTx.JDFTCalculator")) {
+      if (unlikely(PyDict_SetItemString(modules, "pythonJDFTx.JDFTCalculator", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -16242,10 +16244,10 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "JDFTCalculator", (PyObject *)&__pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_5PyDFT_14JDFTCalculator_JDFTCalculator = &__pyx_type_5PyDFT_14JDFTCalculator_JDFTCalculator;
+  if (PyType_Ready(&__pyx_type_11pythonJDFTx_14JDFTCalculator_JDFTCalculator) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_11pythonJDFTx_14JDFTCalculator_JDFTCalculator.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "JDFTCalculator", (PyObject *)&__pyx_type_11pythonJDFTx_14JDFTCalculator_JDFTCalculator) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_11pythonJDFTx_14JDFTCalculator_JDFTCalculator = &__pyx_type_11pythonJDFTx_14JDFTCalculator_JDFTCalculator;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type___pyx_array.tp_print = 0;
   __pyx_array_type = &__pyx_type___pyx_array;
@@ -16278,7 +16280,7 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   /*--- Function import code ---*/
   /*--- Execution code ---*/
 
-  /* "PyDFT/JDFTCalculator.pyx":40
+  /* "pythonJDFTx/JDFTCalculator.pyx":40
  * from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
  * 
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -16290,7 +16292,7 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":42
+  /* "pythonJDFTx/JDFTCalculator.pyx":42
  * import numpy as np
  * 
  * from ase.calculators.calculator import Calculator, all_changes             # <<<<<<<<<<<<<<
@@ -16318,7 +16320,7 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":43
+  /* "pythonJDFTx/JDFTCalculator.pyx":43
  * 
  * from ase.calculators.calculator import Calculator, all_changes
  * from ase import Atoms             # <<<<<<<<<<<<<<
@@ -16339,7 +16341,7 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":46
+  /* "pythonJDFTx/JDFTCalculator.pyx":46
  * 
  * 
  * from ase.units import Bohr, Hartree             # <<<<<<<<<<<<<<
@@ -16367,7 +16369,7 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":48
+  /* "pythonJDFTx/JDFTCalculator.pyx":48
  * from ase.units import Bohr, Hartree
  * cdef:
  *     double cBohr = Bohr             # <<<<<<<<<<<<<<
@@ -16378,9 +16380,9 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_5PyDFT_14JDFTCalculator_cBohr = __pyx_t_3;
+  __pyx_v_11pythonJDFTx_14JDFTCalculator_cBohr = __pyx_t_3;
 
-  /* "PyDFT/JDFTCalculator.pyx":49
+  /* "pythonJDFTx/JDFTCalculator.pyx":49
  * cdef:
  *     double cBohr = Bohr
  *     double cHartree = Hartree             # <<<<<<<<<<<<<<
@@ -16391,21 +16393,21 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_5PyDFT_14JDFTCalculator_cHartree = __pyx_t_3;
+  __pyx_v_11pythonJDFTx_14JDFTCalculator_cHartree = __pyx_t_3;
 
-  /* "PyDFT/JDFTCalculator.pyx":53
+  /* "pythonJDFTx/JDFTCalculator.pyx":53
  * 
  * 
  * def _makePspPath(symbol):             # <<<<<<<<<<<<<<
  *     import os
  *     pspFolder = os.getenv("PSEUDOPOT_HOME")
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_5PyDFT_14JDFTCalculator_1_makePspPath, NULL, __pyx_n_s_PyDFT_JDFTCalculator); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_11pythonJDFTx_14JDFTCalculator_1_makePspPath, NULL, __pyx_n_s_pythonJDFTx_JDFTCalculator); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_makePspPath, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "PyDFT/JDFTCalculator.pyx":1
+  /* "pythonJDFTx/JDFTCalculator.pyx":1
  * from cython.operator cimport dereference as deref             # <<<<<<<<<<<<<<
  * from libcpp cimport bool
  * from libcpp.pair cimport pair
@@ -16540,11 +16542,11 @@ PyMODINIT_FUNC PyInit_JDFTCalculator(void)
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init PyDFT.JDFTCalculator", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init pythonJDFTx.JDFTCalculator", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init PyDFT.JDFTCalculator");
+    PyErr_SetString(PyExc_ImportError, "init pythonJDFTx.JDFTCalculator");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

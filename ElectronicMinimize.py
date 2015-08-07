@@ -80,7 +80,7 @@ class ElectronicMinimize(Calculator,JDFTCalculator):
 
     def calculate(self, atoms=None, properties=['energy'],
                   system_changes=all_changes):
-        print("""Run one electronic minimize loop""")
+        """Run one electronic minimize loop"""
         super().calculate(atoms, properties, system_changes)
         if 'positions' in system_changes:
             self.updateAtomicPositions()

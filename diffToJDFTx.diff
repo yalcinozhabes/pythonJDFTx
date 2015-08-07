@@ -1,0 +1,3006 @@
+Index: commands/command.h
+===================================================================
+--- commands/command.h	(revision 1197)
++++ commands/command.h	(working copy)
+@@ -163,7 +163,7 @@
+     string operator()(const string& name) const
+     {	Enum type = Enum();
+         bool nameFound = nameMap.getEnum(name.c_str(), type);
+-		assert(nameFound);
++		myassert(nameFound);
+         return descMap.getString(type);
+     }
+ };
+Index: commands/density_of_states.cpp
+===================================================================
+--- commands/density_of_states.cpp	(revision 1197)
++++ commands/density_of_states.cpp	(working copy)
+@@ -228,7 +228,7 @@
+     }
+
+     void printStatus(Everything& e, int iRep)
+-	{	assert(e.dump.dos);
++	{	myassert(e.dump.dos);
+         DOS& dos = *(e.dump.dos);
+         DOS::Weight::FillingMode fillingMode = DOS::Weight::Complete;
+         vector3<> Mhat;
+Index: commands/elec_ex_corr.cpp
+===================================================================
+--- commands/elec_ex_corr.cpp	(revision 1197)
++++ commands/elec_ex_corr.cpp	(working copy)
+@@ -363,7 +363,7 @@
+ string getLibXCdescription(const string& name, const EnumStringMap<int>& map)
+ {	int xcCode = 0;
+     bool xcFound = map.getEnum(name.c_str(), xcCode);
+-	assert(xcFound && xcCode);
++	myassert(xcFound && xcCode);
+     xc_func_type func;
+     if(xc_func_init(&func, xcCode, XC_UNPOLARIZED) != 0)
+         die("Error obtaining description for LibXC functional %s.\n", name.c_str());
+Index: core/Coulomb.cpp
+===================================================================
+--- core/Coulomb.cpp	(revision 1197)
++++ core/Coulomb.cpp	(working copy)
+@@ -95,7 +95,7 @@
+ }
+
+ ScalarFieldTilde Coulomb::embedExpand(const ScalarFieldTilde& in) const
+-{	assert(params.embed);
++{	myassert(params.embed);
+     ScalarField out; nullToZero(out, gInfo);
+     callPref(eblas_scatter_daxpy)(gInfoOrig.nr, 1., embedIndex, I(in, true)->dataPref(), out->dataPref());
+     boundarySymmetrize(symmIndex, out->dataPref());
+@@ -103,7 +103,7 @@
+ }
+
+ complexScalarFieldTilde Coulomb::embedExpand(complexScalarFieldTilde&& in) const
+-{	assert(params.embed);
++{	myassert(params.embed);
+     complexScalarField out; nullToZero(out, gInfo);
+     callPref(eblas_scatter_zdaxpy)(gInfoOrig.nr, 1., embedIndex, I((complexScalarFieldTilde&&)in)->dataPref(), out->dataPref());
+     boundarySymmetrize(symmIndex, out->dataPref());
+@@ -111,7 +111,7 @@
+ }
+
+ ScalarFieldTilde Coulomb::embedShrink(const ScalarFieldTilde& in) const
+-{	assert(params.embed);
++{	myassert(params.embed);
+     ScalarField Iin = I(in);
+     boundarySymmetrize(symmIndex, Iin->dataPref());
+     ScalarField out; nullToZero(out, gInfoOrig);
+@@ -120,7 +120,7 @@
+ }
+
+ complexScalarFieldTilde Coulomb::embedShrink(complexScalarFieldTilde&& in) const
+-{	assert(params.embed);
++{	myassert(params.embed);
+     complexScalarField Iin = I((complexScalarFieldTilde&&)in);
+     boundarySymmetrize(symmIndex, Iin->dataPref());
+     complexScalarField out; nullToZero(out, gInfoOrig);
+@@ -147,7 +147,7 @@
+
+ complexScalarFieldTilde Coulomb::operator()(complexScalarFieldTilde&& in, vector3<> kDiff, double omega) const
+ {	auto exEvalOmega = exchangeEval.find(omega);
+-	assert(exEvalOmega != exchangeEval.end());
++	myassert(exEvalOmega != exchangeEval.end());
+     if(params.embed) return embedShrink((*exEvalOmega->second)(embedExpand((complexScalarFieldTilde&&)in), kDiff));
+     else return (*exEvalOmega->second)((complexScalarFieldTilde&&)in, kDiff);
+ }
+@@ -172,7 +172,7 @@
+             bool posValid = true;
+             switch(params.geometry)
+             {	case CoulombParams::Periodic:
+-					assert(!"Embedding not allowed in periodic geometry");
++					myassert(!"Embedding not allowed in periodic geometry");
+                     break;
+                 case CoulombParams::Slab:
+                 {	double L = gInfoOrig.R.column(params.iDir).length();
+@@ -220,7 +220,7 @@
+ }
+ ScalarField Coulomb::getEfieldPotential() const
+ {	if(params.Efield.length_squared())
+-	{	assert(params.embed);
++	{	myassert(params.embed);
+         ScalarField V(ScalarFieldData::alloc(gInfoOrig));
+         threadLaunch(getEfieldPotential_sub, gInfoOrig.nr, gInfoOrig.S, wsOrig, xCenter, gInfoOrig.RT*params.Efield, V->data());
+         return V;
+@@ -321,8 +321,8 @@
+         {	int n = entry.first; if(n<=1) continue; //Ignore singletons
+             int N = entry.second.size();
+             const int* srcData = entry.second.data();
+-			assert(N > 0);
+-			assert(N % n == 0);
++			myassert(N > 0);
++			myassert(N % n == 0);
+             symmIndex[n].first = N/n;
+             #ifdef GPU_ENABLED
+             cudaMalloc(&symmIndex[n].second, sizeof(int)*N);
+@@ -349,7 +349,7 @@
+
+     //Check electric field:
+     if(params.Efield.length_squared())
+-	{	assert(params.embed);
++	{	myassert(params.embed);
+         vector3<bool> isTruncated = params.isTruncated();
+         for(int k=0; k<3; k++) if(!isTruncated[k])
+         {	vector3<> Rk = gInfoOrig.R.column(k);
+Index: core/CoulombKernel.cpp
+===================================================================
+--- core/CoulombKernel.cpp	(revision 1197)
++++ core/CoulombKernel.cpp	(working copy)
+@@ -41,7 +41,7 @@
+     switch(nTruncated)
+     {	case 2: computeWire(data, ws); break;
+         case 3: computeIsolated(data, ws); break;
+-		default: assert(!"Invalid truncated direction count");
++		default: myassert(!"Invalid truncated direction count");
+     }
+ }
+
+@@ -98,7 +98,7 @@
+
+ void CoulombKernel::computeIsolated(double* data, const WignerSeitz& ws) const
+ {
+-	for(int k=0; k<3; k++) assert(isTruncated[k]); //Make sure all directions are truncated
++	for(int k=0; k<3; k++) myassert(isTruncated[k]); //Make sure all directions are truncated
+     double sigma = ws.inRadius() / nSigmasPerWidth;
+     logPrintf("Gaussian width for range separation: %lg bohrs.\n", sigma);
+
+@@ -237,13 +237,13 @@
+     int iDir = -1;
+     for(int k=0; k<3; k++)
+         if(!isTruncated[k])
+-		{	assert(iDir < 0); //there should be at most one untruncated direction
++		{	myassert(iDir < 0); //there should be at most one untruncated direction
+             iDir = k; //axis is along untruncated direction
+         }
+     int jDir = (iDir+1)%3;
+     int kDir = (iDir+2)%3;
+-	assert(WignerSeitz::isOrthogonal(R.column(iDir), R.column(jDir)));
+-	assert(WignerSeitz::isOrthogonal(R.column(iDir), R.column(kDir)));
++	myassert(WignerSeitz::isOrthogonal(R.column(iDir), R.column(jDir)));
++	myassert(WignerSeitz::isOrthogonal(R.column(iDir), R.column(kDir)));
+     double sigma = ws.inRadius(iDir) / nSigmasPerWidth;
+     logPrintf("Gaussian width for range separation: %lg bohrs.\n", sigma);
+
+Index: core/CoulombWire.cpp
+===================================================================
+--- core/CoulombWire.cpp	(revision 1197)
++++ core/CoulombWire.cpp	(working copy)
+@@ -43,9 +43,9 @@
+
+ //Compute Cbar_k^sigma(rho)
+ double Cbar::operator()(double k, double sigma, double rho, double rho0)
+-{	assert(k >= 0.);
+-	assert(sigma > 0.);
+-	assert(rho >= 0.);
++{	myassert(k >= 0.);
++	myassert(sigma > 0.);
++	myassert(rho >= 0.);
+     if(k == 0) //Use closed form in terms of the exponential integral function:
+     {	const double xMax = 700.; //threshold (with some margin) to underflow in expint_E1
+         double hlfSigmaInvSq = 0.5/(sigma*sigma);
+@@ -97,7 +97,7 @@
+ //--------------- class Cbar_k_sigma ----------
+
+ Cbar_k_sigma::Cbar_k_sigma(double k, double sigma, double rhoMax, double rho0)
+-{	assert(rhoMax > 0.);
++{	myassert(rhoMax > 0.);
+     //Pick grid and initialize sample values:
+     double drho = 0.03*sigma; //With 5th order splines, this guarantees rel error ~ 1e-14 typical, 1e-12 max
+     drhoInv = 1./drho;
+Index: core/Coulomb_ExchangeEval.cpp
+===================================================================
+--- core/Coulomb_ExchangeEval.cpp	(revision 1197)
++++ core/Coulomb_ExchangeEval.cpp	(working copy)
+@@ -156,7 +156,7 @@
+         return M_PI * (2*Rc*(Rc - exp(-RcSq*omegaSq)/(omega*sqrt(M_PI)))
+             + (1./omegaSq - 2*RcSq) * erf(omega*Rc));
+     }
+-	assert(G > 0.);
++	myassert(G > 0.);
+     const int nBisections = 20;
+     gsl_integration_workspace* iWS = gsl_integration_workspace_alloc(nBisections);
+     gsl_integration_qawo_table* qawoTable = gsl_integration_qawo_table_alloc(G, Rc, GSL_INTEG_SINE, nBisections);
+@@ -178,7 +178,7 @@
+ {	//Get the integer vector corresponding to dk in the supercell:
+     double err;
+     vector3<int> dkSuper = round(dk * super, &err); //note: transformation is by transpose of super
+-	assert(err < symmThreshold);
++	myassert(err < symmThreshold);
+     //Collect data from supercell to unit-cell with k-point offset:
+     THREAD_fullGspaceLoop
+     (	vector3<int> iGsuper = iG * super + dkSuper;
+@@ -201,7 +201,7 @@
+     else logPrintf("\n--- Setting up screened exchange kernel (omega = %lg) ---\n", omega);
+
+     //Obtain supercell parameters, and adjust for mesh embedding where necessary:
+-	assert(params.supercell);
++	myassert(params.supercell);
+     const matrix3<int>& super = params.supercell->super;
+     const std::vector< vector3<> >& kmesh = params.supercell->kmesh;
+     matrix3<> Rsuper = gInfo.R * super; //this could differ from supercell->Rsuper, because the embedding gInfo.R is scaled up from the original gInfo.R
+@@ -267,7 +267,7 @@
+         int nPeriodic=0; for(int k=0; k<3; k++) if(!isTruncated[k]) nPeriodic++;
+         switch(nPeriodic)
+         {	case 0:
+-				assert(!"Auxiliary function method meaningless for isolated geometry.\n");
++				myassert(!"Auxiliary function method meaningless for isolated geometry.\n");
+                 break;
+             case 1:
+                 VzeroCorrection = (gInfo.detR/gInfo.R.column(params.iDir).length()) //transverse area to untruncated axis
+@@ -543,7 +543,7 @@
+
+
+ void multTransformedKernel(complexScalarFieldTilde& X, const double* kernel, const vector3<int>& offset)
+-{	assert(X);
++{	myassert(X);
+     if(!offset.length_squared())
+         callPref(eblas_zmuld)(X->gInfo.nr, kernel, 1, X->dataPref(false), 1);
+     else
+@@ -570,7 +570,7 @@
+             break;
+         }
+         case WignerSeitzGammaKernel:
+-		{	assert(kDiff.length_squared() < symmThresholdSq); //gamma-point only
++		{	myassert(kDiff.length_squared() < symmThresholdSq); //gamma-point only
+             callPref(multRealKernel)(gInfo.S, VcGamma->dataPref, in->dataPref(false));
+             break;
+         }
+@@ -582,13 +582,13 @@
+                 {	//Find the integer offset, if any:
+                     double err;
+                     vector3<int> offset = round(dkArr[ik] - kDiff, &err);
+-					assert(err < symmThreshold);
++					myassert(err < symmThreshold);
+                     //Multiply kernel:
+                     multTransformedKernel(in, kernelData + gInfo.nr * ik, offset);
+                     kDiffFound = true;
+                     break;
+                 }
+-			assert(kDiffFound);
++			myassert(kDiffFound);
+             break;
+         }
+     }
+Index: core/LatticeUtils.cpp
+===================================================================
+--- core/LatticeUtils.cpp	(revision 1197)
++++ core/LatticeUtils.cpp	(working copy)
+@@ -281,7 +281,7 @@
+     {	double weightSum = 0.;
+         for(const auto& entry: iCellMap)
+             weightSum += entry.second;
+-		assert(fabs(weightSum / nCells - 1.) < symmThreshold);
++		myassert(fabs(weightSum / nCells - 1.) < symmThreshold);
+     }
+
+     //Write the cell map if requested
+Index: core/LatticeUtils.h
+===================================================================
+--- core/LatticeUtils.h	(revision 1197)
++++ core/LatticeUtils.h	(working copy)
+@@ -102,7 +102,7 @@
+         Stmp *= pow(std::max(points.size(), nPointsTarget)/(Stmp[0]*Stmp[1]*Stmp[2]), 1./3); //normalize so that product is nPoints
+         for(int k=0; k<3; k++)
+         {	S[k] = std::max(1, int(round(Stmp[k])));
+-			assert(symmThreshold*S[k] < 0.5);
++			myassert(symmThreshold*S[k] < 0.5);
+         }
+         //Initialize indices:
+         indices.resize(S[0]*S[1]*S[2]);
+Index: core/MPIUtil.cpp
+===================================================================
+--- core/MPIUtil.cpp	(revision 1197)
++++ core/MPIUtil.cpp	(working copy)
+@@ -190,7 +190,7 @@
+     {	case SEEK_CUR: mpi_whence = MPI_SEEK_CUR; break;
+         case SEEK_SET: mpi_whence = MPI_SEEK_SET; break;
+         case SEEK_END: mpi_whence = MPI_SEEK_END; break;
+-		default: assert(!"Invalid seek offset mode");
++		default: myassert(!"Invalid seek offset mode");
+     }
+     if(MPI_File_seek(fp, offset, mpi_whence) != MPI_SUCCESS)
+     #else
+Index: core/ManagedMemory.cpp
+===================================================================
+--- core/ManagedMemory.cpp	(revision 1197)
++++ core/ManagedMemory.cpp	(working copy)
+@@ -59,7 +59,7 @@
+                 usageMap[category] += nElements;
+                 usageTotal += nElements;
+                 usageLock.unlock();
+-				assert(category.length());
++				myassert(category.length());
+                 break;
+             }
+             case Remove:
+@@ -67,7 +67,7 @@
+                 usageMap[category] -= nElements;
+                 usageTotal -= nElements;
+                 usageLock.unlock();
+-				assert(category.length());
++				myassert(category.length());
+                 break;
+             }
+             case Print:
+@@ -101,11 +101,11 @@
+     if(onGpu)
+     {
+         #ifdef GPU_ENABLED
+-		assert(isGpuMine());
++		myassert(isGpuMine());
+         cudaFree(c);
+         gpuErrorCheck();
+         #else
+-		assert(!"onGpu=true without GPU_ENABLED"); //Should never get here!
++		myassert(!"onGpu=true without GPU_ENABLED"); //Should never get here!
+         #endif
+     }
+     else
+@@ -127,11 +127,11 @@
+     if(onGpu)
+     {
+         #ifdef GPU_ENABLED
+-		assert(isGpuMine());
++		myassert(isGpuMine());
+         cudaMalloc(&c, sizeof(complex)*nElements);
+         gpuErrorCheck();
+         #else
+-		assert(!"onGpu=true without GPU_ENABLED");
++		myassert(!"onGpu=true without GPU_ENABLED");
+         #endif
+     }
+     else
+@@ -182,7 +182,7 @@
+ //Move data to CPU
+ void ManagedMemory::toCpu()
+ {	if(!onGpu || !c) return; //already on cpu, or no data
+-	assert(isGpuMine());
++	myassert(isGpuMine());
+     complex* cCpu = (complex*)fftw_malloc(sizeof(complex)*nElements);
+     if(!cCpu) die_alone("Memory allocation failed (out of memory)\n");
+     cudaMemcpy(cCpu, c, sizeof(complex)*nElements, cudaMemcpyDeviceToHost); gpuErrorCheck();
+@@ -194,7 +194,7 @@
+ // Move data to GPU
+ void ManagedMemory::toGpu()
+ {	if(onGpu || !c) return; //already on gpu, or no data
+-	assert(isGpuMine());
++	myassert(isGpuMine());
+     complex* cGpu;
+     cudaMalloc(&cGpu, sizeof(complex)*nElements); gpuErrorCheck();
+     cudaMemcpy(cGpu, c, sizeof(complex)*nElements, cudaMemcpyHostToDevice);
+@@ -206,11 +206,11 @@
+ #endif
+
+ void ManagedMemory::send(int dest, int tag) const
+-{	assert(mpiUtil->nProcesses()>1);
++{	myassert(mpiUtil->nProcesses()>1);
+     mpiUtil->send((const double*)data(), 2*nData(), dest, tag);
+ }
+ void ManagedMemory::recv(int src, int tag)
+-{	assert(mpiUtil->nProcesses()>1);
++{	myassert(mpiUtil->nProcesses()>1);
+     mpiUtil->recv((double*)data(), 2*nData(), src, tag);
+ }
+ void ManagedMemory::bcast(int root)
+@@ -219,7 +219,7 @@
+ }
+ void ManagedMemory::allReduce(MPIUtil::ReduceOp op, bool safeMode, bool ignoreComplexCheck)
+ {	if(!ignoreComplexCheck)
+-		assert(op!=MPIUtil::ReduceProd && op!=MPIUtil::ReduceMax && op!=MPIUtil::ReduceMin); //not supported for complex
++		myassert(op!=MPIUtil::ReduceProd && op!=MPIUtil::ReduceMax && op!=MPIUtil::ReduceMin); //not supported for complex
+     if(mpiUtil->nProcesses()>1)
+         mpiUtil->allReduce((double*)data(), 2*nData(), op, safeMode);
+ }
+@@ -308,7 +308,7 @@
+ }
+
+ void memcpy(ManagedMemory& a, const ManagedMemory& b)
+-{	assert(a.nData() == b.nData());
++{	myassert(a.nData() == b.nData());
+     if(!a.nData()) return; //no data to copy
+     #ifdef GPU_ENABLED
+     cudaMemcpy(a.dataGpu(), b.dataGpu(), a.nData()*sizeof(complex), cudaMemcpyDeviceToDevice);
+@@ -325,7 +325,7 @@
+ }
+
+ void axpy(complex alpha, const ManagedMemory& x, ManagedMemory& y)
+-{	assert(x.nData() == y.nData());
++{	myassert(x.nData() == y.nData());
+     callPref(eblas_zaxpy)(x.nData(), alpha, x.dataPref(), 1, y.dataPref(), 1);
+ }
+
+@@ -334,6 +334,6 @@
+ }
+
+ complex dotc(const ManagedMemory& a, const ManagedMemory& b)
+-{	assert(a.nData() == b.nData());
++{	myassert(a.nData() == b.nData());
+     return callPref(eblas_zdotc)(a.nData(), a.dataPref(), 1, b.dataPref(), 1);
+ }
+Index: core/Operators.cpp
+===================================================================
+--- core/Operators.cpp	(revision 1197)
++++ core/Operators.cpp	(working copy)
+@@ -546,7 +546,7 @@
+ ScalarFieldTilde changeGrid(const ScalarFieldTilde& in, const GridInfo& gInfoNew)
+ {	static StopWatch watch("changeGrid"); watch.start();
+     ScalarFieldTilde out; nullToZero(out, gInfoNew);
+-	assert(gInfoNew.R == in->gInfo.R);
++	myassert(gInfoNew.R == in->gInfo.R);
+     const vector3<int>& Sin = in->gInfo.S;
+     const vector3<int>& Sout = gInfoNew.S;
+     vector3<int> Smax; for(int k=0; k<3; k++) Smax[k] = std::max(Sin[k],Sout[k]);
+@@ -572,7 +572,7 @@
+ complexScalarFieldTilde changeGrid(const complexScalarFieldTilde& in, const GridInfo& gInfoNew)
+ {	static StopWatch watch("changeGridFull"); watch.start();
+     complexScalarFieldTilde out; nullToZero(out, gInfoNew);
+-	assert(gInfoNew.R == in->gInfo.R);
++	myassert(gInfoNew.R == in->gInfo.R);
+     const vector3<int>& Sin = in->gInfo.S;
+     const vector3<int>& Sout = gInfoNew.S;
+     vector3<int> Smax; for(int k=0; k<3; k++) Smax[k] = std::max(Sin[k],Sout[k]);
+@@ -627,7 +627,7 @@
+ void gaussConvolve_gpu(const vector3<int>& S, const matrix3<>& GGT, complex* data, double sigma);
+ #endif
+ ScalarFieldTilde gaussConvolve(ScalarFieldTilde&& in, double sigma)
+-{	assert(in);
++{	myassert(in);
+     callPref(gaussConvolve)(in->gInfo.S, in->gInfo.GGT, in->dataPref(false), sigma);
+     return in;
+ }
+Index: core/Pulay.h
+===================================================================
+--- core/Pulay.h	(revision 1197)
++++ core/Pulay.h	(working copy)
+@@ -117,7 +117,7 @@
+ {
+     double E = sync(Eprev); Eprev = 0.;
+     double dE = E-Eprev;
+-	assert(extraNames.size()==extraThresh.size());
++	myassert(extraNames.size()==extraThresh.size());
+
+     //Initialize convergence checkers:
+     EdiffCheck ediffCheck(2, pp.energyDiffThreshold); ediffCheck.checkConvergence(E); //store the initial energy in the check's history
+@@ -129,7 +129,7 @@
+     for(int iter=0; iter<pp.nIterations; iter++)
+     {
+         //If history is full, remove oldest member
+-		assert(pastResiduals.size() == pastVariables.size());
++		myassert(pastResiduals.size() == pastVariables.size());
+         if((int)pastResiduals.size() >= pp.history)
+         {	size_t ndim = pastResiduals.size();
+             if(ndim>1) overlap.set(0,ndim-1, 0,ndim-1, overlap(1,ndim, 1,ndim));
+Index: core/ScalarFieldArray.h
+===================================================================
+--- core/ScalarFieldArray.h	(revision 1197)
++++ core/ScalarFieldArray.h	(working copy)
+@@ -72,24 +72,24 @@
+
+ //! y += alpha x
+ template<typename T> void axpy(double alpha, const TptrCollection& x, TptrCollection& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     for(unsigned i=0; i<x.size(); i++) axpy(alpha, x[i], y[i]);
+ }
+
+ //! elementise multiply
+ inline ScalarFieldArray operator*(const ScalarFieldArray& x, const ScalarFieldArray& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     ScalarFieldArray z(x.size());
+     for(unsigned i=0; i<x.size(); i++) z[i] = x[i]*y[i];
+     return z;
+ }
+ inline ScalarFieldArray operator*(ScalarFieldArray&& x, const ScalarFieldArray& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     for(unsigned i=0; i<x.size(); i++) x[i] *= y[i];
+     return x;
+ }
+ inline ScalarFieldArray operator*(const ScalarFieldArray& x, ScalarFieldArray&& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     for(unsigned i=0; i<x.size(); i++) y[i] *= x[i];
+     return y;
+ }
+@@ -131,7 +131,7 @@
+
+ //! Inner product
+ template<typename T> double dot(const TptrCollection& x, const TptrCollection& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     double ret = 0.0;
+     for(unsigned i=0; i<x.size(); i++) if(x[i] && y[i]) ret += dot(x[i], y[i]);
+     return ret;
+Index: core/ScalarFieldIO.cpp
+===================================================================
+--- core/ScalarFieldIO.cpp	(revision 1197)
++++ core/ScalarFieldIO.cpp	(working copy)
+@@ -68,7 +68,7 @@
+
+
+ std::vector< std::vector<double> > sphericalize(const ScalarField* dataR, int nColumns, double drFac, vector3< double >* center)
+-{	assert(nColumns > 0); assert(dataR[0]);
++{	myassert(nColumns > 0); myassert(dataR[0]);
+     const GridInfo& gInfo = dataR[0]->gInfo;
+
+     //Determine the center for sphericalizaion:
+@@ -143,7 +143,7 @@
+         else if(iLeft<0 && iRight<nRadial)
+         {	for(int c=0; c<nColumns; c++) out[c+1][i] = out[c+1][iRight];
+         }
+-		else assert("!All rows have zero weight!\n");
++		else myassert("!All rows have zero weight!\n");
+     }
+     return out;
+ }
+Index: core/Units.h
+===================================================================
+--- core/Units.h	(revision 1197)
++++ core/Units.h	(working copy)
+@@ -52,4 +52,8 @@
+ const double Bar = 100*KPascal;   //!< @f$ bar / (E_h/a_0^2) @f$
+ const double mmHg = 133.322387415*Pascal;  //!< @f$ mmHg / (E_h/a_0^2) @f$
+
++//Time
++const double sec = sqrt((kg*meter)/Newton); //!< @f$ \sqrt{kg m/N} @f$
++const double fs = sqrt((kg*meter)/Newton)*1.0e15; //!< @f$ 10^{15} sec @f$
++
+ #endif //JDFTX_CORE_UNITS_H
+Index: core/Util.cpp
+===================================================================
+--- core/Util.cpp	(revision 1197)
++++ core/Util.cpp	(working copy)
+@@ -129,7 +129,8 @@
+ FILE* nullLog = 0;
+
+ void logSuspend()
+-{	if(nullLog) globalLog = nullLog;
++{	globalLogOrig = globalLog;
++	if(nullLog) globalLog = nullLog;
+ }
+
+ void logResume()
+Index: core/Util.h
+===================================================================
+--- core/Util.h	(revision 1197)
++++ core/Util.h	(working copy)
+@@ -101,12 +101,13 @@
+ void stackTraceExit(int code); //!< Exit on error with stack trace
+ int assertStackTraceExit(const char* expr, const char* function, const char* file, long line); //!< stack trace on failed assertions
+ //! A custom assertion with stack trace (NOTE: enabled in release modes as well)
+-#define assert(expr) \
++#define myassert(expr) \
+     (void)((expr) ? 0 : assertStackTraceExit(#expr, __func__, __FILE__, __LINE__))
+
+
+ // -----------  Logging ---------------
+ extern FILE* globalLog;
++//extern FILE* globalLogOrig;
+ extern FILE* nullLog; //!< pointer to /dev/null
+ void logSuspend(); //!< temporarily disable all log output (until logResume())
+ void logResume(); //!< re-enable logging after a logSuspend() call
+Index: core/WignerSeitz.cpp
+===================================================================
+--- core/WignerSeitz.cpp	(revision 1197)
++++ core/WignerSeitz.cpp	(working copy)
+@@ -116,7 +116,7 @@
+             for(unsigned i=0; i<2; i++)
+                 for(const Edge* e: fPair[i]->edge)
+                     vPair[i].push_back(e->vertex[e->face[0]==fPair[i] ? 0 : 1]->pos);
+-			assert(vPair[0].size() == vPair[1].size());
++			myassert(vPair[0].size() == vPair[1].size());
+             //Align the vertex lists by finding inversion partner for first vertex of first list
+             vector3<> v0start = vPair[0].front();
+             auto v1iter = vPair[1].begin();
+@@ -123,11 +123,11 @@
+             for(; v1iter != vPair[1].end(); v1iter++)
+                 if(RTR.metric_length_squared(*v1iter + v0start) < minDistSq)
+                     break;
+-			assert(v1iter != vPair[1].end());
++			myassert(v1iter != vPair[1].end());
+             //Check symmetry of each pair of vertices:
+             auto v0iter = vPair[0].begin();
+             while(v0iter != vPair[0].end())
+-			{	assert(RTR.metric_length_squared(*v0iter + *v1iter) < minDistSq);
++			{	myassert(RTR.metric_length_squared(*v0iter + *v1iter) < minDistSq);
+                 if(v1iter == vPair[1].begin()) v1iter = vPair[1].end();
+                 v0iter++; v1iter--; //note vertices in opposite order due to inversion
+             }
+@@ -134,7 +134,7 @@
+             imgFace.erase(imgIter); //check off pair from inversion partner map
+         }
+     }
+-	assert(imgFace.size() == 0); //Check that all faces occur in inversion symmetric pairs
++	myassert(imgFace.size() == 0); //Check that all faces occur in inversion symmetric pairs
+
+     //Print summary:
+     int nQuad=0, nHex=0;
+@@ -141,7 +141,7 @@
+     for(const Face* f: faceHalf)
+     {	if(f->edge.size()==4) nQuad += 2;
+         else if(f->edge.size()==6) nHex += 2;
+-		else assert(!"Wigner-Setz cell has a face with vertex count different from 4 or 6");
++		else myassert(!"Wigner-Setz cell has a face with vertex count different from 4 or 6");
+     }
+     logPrintf("%lu faces (%d quadrilaterals, %d hexagons)\n", face.size(), nQuad, nHex);
+ }
+@@ -317,10 +317,10 @@
+     {	switch(i->second.size())
+         {	case 1: sliceVert.erase(i++); break; //remove single vertex intersections and proceed
+             case 2: i++; break; //case of interest: intersection at two points (proceed)
+-			default: assert(!"Error: face sliced at more than 2 points."); //should never happen
++			default: myassert(!"Error: face sliced at more than 2 points."); //should never happen
+         }
+     }
+-	assert(sliceVert.size() == onPlane.size());
++	myassert(sliceVert.size() == onPlane.size());
+     if(!sliceVert.size()) return;
+     //Complete sliced faces in sequence (based on shared vertices), and create new face:
+     Face* fNew = new Face;
+@@ -355,7 +355,7 @@
+                 vPrev = v;
+                 nextSliceFound = true;
+             }
+-		assert(!sliceVert.size() || nextSliceFound);
++		myassert(!sliceVert.size() || nextSliceFound);
+     }
+
+     //Weld almost identical vertices (should have been identical in exact arithmetic): [version 2]
+@@ -428,9 +428,9 @@
+         {	e = eOld;
+             break;
+         }
+-		else assert(!(eOld->vertex[0]==vStart && eOld->vertex[1]==vEnd)); //existing edge should not have same direction
++		else myassert(!(eOld->vertex[0]==vStart && eOld->vertex[1]==vEnd)); //existing edge should not have same direction
+     if(e) //Link existing edge to face:
+-	{	assert(!e->face[1]); //edge should not be associated with two faces already
++	{	myassert(!e->face[1]); //edge should not be associated with two faces already
+         e->face[1] = f;
+     }
+     else //Create new edge:
+Index: electronic/BandDavidson.cpp
+===================================================================
+--- electronic/BandDavidson.cpp	(revision 1197)
++++ electronic/BandDavidson.cpp	(working copy)
+@@ -22,7 +22,7 @@
+ #include <electronic/operators.h>
+
+ BandDavidson::BandDavidson(Everything& e, int qActive): qActive(qActive), e(e), eVars(e.eVars), eInfo(e.eInfo)
+-{	assert(e.cntrl.fixed_H); // Check whether the electron Hamiltonian is fixed
++{	myassert(e.cntrl.fixed_H); // Check whether the electron Hamiltonian is fixed
+ }
+
+ void BandDavidson::minimize()
+Index: electronic/BandMinimizer.cpp
+===================================================================
+--- electronic/BandMinimizer.cpp	(revision 1197)
++++ electronic/BandMinimizer.cpp	(working copy)
+@@ -23,12 +23,12 @@
+ BandMinimizer::BandMinimizer(Everything& e, int qActive, bool precond):
+ qActive(qActive), e(e), eVars(e.eVars), eInfo(e.eInfo),
+ precond(precond)
+-{	assert(e.cntrl.fixed_H); // Check whether the electron Hamiltonian is fixed
++{	myassert(e.cntrl.fixed_H); // Check whether the electron Hamiltonian is fixed
+     e.elecMinParams.energyLabel = relevantFreeEnergyName(e);
+ }
+
+ void BandMinimizer::step(const ColumnBundle& dir, double alpha)
+-{	assert(dir.nCols() == e.eVars.Y[qActive].nCols());
++{	myassert(dir.nCols() == e.eVars.Y[qActive].nCols());
+     axpy(alpha, dir, e.eVars.Y[qActive]);
+ }
+
+Index: electronic/Blip.cpp
+===================================================================
+--- electronic/Blip.cpp	(revision 1197)
++++ electronic/Blip.cpp	(working copy)
+@@ -41,7 +41,7 @@
+
+ //Given a complex PW basis object, return corresponding real-space Blip coefficient set
+ complexScalarField BlipConverter::operator()(const complexScalarFieldTilde& vTilde) const
+-{	assert(vTilde->gInfo.S == S);
++{	myassert(vTilde->gInfo.S == S);
+     complex* vTildeData = vTilde->data();
+     int index=0;
+     vector3<int> iv;
+@@ -57,7 +57,7 @@
+
+ //Given a real PW basis object v, return corresponding real-space Blip coefficient set
+ ScalarField BlipConverter::operator()(const ScalarFieldTilde& vTilde) const
+-{	assert(vTilde->gInfo.S == S);
++{	myassert(vTilde->gInfo.S == S);
+     complex* vTildeData = vTilde->data();
+     int index=0;
+     vector3<int> iv;
+@@ -304,7 +304,7 @@
+
+ //Compute the local potential energy for blip orbital phi in blip potential V
+ double Vblip(const complexScalarField& phi, const ScalarField& V)
+-{	assert(phi->gInfo.S == V->gInfo.S);
++{	myassert(phi->gInfo.S == V->gInfo.S);
+     return phi->gInfo.dV * threadedAccumulate(Vblip_sub, phi->gInfo.S[0], phi->gInfo.S, phi->data(), V->data());
+ }
+
+Index: electronic/ColumnBundle.cpp
+===================================================================
+--- electronic/ColumnBundle.cpp	(revision 1197)
++++ electronic/ColumnBundle.cpp	(working copy)
+@@ -36,7 +36,7 @@
+     qnum = q;
+
+     if(nCols() == 0) { memFree(); return; } //must be default constructor or assignment to empty ColumnBundle
+-	assert(colLength() != 0);
++	myassert(colLength() != 0);
+     memInit("ColumnBundle", nCols()*colLength(), onGpu); //in base class ManagedMemory
+ }
+
+@@ -100,10 +100,10 @@
+ }
+
+ ColumnBundle ColumnBundle::getSub(int colStart, int colStop) const
+-{	assert(colStart>=0);
+-	assert(colStop<=nCols());
++{	myassert(colStart>=0);
++	myassert(colStop<=nCols());
+     int nColsSub = colStop - colStart;
+-	assert(nColsSub>0);
++	myassert(nColsSub>0);
+     ColumnBundle ret = this->similar(nColsSub);
+     callPref(eblas_copy)(ret.dataPref(), dataPref()+colStart*colLength(), nColsSub*colLength());
+     return ret;
+@@ -110,16 +110,16 @@
+ }
+
+ void ColumnBundle::setSub(int colStart, const ColumnBundle& Y)
+-{	assert(colStart>=0);
+-	assert(colStart<nCols());
+-	assert(colLength()==Y.colLength());
++{	myassert(colStart>=0);
++	myassert(colStart<nCols());
++	myassert(colLength()==Y.colLength());
+     int nColsSub = std::min(Y.nCols(), nCols()-colStart);
+     callPref(eblas_copy)(dataPref()+colStart*colLength(), Y.dataPref(), nColsSub*colLength());
+ }
+
+ #define CHECK_COLUMN_INDEX \
+-	assert(i>=0 && i<nCols()); \
+-	assert(s>=0 && s<spinorLength());
++	myassert(i>=0 && i<nCols()); \
++	myassert(s>=0 && s<spinorLength());
+
+ complexScalarFieldTilde ColumnBundle::getColumn(int i, int s) const
+ {	const GridInfo& gInfo = *(basis->gInfo);
+@@ -138,7 +138,7 @@
+ }
+
+ void ColumnBundle::accumColumn(int i, int s, const complexScalarFieldTilde& full)
+-{	assert(full);
++{	myassert(full);
+     CHECK_COLUMN_INDEX
+     //Gather-accumulate from the full vector into the i'th column
+     callPref(eblas_gather_zdaxpy)(basis->nbasis, 1., basis->indexPref, full->dataPref(), dataPref()+index(i,s*basis->nbasis));
+@@ -150,7 +150,7 @@
+ void init(std::vector<ColumnBundle>& Y, int nbundles, int ncols, const Basis* basis, const ElecInfo* eInfo)
+ {	Y.resize(nbundles);
+     if(ncols && basis && eInfo)
+-	{	assert(nbundles >= eInfo->qStop);
++	{	myassert(nbundles >= eInfo->qStop);
+         for(int q=eInfo->qStart; q<eInfo->qStop; q++)
+             Y[q].init(ncols, basis[q].nbasis * eInfo->spinorLength(), basis+q, &eInfo->qnums[q], isGpuEnabled());
+     }
+@@ -159,7 +159,7 @@
+
+ // Randomize with a high frequency cutoff of 0.75 hartrees
+ void ColumnBundle::randomize(int colStart, int colStop)
+-{	assert(basis->nbasis==colLength() || 2*basis->nbasis==colLength());
++{	myassert(basis->nbasis==colLength() || 2*basis->nbasis==colLength());
+     complex* thisData = data(); //currently only on cpu
+     for(size_t j=0; j<colLength(); j++)
+     {	size_t jBasis = (j < basis->nbasis) ? j : (j - basis->nbasis);
+@@ -315,7 +315,7 @@
+     const ColumnBundle& Y = sY.data;
+     double scaleFac = sY.scale * Mst.scale;
+     bool spinorMode = (2*Y.nCols() == Mst.nRows()); //treat each column of non-spinor Y as two identical consecutive spinor ones with opposite spins
+-	assert(Y.nCols()==Mst.nRows() || spinorMode);
++	myassert(Y.nCols()==Mst.nRows() || spinorMode);
+     CBLAS_TRANSPOSE Mop; const matrix* M; ColumnBundle YM; matrix Mtmp;
+     if(spinorMode)
+     {	matrix mIn(Mst); Mop=CblasNoTrans; //pre-apply the op in this case
+@@ -323,7 +323,7 @@
+         Mtmp.set(0,1,Y.nCols(), 0,2,Mtmp.nCols(), mIn(0,2,mIn.nRows(), 0,1,mIn.nCols()));
+         Mtmp.set(0,1,Y.nCols(), 1,2,Mtmp.nCols(), mIn(1,2,mIn.nRows(), 0,1,mIn.nCols()));
+         M = &Mtmp;
+-		assert(!Y.isSpinor());
++		myassert(!Y.isSpinor());
+         YM.init(mIn.nCols(), Y.colLength()*2, Y.basis, Y.qnum, isGpuEnabled());
+     }
+     else
+@@ -340,7 +340,7 @@
+
+ ColumnBundle operator*(const scaled<ColumnBundle> &sY, const diagMatrix& d)
+ {	const ColumnBundle& Y = sY.data;
+-	assert(Y.nCols()==d.nRows());
++	myassert(Y.nCols()==d.nRows());
+     ColumnBundle Yd = Y; complex* YdData = Yd.dataPref();
+     for(int i=0; i<d.nCols(); i++)
+         callPref(eblas_zscal)(Yd.colLength(), sY.scale*d[i], YdData+Yd.index(i,0), 1);
+@@ -360,10 +360,10 @@
+         colLength = Y1.colLength();
+     }
+     else //exactly one of the two columnbundles is a spinor (but they have a common basis)
+-	{	assert(Y1.basis);
+-		assert(Y2.basis);
+-		assert(Y1.basis->nbasis == Y2.basis->nbasis);
+-		assert(Y1.isSpinor() xor Y2.isSpinor());
++	{	myassert(Y1.basis);
++		myassert(Y2.basis);
++		myassert(Y1.basis->nbasis == Y2.basis->nbasis);
++		myassert(Y1.isSpinor() xor Y2.isSpinor());
+         nCols1 = Y1.nCols() * Y1.spinorLength();
+         nCols2 = Y2.nCols() * Y2.spinorLength();
+         colLength = Y1.basis->nbasis;
+Index: electronic/ColumnBundleTransform.cpp
+===================================================================
+--- electronic/ColumnBundleTransform.cpp	(revision 1197)
++++ electronic/ColumnBundleTransform.cpp	(working copy)
+@@ -45,13 +45,13 @@
+ {
+     //Check k-point transformation and determine offset
+     const matrix3<>& metricC = basisC.gInfo->RTR;
+-	assert(nrm2(metricC - (~sym)*metricC*sym) < symmThreshold * nrm2(metricC)); //check symmetry
+-	assert(abs(invert) == 1); //check inversion
+-	assert(nrm2(basisC.gInfo->R * super - basisD.gInfo->R) < symmThreshold * nrm2(basisD.gInfo->R)); //check supercell
++	myassert(nrm2(metricC - (~sym)*metricC*sym) < symmThreshold * nrm2(metricC)); //check symmetry
++	myassert(abs(invert) == 1); //check inversion
++	myassert(nrm2(basisC.gInfo->R * super - basisD.gInfo->R) < symmThreshold * nrm2(basisD.gInfo->R)); //check supercell
+     matrix3<int> affine = sym * invert * super; //net affine transformation
+     double offsetErr;
+     vector3<int> offset = round(kC * affine - kD, &offsetErr);
+-	assert(offsetErr < symmThreshold);
++	myassert(offsetErr < symmThreshold);
+
+     //Initialize index map:
+     index.resize(basisC.nbasis);
+@@ -60,7 +60,7 @@
+         vector3<int> iG_D = iG_C * affine + offset; //corresponding D recip lattice coords
+         index[n] = basisDwrapper.table[dot(basisDwrapper.pitch, iG_D + basisDwrapper.iGbox)]; //use lookup table to get D index
+     }
+-	assert(*std::min_element(index.begin(), index.end()) >= 0); //make sure all entries were found
++	myassert(*std::min_element(index.begin(), index.end()) >= 0); //make sure all entries were found
+     #ifdef GPU_ENABLED
+     cudaMalloc(&indexGpu, sizeof(int)*index.size()); gpuErrorCheck();
+     cudaMemcpy(indexGpu, index.data(), sizeof(int)*index.size(), cudaMemcpyHostToDevice); gpuErrorCheck();
+@@ -82,7 +82,7 @@
+             }
+             break;
+         }
+-		default: assert(!"Invalid value for nSpinor");
++		default: myassert(!"Invalid value for nSpinor");
+     }
+ }
+
+@@ -95,8 +95,8 @@
+
+ void ColumnBundleTransform::scatterAxpy(complex alpha, const ColumnBundle& C_C, int bC, ColumnBundle& C_D, int bD) const
+ {	//Check inputs:
+-	assert(C_C.colLength() == nSpinor*basisC.nbasis); assert(bC >= 0 && bC < C_C.nCols());
+-	assert(C_D.colLength() == nSpinor*basisD.nbasis); assert(bD >= 0 && bD < C_D.nCols());
++	myassert(C_C.colLength() == nSpinor*basisC.nbasis); myassert(bC >= 0 && bC < C_C.nCols());
++	myassert(C_D.colLength() == nSpinor*basisD.nbasis); myassert(bD >= 0 && bD < C_D.nCols());
+     //Scatter:
+     for(int sD=0; sD<nSpinor; sD++)
+         for(int sC=0; sC<nSpinor; sC++)
+@@ -107,8 +107,8 @@
+
+ void ColumnBundleTransform::gatherAxpy(complex alpha, const ColumnBundle& C_D, int bD, ColumnBundle& C_C, int bC) const
+ {	//Check inputs:
+-	assert(C_C.colLength() == nSpinor*basisC.nbasis); assert(bC >= 0 && bC < C_C.nCols());
+-	assert(C_D.colLength() == nSpinor*basisD.nbasis); assert(bD >= 0 && bD < C_D.nCols());
++	myassert(C_C.colLength() == nSpinor*basisC.nbasis); myassert(bC >= 0 && bC < C_C.nCols());
++	myassert(C_D.colLength() == nSpinor*basisD.nbasis); myassert(bD >= 0 && bD < C_D.nCols());
+     //Gather:
+     matrix spinorRotInv = (invert<0) ? transpose(spinorRot) : dagger(spinorRot);
+     for(int sD=0; sD<nSpinor; sD++)
+Index: electronic/DOS.cpp
+===================================================================
+--- electronic/DOS.cpp	(revision 1197)
++++ electronic/DOS.cpp	(working copy)
+@@ -462,7 +462,7 @@
+             double eStop = lspline[j+1].first;
+             double h = eStop - eStart;
+             Cspline::const_iterator cIter = cspline.find(Interval(eStart, eStop));
+-			if(cIter == cspline.end()) assert(!"Brillouin zone triangulation must have holes!\n");
++			if(cIter == cspline.end()) myassert(!"Brillouin zone triangulation must have holes!\n");
+             lspline[j+1].second.assign(nWeights, 0.);
+             for(int i=0; i<nWeights; i++)
+             {	const CsplineElem::double4& b = cIter->second.bArr[i];
+@@ -530,7 +530,7 @@
+             if(boundarySet.count(e))
+                 (cIter++)->first = e;
+         }
+-		assert(cIter == combined.end());
++		myassert(cIter == combined.end());
+         //Collect contributions from each linear spline:
+         for(const Lspline& lspline: lsplines)
+         {	Lspline::iterator cIter = std::upper_bound(combined.begin(), combined.end(), lspline.front(), LsplineCmp);
+@@ -676,7 +676,7 @@
+ inline vector3<int> round(const vector3<> v, const double tol)
+ {	double err;
+     vector3<int> vInt = round(v, &err);
+-	assert(err < tol);
++	myassert(err < tol);
+     return vInt;
+ }
+
+@@ -750,7 +750,7 @@
+         {	v[j] = v0 + dk[j];
+             vector3<> vWrapped; for(int k=0; k<3; k++) vWrapped[k] = v[j][k] - floor(0.5+v[j][k]);
+             auto ivIter = kpointMap.find(round((vWrapped-kmesh[0])*supercell.super, symmThreshold));
+-			assert(ivIter != kpointMap.end());
++			myassert(ivIter != kpointMap.end());
+             iv[j] = ivIter->second;
+         }
+         //loop over tetrahedra:
+Index: electronic/DumpChargedDefects.cpp
+===================================================================
+--- electronic/DumpChargedDefects.cpp	(revision 1197)
++++ electronic/DumpChargedDefects.cpp	(working copy)
+@@ -136,7 +136,7 @@
+     planarAvg(Vtilde, iDir);
+     ScalarField Vavg = I(Vtilde);
+     //Extract field:
+-	assert(2*iDist < gInfo.S[iDir]);
++	myassert(2*iDist < gInfo.S[iDir]);
+     vector3<int> iRm, iRp;
+     iRm[iDir] = positiveRemainder(iCenter - iDist, gInfo.S[iDir]);
+     iRp[iDir] = positiveRemainder(iCenter + iDist, gInfo.S[iDir]);
+Index: electronic/DumpQMC.cpp
+===================================================================
+--- electronic/DumpQMC.cpp	(revision 1197)
++++ electronic/DumpQMC.cpp	(working copy)
+@@ -69,7 +69,7 @@
+     }
+
+     void step(const ElecGradient& dir, double alpha)
+-	{	assert(dir.B.size() == B.size());
++	{	myassert(dir.B.size() == B.size());
+         for(int q=e.eInfo.qStart; q<e.eInfo.qStop; q++)
+             if(dir.B[q]) axpy(alpha, dir.B[q], B[q]);
+     }
+@@ -243,7 +243,7 @@
+     for(auto sp: iInfo.species)
+         for(unsigned a=0; a<sp->atpos.size(); a++)
+         {
+-			assert(sp->atomicNumber);
++			myassert(sp->atomicNumber);
+             vector3<> coord(gInfo.R * sp->atpos[a]);
+             ofs << "  " << sp->atomicNumber << " "
+                 << coord[0] << " " << coord[1] << " " << coord[2]
+Index: electronic/ElecInfo.cpp
+===================================================================
+--- electronic/ElecInfo.cpp	(revision 1197)
++++ electronic/ElecInfo.cpp	(working copy)
+@@ -61,7 +61,6 @@
+     //Determine distribution amongst processes:
+     qDivision.init(nStates, mpiUtil);
+     qDivision.myRange(qStart, qStop);
+-
+     // allocate the fillings matrices.
+     F.resize(nStates);
+
+@@ -566,11 +565,11 @@
+
+ void ElecInfo::write(const std::vector<diagMatrix>& M, const char *fname, int nRowsOverride) const
+ {	int nRows = nRowsOverride ? nRowsOverride : nBands;
+-	assert(int(M.size())==nStates);
++	myassert(int(M.size())==nStates);
+     MPIUtil::File fp; mpiUtil->fopenWrite(fp, fname);
+     mpiUtil->fseek(fp, qStart*nRows*sizeof(double), SEEK_SET);
+     for(int q=qStart; q<qStop; q++)
+-	{	assert(M[q].nRows()==nRows);
++	{	myassert(M[q].nRows()==nRows);
+         mpiUtil->fwrite(M[q].data(), sizeof(double), nRows, fp);
+     }
+     mpiUtil->fclose(fp);
+@@ -579,12 +578,12 @@
+ void ElecInfo::write(const std::vector<matrix>& M, const char *fname, int nRowsOverride, int nColsOverride) const
+ {	int nRows = nRowsOverride ? nRowsOverride : nBands;
+     int nCols = nColsOverride ? nColsOverride : nBands;
+-	assert(int(M.size())==nStates);
++	myassert(int(M.size())==nStates);
+     MPIUtil::File fp; mpiUtil->fopenWrite(fp, fname);
+     mpiUtil->fseek(fp, qStart*nRows*nCols*sizeof(complex), SEEK_SET);
+     for(int q=qStart; q<qStop; q++)
+-	{	assert(M[q].nRows()==nRows);
+-		assert(M[q].nCols()==nCols);
++	{	myassert(M[q].nRows()==nRows);
++		myassert(M[q].nCols()==nCols);
+         mpiUtil->fwrite(M[q].data(), sizeof(complex), M[q].nData(), fp);
+     }
+     mpiUtil->fclose(fp);
+Index: electronic/ElecInfo.h
+===================================================================
+--- electronic/ElecInfo.h	(revision 1197)
++++ electronic/ElecInfo.h	(working copy)
+@@ -118,6 +118,14 @@
+     void read(std::vector<matrix>&, const char *fname, int nRowsOverride=0, int nColsOverride=0) const;
+     void write(const std::vector<diagMatrix>&, const char *fname, int nRowsOverride=0) const;
+     void write(const std::vector<matrix>&, const char *fname, int nRowsOverride=0, int nColsOverride=0) const;
++
++	//k-points:
++	vector3<int> kfold; //!< kpoint fold vector
++	friend class CommandKpointFolding;
++	friend class Everything;
++	friend class Phonon;
++	void kpointsFold(); //!< Fold k-points by kfold
++	void kpointsReduce(); //!< Reduce folded k-points under symmetries
+
+ private:
+     const Everything* e;
+@@ -139,14 +147,6 @@
+     double dnMixFraction; //!<Scale the ideal stepsize in n by this factor
+     friend class CommandElecFermiFillings;
+     friend class CommandTargetMu;
+-
+-	//k-points:
+-	vector3<int> kfold; //!< kpoint fold vector
+-	friend class CommandKpointFolding;
+-	friend class Everything;
+-	friend class Phonon;
+-	void kpointsFold(); //!< Fold k-points by kfold
+-	void kpointsReduce(); //!< Reduce folded k-points under symmetries
+ };
+
+ #endif // JDFTX_ELECTRONIC_ELECINFO_H
+Index: electronic/ElecMinimizer.cpp
+===================================================================
+--- electronic/ElecMinimizer.cpp	(revision 1197)
++++ electronic/ElecMinimizer.cpp	(working copy)
+@@ -44,7 +44,7 @@
+ }
+
+ void axpy(double alpha, const ElecGradient& x, ElecGradient& y)
+-{	assert(x.eInfo == y.eInfo);
++{	myassert(x.eInfo == y.eInfo);
+     for(int q=x.eInfo->qStart; q<x.eInfo->qStop; q++)
+     {	if(x.Y[q]) { if(y.Y[q]) axpy(alpha, x.Y[q], y.Y[q]); else y.Y[q] = alpha*x.Y[q]; }
+         if(x.B[q]) { if(y.B[q]) axpy(alpha, x.B[q], y.B[q]); else y.B[q] = alpha*x.B[q]; }
+@@ -52,7 +52,7 @@
+ }
+
+ double dot(const ElecGradient& x, const ElecGradient& y)
+-{	assert(x.eInfo == y.eInfo);
++{	myassert(x.eInfo == y.eInfo);
+     complex result(0,0);
+     for(int q=x.eInfo->qStart; q<x.eInfo->qStop; q++)
+     {	if(x.Y[q] && y.Y[q]) result += dotc(x.Y[q], y.Y[q])*2.0;
+@@ -83,7 +83,7 @@
+ }
+
+ void ElecMinimizer::step(const ElecGradient& dir, double alpha)
+-{	assert(dir.eInfo == &eInfo);
++{	myassert(dir.eInfo == &eInfo);
+     for(int q=eInfo.qStart; q<eInfo.qStop; q++)
+     {	if(dir.Y[q]) axpy(alpha, dir.Y[q], eVars.Y[q]);
+         if(dir.B[q]) axpy(alpha, dir.B[q], eVars.B[q]);
+Index: electronic/ElecVars.cpp
+===================================================================
+--- electronic/ElecVars.cpp	(revision 1197)
++++ electronic/ElecVars.cpp	(working copy)
+@@ -167,7 +167,7 @@
+         #define READchannel(var, suffix) \
+         {	string fname = fnamePattern; \
+             size_t pos = fname.find("$VAR"); \
+-			assert(pos != string::npos); \
++			myassert(pos != string::npos); \
+             fname.replace(pos,4, suffix); \
+             logPrintf("Reading " #suffix " from file '%s' ... ", fname.c_str()); logFlush(); \
+             nullToZero(var, e->gInfo); \
+@@ -189,7 +189,7 @@
+         #define READrhoAtom(var) \
+         {	string fname = fnamePattern; \
+             size_t pos = fname.find("$VAR"); \
+-			assert(pos != string::npos); \
++			myassert(pos != string::npos); \
+             fname.replace(pos,4, #var); \
+             logPrintf("Reading " #var " from file '%s' ... ", fname.c_str()); logFlush(); \
+             FILE* fp = fopen(fname.c_str(), "r"); \
+@@ -468,7 +468,7 @@
+     if(e->exCorr.exxFactor())
+     {	double aXX = e->exCorr.exxFactor();
+         double omega = e->exCorr.exxRange();
+-		assert(e->exx);
++		myassert(e->exx);
+         ener.E["EXX"] = (*e->exx)(aXX, omega, F, C, need_Hsub ? &HC : 0);
+     }
+
+@@ -603,7 +603,7 @@
+ }
+
+ int ElecVars::nOccupiedBands(int q) const
+-{	assert(e->eInfo.isMine(q));
++{	myassert(e->eInfo.isMine(q));
+     for(unsigned i=0; i<F[q].size(); i++)
+         if(F[q][i]<=e->cntrl.occupiedThreshold)
+             return i; //index of first unoccupied band = number of ocucpied bands
+@@ -648,7 +648,7 @@
+ }
+
+ void ElecVars::orthonormalize(int q)
+-{	assert(e->eInfo.isMine(q));
++{	myassert(e->eInfo.isMine(q));
+     ColumnBundle projYq;
+     if(e->cntrl.fixOccupied) //project out fixed wavefunctions from free ones
+     {	int nOcc = nOccupiedBands(q);
+@@ -680,7 +680,7 @@
+ }
+
+ double ElecVars::applyHamiltonian(int q, const diagMatrix& Fq, ColumnBundle& HCq, Energies& ener, bool need_Hsub)
+-{	assert(e->eInfo.isMine(q));
++{	myassert(e->eInfo.isMine(q));
+     const QuantumNumber& qnum = e->eInfo.qnums[q];
+     std::vector<matrix> HVdagCq(e->iInfo.species.size());
+
+@@ -716,7 +716,7 @@
+ }
+
+ void ElecVars::orthonormalizeGrad(int q, const diagMatrix& Fq, const ColumnBundle& HCq, ColumnBundle& gradYq, double KErollover, ColumnBundle* KgradYq, matrix* gradBq, matrix* KgradBq)
+-{	assert(e->eInfo.isMine(q));
++{	myassert(e->eInfo.isMine(q));
+     const QuantumNumber& qnum = e->eInfo.qnums[q];
+
+     ColumnBundle OC = O(C[q]); //Note: O is not cheap for ultrasoft pseudopotentials
+Index: electronic/ElecVars.h
+===================================================================
+--- electronic/ElecVars.h	(revision 1197)
++++ electronic/ElecVars.h	(working copy)
+@@ -136,6 +136,9 @@
+     //! Returns the total single particle energy and gradient of all KS orbitals
+     double bandEnergyAndGrad(int q, Energies& ener, ColumnBundle* grad=0, ColumnBundle* Kgrad=0);
+
++	int lcaoIter; //!< number of iterations for LCAO (automatic if negative)
++	double lcaoTol; //!< tolerance for LCAO subspace minimization
++
+ private:
+     const Everything* e;
+
+@@ -146,8 +149,6 @@
+     string rhoExternalFilename; //!< external charge filename
+     friend class CommandRhoExternal;
+
+-	int lcaoIter; //!< number of iterations for LCAO (automatic if negative)
+-	double lcaoTol; //!< tolerance for LCAO subspace minimization
+     int LCAO(); //!< Initialize LCAO wavefunctions (returns the number of bands initialized)
+     friend class CommandWavefunction;
+     friend class CommandLcaoParams;
+Index: electronic/ElecVars_LCAO.cpp
+===================================================================
+--- electronic/ElecVars_LCAO.cpp	(revision 1197)
++++ electronic/ElecVars_LCAO.cpp	(working copy)
+@@ -48,7 +48,7 @@
+     }
+
+     void step(const ElecGradient& dir, double alpha)
+-	{	assert(dir.B.size() == B.size());
++	{	myassert(dir.B.size() == B.size());
+         for(unsigned q=0; q<dir.Y.size(); q++)
+             if(dir.B[q]) axpy(alpha, dir.B[q], B[q]);
+     }
+Index: electronic/ElectronScattering.cpp
+===================================================================
+--- electronic/ElectronScattering.cpp	(revision 1197)
++++ electronic/ElectronScattering.cpp	(working copy)
+@@ -25,7 +25,7 @@
+ #include <core/Random.h>
+
+ matrix operator*(const matrix& m, const std::vector<complex>& d)
+-{	assert(m.nCols()==int(d.size()));
++{	myassert(m.nCols()==int(d.size()));
+     matrix ret(m); //copy input to out
+     //Scale each column:
+     for(int j=0; j<ret.nCols(); j++)
+@@ -145,7 +145,7 @@
+     {	const diagMatrix& Ei = E[supercell->kmeshTransform[ik].iReduced];
+         for(int j=0; j<3; j++)
+         {	size_t jk = plook->find(supercell->kmesh[ik] + kBasis[j]);
+-			assert(jk != string::npos);
++			myassert(jk != string::npos);
+             const diagMatrix& Ej = E[supercell->kmeshTransform[jk].iReduced];
+             for(int b=0; b<nBands; b++)
+                 if(Emin <= Ei[b] && Ei[b] <= Emax)
+@@ -203,10 +203,10 @@
+         for(const QuantumNumber& qnum: qmesh)
+         {	vector3<> k2 = k + qnum.k; double roundErr;
+             vector3<int> k2sup = round((k2 - supercell->kmesh[0]) * supercell->super, &roundErr);
+-			assert(roundErr < symmThreshold);
++			myassert(roundErr < symmThreshold);
+             auto iter = transform.find(k2sup);
+             if(iter == transform.end())
+-			{	size_t ik2 = plook->find(k2); assert(ik2 != string::npos);
++			{	size_t ik2 = plook->find(k2); myassert(ik2 != string::npos);
+                 const Supercell::KmeshTransform& kTransform = supercell->kmeshTransform[ik2];
+                 const Basis& basisC = e.basis[kTransform.iReduced];
+                 const vector3<>& kC = e.eInfo.qnums[kTransform.iReduced].k;
+@@ -275,7 +275,7 @@
+             {	iHead = n;
+                 break;
+             }
+-		assert(iHead >= 0);
++		myassert(iHead >= 0);
+
+         //Calculate Im(screened Coulomb operator):
+         logPrintf("\tComputing Im(Kscreened) ... "); logFlush();
+@@ -371,8 +371,8 @@
+
+ //Calculate diag(A*dagger(B)) without constructing large intermediate matrix
+ diagMatrix diagouter(const matrix& A, const matrix& B)
+-{	assert(A.nRows()==B.nRows());
+-	assert(A.nCols()==B.nCols());
++{	myassert(A.nRows()==B.nRows());
++	myassert(A.nCols()==B.nCols());
+     //Elementwise multiply A and conj(B);
+     matrix ABconj = conj(B);
+     callPref(eblas_zmul)(ABconj.nData(), A.dataPref(),1, ABconj.dataPref(),1);
+@@ -391,7 +391,7 @@
+     const vector3<>& ki = supercell->kmesh[ik];
+     const vector3<> kj = ki + qmesh[iq].k;
+     jk = plook->find(kj);
+-	assert(jk != string::npos);
++	myassert(jk != string::npos);
+
+     //Compile list of events:
+     int iReduced = supercell->kmeshTransform[ik].iReduced;
+@@ -456,7 +456,7 @@
+
+     //CEDA plasma-frequency sum rule contributions:
+     if(ceda)
+-	{	assert(chiMode);
++	{	myassert(chiMode);
+         watchCEDA.start();
+         //Single loop quantities:
+         for(int i=0; i<nBands; i++)
+@@ -495,7 +495,7 @@
+             std::vector< std::vector<complexScalarField> > Ipsi;
+             diagMatrix diagNL, diagU; //(q+G)-diagonal contributions
+             if(hasNL)
+-			{	assert(Mnl.nRows() == V->nCols()*nSpinor);
++			{	myassert(Mnl.nRows() == V->nCols()*nSpinor);
+                 IV.resize(V->nCols());
+                 for(int v=0; v<V->nCols(); v++)
+                     IV[v] = I(V->getColumn(v,0)); //NL projectors are always non-spinorial
+@@ -503,7 +503,7 @@
+                 diagNL = diag(CjDagV * Mnl * dagger(CjDagV));
+             }
+             if(hasU)
+-			{	assert(Urho[sp].nRows() == psi[sp].nCols());
++			{	myassert(Urho[sp].nRows() == psi[sp].nCols());
+                 Ipsi.resize(psi[sp].nCols());
+                 for(int n=0; n<psi[sp].nCols(); n++)
+                 {	Ipsi[n].resize(nSpinor);
+@@ -520,7 +520,7 @@
+             }
+             //Off-diagonal terms (coupling i and j):
+             for(int i=0; i<nBands; i++) if(Fi[i] > fCut)
+-			{	assert(iUsed[i]);
++			{	myassert(iUsed[i]);
+                 if(hasNL)
+                 {	//Put pair densities with projectors in reciprocal space:
+                     matrix niV = zeroes(nbasis, Mnl.nRows()); //anologous to nij above, but with V instead
+@@ -563,7 +563,7 @@
+ {	static StopWatch watch("ElectronScattering::getWfns"); watch.start();
+     double roundErr;
+     vector3<int> kSup = round((k - supercell->kmesh[0]) * supercell->super, &roundErr);
+-	assert(roundErr < symmThreshold);
++	myassert(roundErr < symmThreshold);
+     ColumnBundle result(nBands, basis.nbasis * nSpinor, &basis, &qnumMesh.find(kSup)->second, isGpuEnabled());
+     result.zero();
+     transform.find(kSup)->second->scatterAxpy(1., C[supercell->kmeshTransform[ik].iReduced], result,0,1);
+Index: electronic/Everything.h
+===================================================================
+--- electronic/Everything.h	(revision 1197)
++++ electronic/Everything.h	(working copy)
+@@ -23,6 +23,7 @@
+
+ #include <core/GridInfo.h>
+ #include <core/MinimizeParams.h>
++#include <core/VerletParams.h>
+ #include <core/Coulomb.h>
+ #include <electronic/common.h>
+ #include <electronic/Control.h>
+@@ -60,6 +61,7 @@
+     MinimizeParams fluidMinParams; //!< fluid minimization parameters
+     MinimizeParams latticeMinParams; //!< lattice minimization parameters
+     MinimizeParams inverseKSminParams; //!< Inverse Kohn-sham minimization parameters
++	VerletParams verletParams; //!< Molecular dynamics parameters
+     SCFparams scfParams; //!< Self-consistent field mixing parameters
+
+     CoulombParams coulombParams; //!< Coulomb truncation parameters
+Index: electronic/ExCorr.cpp
+===================================================================
+--- electronic/ExCorr.cpp	(revision 1197)
++++ electronic/ExCorr.cpp	(working copy)
+@@ -92,7 +92,7 @@
+     double* E, std::vector<double*> E_n, std::vector<double*> E_sigma,
+     std::vector<double*> E_lap, std::vector<double*> E_tau) const
+ {	//LDA: so ignore sigma, lap, tau and call the above functions (CPU/GPU as appropriate)
+-	assert(n.size()==1 || n.size()==2);
++	myassert(n.size()==1 || n.size()==2);
+     callPref(LDA)(variant, N, n, E, E_n, scaleFac);
+ }
+
+@@ -133,7 +133,7 @@
+     double* E, std::vector<double*> E_n, std::vector<double*> E_sigma,
+     std::vector<double*> E_lap, std::vector<double*> E_tau) const
+ {	//GGA: so ignore lap, tau and call the above functions (CPU/GPU as appropriate)
+-	assert(n.size()==1 || n.size()==2);
++	myassert(n.size()==1 || n.size()==2);
+     callPref(GGA)(variant, N, n, sigma, E, E_n, E_sigma, scaleFac);
+ }
+
+@@ -176,7 +176,7 @@
+     double* E, std::vector<double*> E_n, std::vector<double*> E_sigma,
+     std::vector<double*> E_lap, std::vector<double*> E_tau) const
+ {	//mGGA: so ignore lap, tau and call the above functions (CPU/GPU as appropriate)
+-	assert(n.size()==1 || n.size()==2);
++	myassert(n.size()==1 || n.size()==2);
+     callPref(mGGA)(variant, N, n, sigma, lap, tau, E, E_n, E_sigma, E_lap, E_tau, scaleFac);
+ }
+
+@@ -226,7 +226,7 @@
+         const double* n, const double* sigma, const double* lap, const double* tau,
+         double* e, double* E_n, double* E_sigma, double* E_lap, double* E_tau) const
+     {
+-		assert(nCount==1 || nCount==2);
++		myassert(nCount==1 || nCount==2);
+         const xc_func_type& func = (nCount==1) ? funcUnpolarized : funcPolarized;
+         int sigmaCount = 2*nCount-1; //1 for unpolarized, 3 for polarized
+         int Nn = N * nCount;
+@@ -286,7 +286,7 @@
+ //! Convert a collection of scalar fields into an interleaved vector field.
+ //! result can be freed using delete[]
+ template<unsigned M> double* transpose(const ScalarFieldArray& inVec)
+-{	assert(inVec.size()==M);
++{	myassert(inVec.size()==M);
+     const unsigned N = inVec[0]->nElem;
+     const double* in[M]; for(unsigned m=0; m<M; m++) in[m] = inVec[m]->data();
+     double *out = new double[M*N], *outPtr = out;
+@@ -298,7 +298,7 @@
+
+ //! Convert an interleaved vector field to a collection of scalar fields
+ template<unsigned M> void transpose(double* in, ScalarFieldArray& outVec)
+-{	assert(outVec.size()==M);
++{	myassert(outVec.size()==M);
+     const unsigned N = outVec[0]->nElem;
+     double* out[M]; for(unsigned m=0; m<M; m++) out[m] = outVec[m]->data();
+     double *inPtr = in;
+@@ -577,7 +577,7 @@
+     static StopWatch watch("ExCorrTotal"), watchComm("ExCorrCommunication"), watchFunc("ExCorrFunctional");
+     watch.start();
+
+-	const int nInCount = n.size(); assert(nInCount==1 || nInCount==2 || nInCount==4);
++	const int nInCount = n.size(); myassert(nInCount==1 || nInCount==2 || nInCount==4);
+     const int nCount = std::min(nInCount, 2); //Number of spin-densities used in the parametrization of the functional
+     const int sigmaCount = 2*nCount-1;
+     const GridInfo& gInfo = n[0]->gInfo;
+@@ -636,11 +636,11 @@
+     ScalarFieldArray tau(nInCount), E_tau(nCount);
+     if(needsTau)
+     {	//make sure orbital KE density has been provided
+-		assert(tauPtr);
++		myassert(tauPtr);
+         tau = *tauPtr;
+         //allocate gradients w.r.t KE density if required
+         if(Vxc)
+-		{	assert(Vtau); //if computing gradients, all gradients must be computed
++		{	myassert(Vtau); //if computing gradients, all gradients must be computed
+             Vtau->clear();
+             nullToZero(E_tau, gInfo);
+         }
+@@ -650,7 +650,7 @@
+     ScalarFieldArray nCapped(nCount), lapIn(nCount), tauIn(nCount);
+     std::vector<VectorField> DnIn(nCount);
+     if(nCount != nInCount)
+-	{	assert(nCount==2); assert(nInCount==4);
++	{	myassert(nCount==2); myassert(nInCount==4);
+         std::swap(DnIn, Dn);
+         std::swap(lapIn, lap);
+         std::swap(tauIn, tau);
+Index: electronic/ExCorr.h
+===================================================================
+--- electronic/ExCorr.h	(revision 1197)
++++ electronic/ExCorr.h	(working copy)
+@@ -114,11 +114,10 @@
+         const Everything& e;
+     };
+     std::shared_ptr<OrbitalDep> orbitalDep; //optional orbital-dependent potential functional
+-
++	ExCorrType exCorrType;
++	KineticType kineticType;
+ private:
+     const Everything* e;
+-	ExCorrType exCorrType;
+-	KineticType kineticType;
+     string xcName; // short name of the functional (set by command elec-ex-corr)
+     friend class CommandElecExCorr;
+     friend class CommandFluidExCorr;
+Index: electronic/ExCorr_OrbitalDep_GLLBsc.cpp
+===================================================================
+--- electronic/ExCorr_OrbitalDep_GLLBsc.cpp	(revision 1197)
++++ electronic/ExCorr_OrbitalDep_GLLBsc.cpp	(working copy)
+@@ -86,11 +86,11 @@
+         }
+     ScalarFieldArray VsclocDisc(nSpins);
+     if(e.cntrl.fixed_H)
+-	{	assert(e.eVars.VFilenamePattern.length());
++	{	myassert(e.eVars.VFilenamePattern.length());
+         for(int s=0; s<nSpins; s++)
+         {	string fname = e.eVars.VFilenamePattern;
+             size_t pos = fname.find("$VAR");
+-			assert(pos != string::npos);
++			myassert(pos != string::npos);
+             fname.replace(pos,4, string("VsclocDisc") + (nSpins==1 ? "" : (s==0 ? "_up" : "_dn")));
+             nullToZero(VsclocDisc[s], e.gInfo);
+             logPrintf("Reading discontinuity potential from '%s' ... ", fname.c_str()); logFlush();
+Index: electronic/IonInfo.cpp
+===================================================================
+--- electronic/IonInfo.cpp	(revision 1197)
++++ electronic/IonInfo.cpp	(working copy)
+@@ -73,7 +73,7 @@
+     if(!nAtomsTot) logPrintf("Warning: no atoms in the calculation.\n");
+
+     if(not checkPositions())
+-		die("\nAtoms are too close, have overlapping pseudopotential cores.\n\n");
++		throw string("\nAtoms are too close, have overlapping pseudopotential cores.\n\n");
+ }
+
+ void IonInfo::printPositions(FILE* fp) const
+Index: electronic/IonicMinimizer.cpp
+===================================================================
+--- electronic/IonicMinimizer.cpp	(revision 1197)
++++ electronic/IonicMinimizer.cpp	(working copy)
+@@ -44,7 +44,7 @@
+             {	case ForcesCoordsLattice: ff = at(sp)[atom]; break;
+                 case ForcesCoordsCartesian: ff = e.gInfo.invRT * at(sp)[atom]; break;
+                 case ForcesCoordsContravariant: ff = e.gInfo.invRTR * at(sp)[atom]; break;
+-				case ForcesCoordsPositions: assert(false); //should not get here
++				case ForcesCoordsPositions: myassert(false); //should not get here
+             }
+             fprintf(fp, "%s %s %19.15lf %19.15lf %19.15lf %lg", prefix,
+                 sinfo.name.c_str(), ff[0], ff[1], ff[2], sinfo.constraints[atom].moveScale);
+@@ -88,9 +88,9 @@
+ }
+
+ void axpy(double alpha, const IonicGradient& x, IonicGradient& y)
+-{	assert(x.size() == y.size());
++{	myassert(x.size() == y.size());
+     for(unsigned sp=0; sp<x.size(); sp++)
+-	{	assert(x[sp].size() == y[sp].size());
++	{	myassert(x[sp].size() == y[sp].size());
+         for(unsigned atom=0; atom<x[sp].size(); atom++)
+             y[sp][atom] += alpha * x[sp][atom];
+     }
+@@ -98,9 +98,9 @@
+
+ double dot(const IonicGradient& x, const IonicGradient& y)
+ {	double result = 0.0;
+-	assert(x.size() == y.size());
++	myassert(x.size() == y.size());
+     for(unsigned sp=0; sp<x.size(); sp++)
+-	{	assert(x[sp].size() == y[sp].size());
++	{	myassert(x[sp].size() == y[sp].size());
+         for(unsigned atom=0; atom<x[sp].size(); atom++)
+             result += dot(x[sp][atom], y[sp][atom]);
+     }
+Index: electronic/Polarizability.cpp
+===================================================================
+--- electronic/Polarizability.cpp	(revision 1197)
++++ electronic/Polarizability.cpp	(working copy)
+@@ -147,10 +147,10 @@
+                     kTransform2 = kmeshTransform[ik2];
+                     kTransform2.offset += round(k2 - kmesh[ik2], &offsetErr);
+                     foundk2 = true;
+-					assert(offsetErr < symmThreshold);
++					myassert(offsetErr < symmThreshold);
+                     break;
+                 }
+-			assert(foundk2); //such a partner should always be found for a uniform kmesh
++			myassert(foundk2); //such a partner should always be found for a uniform kmesh
+             state2.setup(e, kTransform2);
+         }
+     }
+@@ -163,8 +163,8 @@
+
+     //Accumulate contribution from currentkpoint pair to negative of noninteracting susceptibility in plane-wave basis:
+     void accumMinusXniPW(int nV, int nC, const Basis& basis, matrix& minusXni)
+-	{	assert(minusXni.nRows() == int(basis.nbasis));
+-		assert(minusXni.nCols() == int(basis.nbasis));
++	{	myassert(minusXni.nRows() == int(basis.nbasis));
++		myassert(minusXni.nCols() == int(basis.nbasis));
+         ColumnBundle rho(nV*nC, basis.nbasis, &basis);
+         compute(nV, nC, rho, 0);
+         //Xni += (detR)*rho*dagger(rho):
+@@ -379,7 +379,7 @@
+             {	iGzero = i;
+                 break;
+             }
+-		assert(iGzero >= 0);
++		myassert(iGzero >= 0);
+         matrix V0(1, nColumns);
+         for(int j=0; j<nColumns; j++)
+             V0.set(0,j, V.data()[V.index(j,iGzero)]);
+@@ -396,7 +396,7 @@
+     {	case NonInteracting: Xbasis = &Xni; break;
+         case External: Xbasis = &Xext; break;
+         case Total: Xbasis = &Xtot; break;
+-		default: assert(!"Invalid eigenBasis");
++		default: myassert(!"Invalid eigenBasis");
+     }
+     if(nEigs<=0 || nEigs>nColumns) nEigs = nColumns;
+     matrix Q; //transformation matrix from CV to chosen basis
+Index: electronic/RadialFunction.cpp
+===================================================================
+--- electronic/RadialFunction.cpp	(revision 1197)
++++ electronic/RadialFunction.cpp	(working copy)
+@@ -84,8 +84,8 @@
+     }
+ }
+ void RadialFunctionR::set(std::vector<double> r, std::vector<double> dr)
+-{	assert(r.size() >= this->f.size());
+-	assert(dr.size() >= this->f.size());
++{	myassert(r.size() >= this->f.size());
++	myassert(dr.size() >= this->f.size());
+     this->r.assign(r.begin(), r.begin()+this->f.size());
+     this->dr.assign(dr.begin(), dr.begin()+this->f.size());
+ }
+@@ -135,10 +135,10 @@
+ {	static StopWatch watch("initWeights"); watch.start();
+     //Ensure r is valid (positive and in ascending order):
+     int nSamples = r.size();
+-	assert(nSamples>=2);
+-	assert(r[0]>=0.);
++	myassert(nSamples>=2);
++	myassert(r[0]>=0.);
+     for(int i=0; i<nSamples-1; i++)
+-		assert(r[i+1]>r[i]);
++		myassert(r[i+1]>r[i]);
+     dr.resize(nSamples);
+     if(!r[0]) r[0]=1e-6*r[1]; //avoid division by 0 (will make no difference at double prec)
+     threadLaunch(RadialFunctionR_initWeights_sub, nSamples, nSamples, r.data(), dr.data());
+Index: electronic/RadialSchrodinger.cpp
+===================================================================
+--- electronic/RadialSchrodinger.cpp	(revision 1197)
++++ electronic/RadialSchrodinger.cpp	(working copy)
+@@ -27,9 +27,9 @@
+     const std::vector<double>& V, double Z, size_t iMatch)
+ : rArr(rArr), drArr(drArr), Z(Z), iMatch(iMatch ? iMatch : rArr.size()/2)
+ {
+-	assert(rArr.size()==drArr.size());
+-	assert(drArr.size()==V.size());
+-	assert(iMatch<rArr.size());
++	myassert(rArr.size()==drArr.size());
++	myassert(drArr.size()==V.size());
++	myassert(iMatch<rArr.size());
+
+     //Set up cubic spline  triadiagonal system for V with natural B.C.
+     std::vector<double> a(rArr.size(), 0.); //sub-diagonal (first entry ignored)
+@@ -335,7 +335,7 @@
+ {
+     double errLo = getEerr(l, Elo); if(errLo==0.0) return Elo;
+     double errHi = getEerr(l, Ehi); if(errHi==0.0) return Ehi;
+-	assert(std::signbit(errLo) != std::signbit(errHi));
++	myassert(std::signbit(errLo) != std::signbit(errHi));
+     while(true)
+     {	double Emid = 0.5*(Ehi+Elo);
+         double errMid = getEerr(l, Emid); if(errMid==0.0 || fabs(Ehi-Elo)<tol) return Emid;
+Index: electronic/SpeciesInfo.cpp
+===================================================================
+--- electronic/SpeciesInfo.cpp	(revision 1197)
++++ electronic/SpeciesInfo.cpp	(working copy)
+@@ -290,7 +290,7 @@
+     if(e->eInfo.nDensities==4) //needed only in vector spin mode
+     {	Sigma.assign(3, zeroes(orbCount,orbCount));
+         vector3<complex*> SigmaData; for(int k=0; k<3; k++) SigmaData[k] = Sigma[k].data();
+-		assert(orbCount % 2 == 0);
++		myassert(orbCount % 2 == 0);
+         for(int iOrb=0; iOrb<orbCount; iOrb+=2)
+         {	//Sigma_x
+             SigmaData[0][Sigma[0].index(iOrb,iOrb+1)] = 1;
+@@ -316,7 +316,7 @@
+                     offset += msCount;
+                 }
+             }
+-			assert(offset==orbCount);
++			myassert(offset==orbCount);
+             matrix invTransform = inv(transform);
+             for(int k=0; k<3; k++)
+                 Sigma[k] = invTransform * Sigma[k] * dagger(invTransform);
+@@ -352,7 +352,7 @@
+     for(unsigned sp=0; sp<e->iInfo.species.size(); sp++)
+         if(e->iInfo.species[sp].get()==this)
+             atomMap = &e->symm.getAtomMap()[sp];
+-	assert(atomMap);
++	myassert(atomMap);
+     std::vector<double> Nsym(atpos.size());
+     std::vector< vector3<> > Msym(atpos.size());
+     for(unsigned atom=0; atom<atpos.size(); atom++)
+@@ -484,7 +484,7 @@
+
+ matrix SpeciesInfo::getYlmToSpinAngleMatrix(int l, int j2)
+ {	static std::map< std::pair<int,int>, matrix > cache;
+-	assert(j2==2*l-1 || j2==2*l+1);
++	myassert(j2==2*l-1 || j2==2*l+1);
+     std::pair<int,int> key(l,j2);
+     auto iter = cache.find(key);
+     if(iter==cache.end()) //not in cache; generate
+@@ -531,7 +531,7 @@
+
+ matrix SpeciesInfo::getYlmOverlapMatrix(int l, int j2)
+ {	static std::map< std::pair<int,int>, matrix > cache;
+-	assert(j2==2*l-1 || j2==2*l+1);
++	myassert(j2==2*l-1 || j2==2*l+1);
+     std::pair<int,int> key(l,j2);
+     auto iter = cache.find(key);
+     if(iter==cache.end()) //not in cache; generate
+Index: electronic/SpeciesInfo.h
+===================================================================
+--- electronic/SpeciesInfo.h	(revision 1197)
++++ electronic/SpeciesInfo.h	(working copy)
+@@ -29,16 +29,20 @@
+ #include <core/vector3.h>
+ #include <core/string.h>
+
+-
+ class SpeciesInfo
+ {
+ public:
+-
++	enum PseudopotentialFormat
++	{	Fhi, //!< FHI format with ABINIT header (.fhi files)
++		Uspp, //!< USPP format ultrasoft pseudopotential
++		UPF //!< Quantum Espresso's Universal Pseudopotential Format (the XML version 2 only)
++	};
+     double Z; //!< Valence charge of the species (prefactor to 1/r in long-range part of pseudopotential)
+     int atomicNumber; //!< Atomic number of the species (0 if unavailable)
+     string name; //!< Identifier
+     string potfilename, pulayfilename;
+     bool fromWildcard; //!< whether this pseudopotential was automatically added using a wildcard (for command printing purposes only)
++	PseudopotentialFormat pspFormat;
+
+     std::vector<vector3<> > atpos; //!< array of atomic positions of this species
+     #ifdef GPU_ENABLED
+@@ -75,11 +79,6 @@
+     void populationAnalysis(const std::vector<matrix>& RhoAll) const; //print population analysis given the density matrix in the Lowdin basis
+     bool isRelativistic() const { return psi2j.size(); } //!< whether pseudopotential is relativistic
+
+-	enum PseudopotentialFormat
+-	{	Fhi, //!< FHI format with ABINIT header (.fhi files)
+-		Uspp, //!< USPP format ultrasoft pseudopotential
+-		UPF //!< Quantum Espresso's Universal Pseudopotential Format (the XML version 2 only)
+-	};
+     //! Returns the pseudopotential format
+     PseudopotentialFormat getPSPFormat(){return pspFormat;}
+
+@@ -190,8 +189,6 @@
+
+     //!Pointer for struct containing optional VDW overrides
+     std::shared_ptr<VanDerWaals::AtomParams> vdwOverride;
+-
+-	PseudopotentialFormat pspFormat;
+
+     // gaussian chargeball used to prevent dielectric spikes
+     // DEPRECATED: As far as possible, use partial core correction instead
+Index: electronic/SpeciesInfo_atomic.cpp
+===================================================================
+--- electronic/SpeciesInfo_atomic.cpp	(revision 1197)
++++ electronic/SpeciesInfo_atomic.cpp	(working copy)
+@@ -30,8 +30,8 @@
+ //Overlap of two radial functions (assumes same grid configuration, but one grid could be shorter)
+ double dot(const RadialFunctionR& X, const RadialFunctionR& Y)
+ {	size_t nr = std::min(X.f.size(), Y.f.size());
+-	assert(X.r.size() >= nr);
+-	assert(X.dr.size() >= nr);
++	myassert(X.r.size() >= nr);
++	myassert(X.dr.size() >= nr);
+     double ret = 0.;
+     for(size_t i=0; i<nr; i++)
+     {	const double& r = X.r[i];
+@@ -43,7 +43,7 @@
+ //Accumulate radial functions (assumes same grid configuration, but X could be shorter)
+ void axpy(double alpha, const RadialFunctionR& X, RadialFunctionR& Y)
+ {	size_t nr = X.f.size();
+-	assert(Y.f.size() >= nr);
++	myassert(Y.f.size() >= nr);
+     for(size_t i=0; i<nr; i++) Y.f[i] += alpha * X.f[i];
+ }
+
+@@ -108,7 +108,7 @@
+     #endif
+     //For each magnetization magnitude:
+     for(const MomentMagnitude& Mmag: Mmags)
+-	{	if(e->eInfo.nDensities == 1) assert(!Mmag.Mlength);
++	{	if(e->eInfo.nDensities == 1) myassert(!Mmag.Mlength);
+         //Get the radial spin-densities in diagonal basis:
+         std::vector<RadialFunctionG> nRadial(Mmag.Mlength ? 2 : 1);
+         for(unsigned s=0; s<nRadial.size(); s++)
+@@ -182,15 +182,15 @@
+ }
+ void SpeciesInfo::setAtomicOrbitals(ColumnBundle& psi, bool applyO, unsigned n, int l, int colOffset, int atomColStride) const
+ {	if(!atpos.size()) return;
+-	assert(l < int(psiRadial.size()));
+-	assert(int(n) < nAtomicOrbitals(l));
++	myassert(l < int(psiRadial.size()));
++	myassert(int(n) < nAtomicOrbitals(l));
+     const auto& fRadial = applyO ? *OpsiRadial : psiRadial; //!< select radial function set (psi or Opsi)
+     int nSpinCopies = 2/e->eInfo.qWeightSum;
+     int nOrbitalsPerAtom = (2*l+1)*nSpinCopies;
+-	if(atomColStride) assert(atomColStride >= nOrbitalsPerAtom); else atomColStride = nOrbitalsPerAtom;
+-	assert(psi.basis); assert(psi.qnum);
+-	assert(colOffset + atomColStride*int(atpos.size()-1) + nOrbitalsPerAtom <= psi.nCols());
+-	if(nSpinCopies>1) assert(psi.isSpinor()); //can have multiple spinor copies only in spinor mode
++	if(atomColStride) myassert(atomColStride >= nOrbitalsPerAtom); else atomColStride = nOrbitalsPerAtom;
++	myassert(psi.basis); myassert(psi.qnum);
++	myassert(colOffset + atomColStride*int(atpos.size()-1) + nOrbitalsPerAtom <= psi.nCols());
++	if(nSpinCopies>1) myassert(psi.isSpinor()); //can have multiple spinor copies only in spinor mode
+     const Basis& basis = *psi.basis;
+     if(isRelativistic() && l>0)
+     {	//find the two orbital indices corresponding to different j of same n
+@@ -258,15 +258,15 @@
+ {	return int(psiRadial.size()) - 1;
+ }
+ int SpeciesInfo::nAtomicOrbitals(int l) const
+-{	assert(l >= 0);
++{	myassert(l >= 0);
+     if(unsigned(l) >= psiRadial.size()) return -1; //signals end of l
+     return psiRadial[l].size() / ((isRelativistic() && l>0) ? 2 : 1); //principal quantum number reduced by a factor of 2 when psiRadial counts the j splitting
+ }
+ int SpeciesInfo::atomicOrbitalOffset(unsigned int iAtom, unsigned int n, int l, int m, int s) const
+-{	assert(iAtom < atpos.size());
+-	assert(l >= 0); assert(unsigned(l) < psiRadial.size());
+-	assert(s < e->eInfo.spinorLength());
+-	assert(int(n) < nAtomicOrbitals(l));
++{	myassert(iAtom < atpos.size());
++	myassert(l >= 0); myassert(unsigned(l) < psiRadial.size());
++	myassert(s < e->eInfo.spinorLength());
++	myassert(int(n) < nAtomicOrbitals(l));
+     int nSpinCopies = 2/e->eInfo.qWeightSum;
+     int iOrb = 0;
+     for(int L=0; L<int(psiRadial.size()); L++)
+@@ -278,12 +278,12 @@
+     if(isRelativistic())
+     {	int j2 = 2*l + (s ? -1 : +1); //2*j
+         int mj2 = 2*m +  + (s ? -1 : +1); //2*m_j
+-		assert(mj2 >= -j2); assert(mj2 <= j2);
++		myassert(mj2 >= -j2); myassert(mj2 <= j2);
+         if(s==0) iOrb += 2*l; //include orbitals from previous j at current n,l,atom (j = l-1/2 (accessed using s=1) is stored first)
+         return iOrb + (j2+mj2)/2; //include orbitals from previous m at current j,n,l,atom
+     }
+     else
+-	{	assert(m >= -l); assert(m <= l);
++	{	myassert(m >= -l); myassert(m <= l);
+         return iOrb + (l+m)*nSpinCopies + s; //include orbitals from previous m,s at current n,l,atom
+     }
+ }
+@@ -349,7 +349,7 @@
+ void SpeciesInfo::getAtom_nRadial(int spin, double magneticMoment, RadialFunctionG& nRadial, bool forceNeutral) const
+ {
+     int spinCount = (e->eInfo.nDensities==1 ? 1 : 2);
+-	assert(spin >= 0); assert(spin < spinCount);
++	myassert(spin >= 0); myassert(spin < spinCount);
+
+     //Determine occupations:
+     std::multimap< double, std::pair<unsigned,unsigned> > eigMap; //map from eigenvalues to (l,p)
+@@ -472,7 +472,7 @@
+             break;
+         }
+     int iVdw = std::upper_bound(n.r.begin(), n.r.end(), Rvdw) - n.r.begin();
+-	assert(iVdw < iLast);
++	myassert(iVdw < iLast);
+     Rvdw = n.r[iVdw]; //round to grid point
+     //--- pseudize electrostatic potential so that it is zero outside Rvdw
+     double d0 = d.f[iVdw]; //value
+Index: electronic/SpeciesInfo_core.cpp
+===================================================================
+--- electronic/SpeciesInfo_core.cpp	(revision 1197)
++++ electronic/SpeciesInfo_core.cpp	(working copy)
+@@ -39,7 +39,7 @@
+     rCut = tau.r[iCut]; //align to grid point
+     double tauCut = tau.f[iCut];
+     double tauPrimeCut = (tau.f[iCut+1] - tau.f[iCut-1]) / (tau.r[iCut] * log(tau.r[iCut+1]/tau.r[iCut-1]));
+-	double f2 = -tauPrimeCut/(2.*rCut); assert(f2 > 0);
++	double f2 = -tauPrimeCut/(2.*rCut); myassert(f2 > 0);
+     double f0 = tauCut + f2*rCut*rCut;
+     for(size_t i=0; i<iCut; i++)
+         tau.f[i] = f0 - f2*tau.r[i]*tau.r[i];
+Index: electronic/Symmetries.cpp
+===================================================================
+--- electronic/Symmetries.cpp	(revision 1197)
++++ electronic/Symmetries.cpp	(working copy)
+@@ -196,7 +196,7 @@
+     int l = (X.nRows()/(nAtoms*spinorLength)-1)/2; //matrix dimension = (2l+1)*nAtoms*spinorLength
+     int orbCount = (2*l+1)*spinorLength;
+     int nTot = orbCount*nAtoms;
+-	assert(X.nCols()==nTot);
++	myassert(X.nCols()==nTot);
+     if(!l || sym.size()==1) return; //symmetries do nothing
+     const std::vector<matrix>& sym_l = getSphericalMatrices(l, specie->isRelativistic());
+     matrix result;
+@@ -546,7 +546,7 @@
+
+             for(unsigned iRot = 0; iRot<sym.size(); iRot++)
+             {	size_t a2 = plook.find(sym[iRot] * spInfo.atpos[a1]);
+-				assert(a2 != string::npos);
++				myassert(a2 != string::npos);
+                 atomMap[sp][a1][iRot] = a2;
+                 if(not spInfo.constraints[a1].isEquivalent(spInfo.constraints[a2], e->gInfo.R*sym[iRot]*inv(e->gInfo.R)))
+                     die("Species %s atoms %lu and %lu are related by symmetry "
+Index: electronic/Symmetries.h
+===================================================================
+--- electronic/Symmetries.h	(revision 1197)
++++ electronic/Symmetries.h	(working copy)
+@@ -53,6 +53,8 @@
+     void printKmap(FILE* fp) const; //!< print the k-point map (cached in kmap)
+
+     static matrix getSpinorRotation(const matrix3<>& rot); //calculate spinor rotation from Cartesian rotation matrix
++	bool shouldMoveAtoms;
++
+ private:
+     const Everything* e;
+     std::vector< matrix3<int> > sym; //!< symmetry matrices in covariant lattice coordinates
+@@ -67,7 +69,6 @@
+     friend class CommandDebug;
+
+     bool shouldPrintMatrices;
+-	bool shouldMoveAtoms;
+
+     void calcSymmetries(); //!< Calculate symmetries of the entire system
+
+Index: electronic/VanDerWaals.cpp
+===================================================================
+--- electronic/VanDerWaals.cpp	(revision 1197)
++++ electronic/VanDerWaals.cpp	(working copy)
+@@ -126,7 +126,7 @@
+     if(!e->iInfo.vdWenable) logPrintf("\tNOTE: vdW corrections apply only for interactions with fluid.\n");
+     for(size_t spIndex=0; spIndex<e->iInfo.species.size(); spIndex++)
+     {	const auto& sp = e->iInfo.species[spIndex];
+-		assert(sp->atomicNumber);
++		myassert(sp->atomicNumber);
+         if(sp->atomicNumber > atomicNumberMax) die("\tAtomic numbers > %i not supported!\n", atomicNumberMax);
+         const AtomParams& p = getParams(sp->atomicNumber, spIndex);
+         logPrintf("\t%2s:  C6: %7.2f Eh-a0^6  R0: %.3f a0%s\n", sp->name.c_str(), p.C6, p.R0,
+@@ -230,8 +230,8 @@
+         return AtomParams(1.,0.);
+     if(sp>=0 && e->iInfo.species[sp]->vdwOverride)
+         return *(e->iInfo.species[sp]->vdwOverride); //override from species if necessary
+-	assert(atomicNumber>0);
+-	assert(atomicNumber<=atomicNumberMax);
++	myassert(atomicNumber>0);
++	myassert(atomicNumber<=atomicNumberMax);
+     return atomParams[atomicNumber];
+ }
+
+Index: electronic/matrix.cpp
+===================================================================
+--- electronic/matrix.cpp	(revision 1197)
++++ electronic/matrix.cpp	(working copy)
+@@ -35,8 +35,8 @@
+ }
+
+ diagMatrix diagMatrix::operator()(int iStart, int iStop) const
+-{	assert(iStart>=0 && iStart<nRows());
+-	assert(iStop>iStart && iStop<=nRows());
++{	myassert(iStart>=0 && iStart<nRows());
++	myassert(iStop>iStart && iStop<=nRows());
+     int iDelta = iStop-iStart;
+     diagMatrix ret(iDelta);
+     for(int i=0; i<iDelta; i++) ret[i] = at(i+iStart);
+@@ -43,16 +43,16 @@
+     return ret;
+ }
+ void diagMatrix::set(int iStart, int iStop, const diagMatrix& m)
+-{	assert(iStart>=0 && iStart<nRows());
+-	assert(iStop>iStart && iStop<=nRows());
++{	myassert(iStart>=0 && iStart<nRows());
++	myassert(iStop>iStart && iStop<=nRows());
+     int iDelta = iStop-iStart;
+-	assert(iDelta==m.nRows());
++	myassert(iDelta==m.nRows());
+     for(int i=0; i<iDelta; i++) at(i+iStart) = m[i];
+ }
+ diagMatrix diagMatrix::operator()(int iStart, int iStep,  int iStop) const
+-{	assert(iStart>=0 && iStart<nRows());
+-	assert(iStop>iStart && iStop<=nRows());
+-	assert(iStep>0);
++{	myassert(iStart>=0 && iStart<nRows());
++	myassert(iStop>iStart && iStop<=nRows());
++	myassert(iStep>0);
+     int iDelta = ceildiv(iStop-iStart, iStep);
+     diagMatrix ret(iDelta);
+     for(int i=0; i<iDelta; i++) ret[i] = at(i*iStep+iStart);
+@@ -59,11 +59,11 @@
+     return ret;
+ }
+ void diagMatrix::set(int iStart, int iStep, int iStop, const diagMatrix& m)
+-{	assert(iStart>=0 && iStart<nRows());
+-	assert(iStop>iStart && iStop<=nRows());
+-	assert(iStep>0);
++{	myassert(iStart>=0 && iStart<nRows());
++	myassert(iStop>iStart && iStop<=nRows());
++	myassert(iStep>0);
+     int iDelta = ceildiv(iStop-iStart, iStep);
+-	assert(iDelta==m.nRows());
++	myassert(iDelta==m.nRows());
+     for(int i=0; i<iDelta; i++) at(i*iStep+iStart) = m[i];
+ }
+
+@@ -77,11 +77,11 @@
+ }
+
+ void diagMatrix::send(int dest, int tag) const
+-{	assert(mpiUtil->nProcesses()>1);
++{	myassert(mpiUtil->nProcesses()>1);
+     mpiUtil->send(data(), size(), dest, tag);
+ }
+ void diagMatrix::recv(int src, int tag)
+-{	assert(mpiUtil->nProcesses()>1);
++{	myassert(mpiUtil->nProcesses()>1);
+     mpiUtil->recv(data(), size(), src, tag);
+ }
+ void diagMatrix::bcast(int root)
+@@ -105,14 +105,14 @@
+ }
+ //Reshaping
+ void matrix::reshape(int nrows, int ncols)
+-{	assert(nrows>=0);
+-	assert(ncols>=0);
++{	myassert(nrows>=0);
++	myassert(ncols>=0);
+     size_t nProd = nr * nc; //current size
+     //Fill in missing dimensions if any:
+-	if(!nrows) { assert(ncols); nrows = nProd / ncols; }
+-	if(!ncols) { assert(nrows); ncols = nProd / nrows; }
++	if(!nrows) { myassert(ncols); nrows = nProd / ncols; }
++	if(!ncols) { myassert(nrows); ncols = nProd / nrows; }
+     //Update dimensions:
+-	assert(nrows * ncols == int(nProd));
++	myassert(nrows * ncols == int(nProd));
+     nr = nrows;
+     nc = ncols;
+ }
+@@ -177,14 +177,14 @@
+ //------------- Sub-matrices ------------------------
+
+ complex matrix::operator()(int i, int j) const
+-{	assert(i<nr and i>=0);
+-	assert(j<nc and j>=0);
++{	myassert(i<nr and i>=0);
++	myassert(j<nc and j>=0);
+     if(isOnGpu())
+     {	complex ret;
+         #ifdef GPU_ENABLED
+         cudaMemcpy(&ret, dataGpu()+index(i,j), sizeof(complex), cudaMemcpyDeviceToHost);
+         #else
+-		assert(!"onGpu=true without GPU_ENABLED");
++		myassert(!"onGpu=true without GPU_ENABLED");
+         #endif
+         return ret;
+     }
+@@ -198,12 +198,12 @@
+ {	if(iStart==0 && iStep==1 && iStop==nr && jStart==0 && jStep==1 && jStop==nc)
+         return *this; //faster to copy matrix for this special case
+
+-	assert(iStart>=0 && iStart<nr);
+-	assert(iStop>iStart && iStop<=nr);
+-	assert(iStep>0);
+-	assert(jStart>=0 || jStart<nc);
+-	assert(jStop>jStart || jStop<=nc);
+-	assert(jStep>0);
++	myassert(iStart>=0 && iStart<nr);
++	myassert(iStop>iStart && iStop<=nr);
++	myassert(iStep>0);
++	myassert(jStart>=0 || jStart<nc);
++	myassert(jStop>jStart || jStop<=nc);
++	myassert(jStep>0);
+
+     int iDelta = ceildiv(iStop-iStart, iStep), jDelta = ceildiv(jStop-jStart, jStep);
+     matrix ret(iDelta,jDelta, isGpuEnabled()); complex* retData = ret.dataPref(); const complex* thisData = this->dataPref();
+@@ -219,14 +219,14 @@
+
+
+ void matrix::set(int i, int j, complex m)
+-{	assert(i<nr and i>=0);
+-	assert(j<nc and j>=0);
++{	myassert(i<nr and i>=0);
++	myassert(j<nc and j>=0);
+     if(isOnGpu())
+     {
+         #ifdef GPU_ENABLED
+         cudaMemcpy(dataGpu()+index(i,j), &m, sizeof(complex), cudaMemcpyHostToDevice);
+         #else
+-		assert(!"onGpu=true without GPU_ENABLED");
++		myassert(!"onGpu=true without GPU_ENABLED");
+         #endif
+     }
+     else data()[index(i,j)] = m;
+@@ -236,15 +236,15 @@
+ void matrixSubSet_gpu(int nr, int iStart, int iStep, int iDelta, int jStart, int jStep, int jDelta, const complex* in, complex* out); //implemented in operators.cu
+ #endif
+ void matrix::set(int iStart, int iStep, int iStop, int jStart, int jStep, int jStop, const matrix& m)
+-{	assert(iStart>=0 && iStart<nr);
+-	assert(iStop>iStart && iStop<=nr);
+-	assert(iStep>0);
+-	assert(jStart>=0 || jStart<nc);
+-	assert(jStop>jStart || jStop<=nc);
+-	assert(jStep>0);
++{	myassert(iStart>=0 && iStart<nr);
++	myassert(iStop>iStart && iStop<=nr);
++	myassert(iStep>0);
++	myassert(jStart>=0 || jStart<nc);
++	myassert(jStop>jStart || jStop<=nc);
++	myassert(jStep>0);
+     int iDelta = ceildiv(iStop-iStart, iStep), jDelta = ceildiv(jStop-jStart, jStep);
+-	assert(iDelta==m.nr);
+-	assert(jDelta==m.nc);
++	myassert(iDelta==m.nr);
++	myassert(jDelta==m.nc);
+
+     const complex* mData = m.dataPref(); complex* thisData = this->dataPref();
+     #ifdef GPU_ENABLED
+@@ -309,9 +309,9 @@
+ {	static StopWatch watch("matrix::diagonalize");
+     watch.start();
+
+-	assert(nCols()==nRows());
++	myassert(nCols()==nRows());
+     int N = nRows();
+-	assert(N > 0);
++	myassert(N > 0);
+
+     //Check hermiticity
+     const complex* thisData = data();
+@@ -361,8 +361,8 @@
+     //Prepare inputs and outputs:
+     matrix A = *this; //destructible copy
+     int N = A.nRows();
+-	assert(N > 0);
+-	assert(A.nCols()==N);
++	myassert(N > 0);
++	myassert(A.nCols()==N);
+     eigs.resize(N);
+     levecs.init(N, N);
+     revecs.init(N, N);
+@@ -460,7 +460,7 @@
+ //----------------------- Arithmetic ---------------------
+
+ matrix operator*(const matrixScaledTransOp &m1st, const matrixScaledTransOp &m2st)
+-{	assert(m1st.nCols() == m2st.nRows());
++{	myassert(m1st.nCols() == m2st.nRows());
+     const matrix& m1 = m1st.mat;
+     const matrix& m2 = m2st.mat;
+     double scaleFac = m1st.scale * m2st.scale;
+@@ -472,7 +472,7 @@
+ }
+
+ matrix operator*(const diagMatrix& d, const matrix& m)
+-{	assert(d.nCols()==m.nRows());
++{	myassert(d.nCols()==m.nRows());
+     matrix ret(m); //copy input to output
+     //transfer the diagonal matrix to the GPU if required:
+     #ifdef GPU_ENABLED
+@@ -492,7 +492,7 @@
+ }
+
+ matrix operator*(const matrix& m, const diagMatrix& d)
+-{	assert(m.nCols()==d.nRows());
++{	myassert(m.nCols()==d.nRows());
+     matrix ret(m); //copy input to out
+     //Scale each column:
+     for(int j=0; j<ret.nCols(); j++)
+@@ -501,7 +501,7 @@
+ }
+
+ diagMatrix operator*(const diagMatrix& d1, const diagMatrix& d2)
+-{	assert(d1.nCols()==d2.nRows());
++{	myassert(d1.nCols()==d2.nRows());
+     diagMatrix ret(d1);
+     for(int i=0; i<ret.nRows(); i++) ret[i] *= d2[i]; //elementwise multiply
+     return ret;
+@@ -508,14 +508,14 @@
+ }
+
+ void axpy(double alpha, const diagMatrix& x, matrix& y)
+-{	assert(x.nRows()==y.nRows());
+-	assert(x.nCols()==y.nCols());
++{	myassert(x.nRows()==y.nRows());
++	myassert(x.nCols()==y.nCols());
+     complex* yData = y.data();
+     for(int i=0; i<y.nRows(); i++) yData[y.index(i,i)] += alpha * x[i];
+ }
+
+ void axpy(double alpha, const diagMatrix& x, diagMatrix& y)
+-{	assert(x.nRows()==y.nRows());
++{	myassert(x.nRows()==y.nRows());
+     for(int i=0; i<y.nRows(); i++) y[i] += alpha * x[i];
+ }
+
+@@ -523,7 +523,7 @@
+ matrix clone(const matrix& x) { return x; }
+
+ double dot(const diagMatrix& x, const diagMatrix& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     double ret = 0.;
+     for(size_t i=0; i<x.size(); i++)
+         ret += x[i]*y[i];
+@@ -551,8 +551,8 @@
+ {	static StopWatch watch("inv(matrix)");
+     watch.start();
+     int N = A.nRows();
+-	assert(N > 0);
+-	assert(N == A.nCols());
++	myassert(N > 0);
++	myassert(N == A.nCols());
+     matrix invA(A); //destructible copy
+     int ldA = A.nRows(); //leading dimension
+     std::vector<int> iPivot(N); //pivot info
+@@ -583,8 +583,8 @@
+
+     // Perform LU decomposition
+     int N = A.nRows();
+-	assert(N > 0);
+-	assert(N == A.nCols());
++	myassert(N > 0);
++	myassert(N == A.nCols());
+     matrix LU(A); //destructible copy
+     int ldA = A.nRows(); //leading dimension
+     std::vector<int> iPivot(N); //pivot info
+@@ -620,7 +620,7 @@
+
+ //Common implementation for the matrix nonlinear functions:
+ #define MATRIX_FUNC(code) \
+-	assert(A.nRows()==A.nCols()); \
++	myassert(A.nRows()==A.nCols()); \
+     matrix evecs; diagMatrix eigs(A.nRows()); \
+     A.diagonalize(evecs, eigs); \
+     std::vector<complex> eigOut(A.nRows()); \
+@@ -666,12 +666,12 @@
+ //Inverse of cis: get the Hermitian arg() of a unitary matrix
+ matrix cisInv(const matrix& A, matrix* Bevecs, diagMatrix* Beigs)
+ {	//Make sure A is unitary:
+-	assert(A.nRows()==A.nCols());
+-	assert(nrm2(A*dagger(A) - eye(A.nRows())) < 1e-10*sqrt(A.nData()));
++	myassert(A.nRows()==A.nCols());
++	myassert(nrm2(A*dagger(A) - eye(A.nRows())) < 1e-10*sqrt(A.nData()));
+     //Diagonalize:
+     matrix Alevecs, Arevecs; std::vector<complex> Aeigs;
+     A.diagonalize(Alevecs, Aeigs, Arevecs);
+-	assert(nrm2(Alevecs-Arevecs) < 1e-10*sqrt(A.nData()));
++	myassert(nrm2(Alevecs-Arevecs) < 1e-10*sqrt(A.nData()));
+     //Compute diagonal of result:
+     diagMatrix B(A.nRows());
+     for(int i=0; i<A.nRows(); i++)
+@@ -687,9 +687,9 @@
+
+ //Common implementation of the matrix nonlinear function gradients
+ #define MATRIX_FUNC_GRAD(code) \
+-	assert(gradIn.nRows()==gradIn.nCols()); \
+-	assert(Aevecs.nRows()==Aevecs.nCols()); \
+-	assert(Aevecs.nRows()==gradIn.nCols()); \
++	myassert(gradIn.nRows()==gradIn.nCols()); \
++	myassert(Aevecs.nRows()==Aevecs.nCols()); \
++	myassert(Aevecs.nRows()==gradIn.nCols()); \
+     matrix AevecsDag = dagger(Aevecs); \
+     \
+     matrix gradOut = AevecsDag * gradIn * Aevecs; \
+@@ -719,7 +719,7 @@
+ //---------------- Misc matrix ops --------------------
+
+ complex trace(const matrix &A)
+-{	assert(A.nRows() == A.nCols());
++{	myassert(A.nRows() == A.nCols());
+     const complex* Adata = A.data();
+     complex tr = 0.0;
+     for(int i=0; i<A.nRows(); i++)
+@@ -740,7 +740,7 @@
+ }
+
+ diagMatrix diag(const matrix &A)
+-{	assert(A.nRows()==A.nCols());
++{	myassert(A.nRows()==A.nCols());
+     diagMatrix ret(A.nRows());
+     const complex* Adata = A.data();
+     for(int i=0; i<A.nRows(); i++) ret[i] = Adata[A.index(i,i)].real();
+@@ -762,11 +762,11 @@
+ //------------ Block matrices ------------
+
+ tiledBlockMatrix::tiledBlockMatrix(const matrix& mBlock, int nBlocks, const std::vector<complex>* phaseArr) : mBlock(mBlock), nBlocks(nBlocks), phaseArr(phaseArr)
+-{	if(phaseArr) assert(nBlocks==int(phaseArr->size()));
++{	if(phaseArr) myassert(nBlocks==int(phaseArr->size()));
+ }
+
+ matrix tiledBlockMatrix::operator*(const matrix& other) const
+-{	assert(mBlock.nCols()*nBlocks == other.nRows());
++{	myassert(mBlock.nCols()*nBlocks == other.nRows());
+     matrix result(mBlock.nRows()*nBlocks, other.nCols(), isGpuEnabled());
+     //Dense matrix multiply for each block:
+     for(int iBlock=0; iBlock<nBlocks; iBlock++)
+Index: electronic/operators.cpp
+===================================================================
+--- electronic/operators.cpp	(revision 1197)
++++ electronic/operators.cpp	(working copy)
+@@ -137,7 +137,7 @@
+ #endif
+
+ ScalarFieldTilde lDivergence(const ScalarFieldTildeArray& in, int l)
+-{	assert(int(in.size()) == 2*l+1);
++{	myassert(int(in.size()) == 2*l+1);
+     ScalarFieldTilde out; nullToZero(out, in[0]->gInfo);
+     callPref(lDivergence)(in[0]->gInfo.S, constDataPref(in), out->dataPref(), l, in[0]->gInfo.G);
+     return out;
+@@ -197,7 +197,7 @@
+     //Gathering is equivalent to gathering with inverse rotation
+     //Scattered stores are faster than scattered loads (so implement scatter in terms of gather)
+     int mMeshDet = det(mMesh);
+-	assert(abs(mMeshDet)==1);
++	myassert(abs(mMeshDet)==1);
+     matrix3<int> mMeshInv = adjugate(mMesh)*mMeshDet; //inverse = adjugate*det since |det|=1
+     return pointGroupScatter(in, mMeshInv);
+ }
+@@ -311,13 +311,13 @@
+         for(const ScalarField& Vs: V)
+             Vtmp.push_back(Jdag(changeGrid(Idag(Vs), gInfoWfns), true));
+     const ScalarFieldArray& Vwfns = Vtmp.size() ? Vtmp : V;
+-	assert(Vwfns.size()==1 || Vwfns.size()==2 || Vwfns.size()==4);
+-	if(Vwfns.size()==2) assert(!C.isSpinor());
++	myassert(Vwfns.size()==1 || Vwfns.size()==2 || Vwfns.size()==4);
++	if(Vwfns.size()==2) myassert(!C.isSpinor());
+     if(Vwfns.size()==1 || Vwfns.size()==2)
+     {	threadLaunch(isGpuEnabled()?1:0, Idag_DiagV_I_sub, C.nCols(), &C, &Vwfns, &VC);
+     }
+     else //Vwfns.size()==4
+-	{	assert(C.isSpinor());
++	{	myassert(C.isSpinor());
+         complexScalarField VupDn = 0.5*Complex(Vwfns[2], Vwfns[3]);
+         complexScalarField VdnUp = conj(VupDn);
+         threadLaunch(isGpuEnabled()?1:0, Idag_DiagVmat_I_sub, C.nCols(), &C, &Vwfns[0], &Vwfns[1], &VupDn, &VdnUp, &VC);
+@@ -334,7 +334,7 @@
+ #endif
+ ColumnBundle L(const ColumnBundle &Y)
+ {	ColumnBundle LY = Y.similar();
+-	assert(Y.basis);
++	myassert(Y.basis);
+     const Basis& basis = *(Y.basis);
+     const matrix3<>& GGT = basis.gInfo->GGT;
+     int nSpinors = Y.spinorLength();
+@@ -354,7 +354,7 @@
+ #endif
+ ColumnBundle Linv(const ColumnBundle &Y)
+ {	ColumnBundle LinvY = Y.similar();
+-	assert(Y.basis);
++	myassert(Y.basis);
+     const Basis& basis = *(Y.basis);
+     const matrix3<>& GGT = basis.gInfo->GGT;
+     int nSpinors = Y.spinorLength();
+@@ -381,7 +381,7 @@
+     const vector3<int>* iGarr, double kdotGe, const vector3<> Ge);
+ #endif
+ ColumnBundle D(const ColumnBundle &Y, int iDir)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *(Y.basis);
+     ColumnBundle DY = Y.similar();
+     int nSpinors = Y.spinorLength();
+@@ -403,7 +403,7 @@
+     const vector3<int>* iGarr, double kdotGe1, double kdotGe2, const vector3<> Ge1, const vector3<> Ge2);
+ #endif
+ ColumnBundle DD(const ColumnBundle &Y, int iDir, int jDir)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *(Y.basis);
+     ColumnBundle DDY = Y.similar();
+     int nSpinors = Y.spinorLength();
+@@ -428,7 +428,7 @@
+     double KErollover, const matrix3<> GGT, const vector3<int>* iGarr, const vector3<> k, double invdetR);
+ #endif
+ ColumnBundle precond_inv_kinetic(const ColumnBundle &Y, double KErollover)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *Y.basis;
+     const matrix3<>& GGT = basis.gInfo->GGT;
+     int  nSpinors = Y.spinorLength();
+@@ -445,8 +445,8 @@
+ }
+
+ diagMatrix diagDot(const ColumnBundle& X, const ColumnBundle& Y)
+-{	assert(X.nCols()==Y.nCols());
+-	assert(X.basis==Y.basis);
++{	myassert(X.nCols()==Y.nCols());
++	myassert(X.basis==Y.basis);
+     diagMatrix ret(X.nCols());
+     const complex* Xdata = X.dataPref();
+     const complex* Ydata = Y.dataPref();
+@@ -464,9 +464,9 @@
+     const matrix3<>& GGT, const vector3<int>* iGarr, const vector3<>& k);
+ #endif
+ void precond_inv_kinetic_band(ColumnBundle& Y, const diagMatrix& KErefIn)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *Y.basis;
+-	assert(Y.nCols()==KErefIn.nCols());
++	myassert(Y.nCols()==KErefIn.nCols());
+     int nSpinors = Y.spinorLength();
+     //Adapt KEref array for spinors:
+     diagMatrix KEtmp;
+@@ -492,7 +492,7 @@
+ void translate_gpu(int nbasis, int ncols, complex* Y, const vector3<int>* iGarr, const vector3<>& k, const vector3<>& dr);
+ #endif
+ ColumnBundle translate(ColumnBundle&& Y, vector3<> dr)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *Y.basis;
+     int nSpinors = Y.spinorLength();
+     #ifdef GPU_ENABLED
+@@ -513,7 +513,7 @@
+ void translateColumns_gpu(int nbasis, int ncols, complex* Y, const vector3<int>* iGarr, const vector3<>& k, const vector3<>* dr);
+ #endif
+ void translateColumns(ColumnBundle& Y, const vector3<>* dr)
+-{	assert(Y.basis);
++{	myassert(Y.basis);
+     const Basis& basis = *Y.basis;
+     int nSpinors = Y.spinorLength();
+     callPref(translateColumns)(basis.nbasis, Y.nCols()*nSpinors, Y.dataPref(), basis.iGarrPref, Y.qnum->k, dr);
+@@ -534,9 +534,9 @@
+
+ // Returns trace(F*X^Y)
+ complex traceinner(const diagMatrix &F, const ColumnBundle &X, const ColumnBundle &Y)
+-{	assert(X.colLength()==Y.colLength());
+-	assert(X.nCols()==Y.nCols());
+-	assert(X.nCols()==F.nRows());
++{	myassert(X.colLength()==Y.colLength());
++	myassert(X.nCols()==Y.nCols());
++	myassert(X.nCols()==F.nRows());
+     complex result = 0.0;
+     for (int i=0; i < X.nCols(); i++)
+         result += F[i] * callPref(eblas_zdotc)(X.colLength(), X.dataPref()+X.index(i,0), 1, Y.dataPref()+Y.index(i,0), 1);
+@@ -572,7 +572,7 @@
+
+ // Collect all contributions from nSub into the first entry
+ void diagouterI_collect(size_t iStart, size_t iStop, std::vector<ScalarFieldArray>* nSub)
+-{	assert(!isGpuEnabled()); // this is needed and should be called only in CPU mode
++{	myassert(!isGpuEnabled()); // this is needed and should be called only in CPU mode
+     for(size_t s=0; s<(*nSub)[0].size(); s++)
+     {	//Get the data pointers for each piece in nSub:
+         int nThreads = nSub->size();
+@@ -590,10 +590,10 @@
+ ScalarFieldArray diagouterI(const diagMatrix &F,const ColumnBundle &X,  int nDensities, const GridInfo* gInfoOut)
+ {	static StopWatch watch("diagouterI"); watch.start();
+     //Check sizes:
+-	assert(F.nRows()==X.nCols());
+-	assert(nDensities==1 || nDensities==2 || nDensities==4);
+-	if(nDensities==2) assert(!X.isSpinor());
+-	if(nDensities==4) assert(X.isSpinor());
++	myassert(F.nRows()==X.nCols());
++	myassert(nDensities==1 || nDensities==2 || nDensities==4);
++	if(nDensities==2) myassert(!X.isSpinor());
++	if(nDensities==4) myassert(X.isSpinor());
+
+     //Collect the contributions for different sets of columns in separate scalar fields (one per thread):
+     int nThreads = isGpuEnabled() ? 1: nProcsAvailable;
+Index: electronic/operators_internal.h
+===================================================================
+--- electronic/operators_internal.h	(revision 1197)
++++ electronic/operators_internal.h	(working copy)
+@@ -28,7 +28,7 @@
+ //Copied from Util.h (which cannot be included here due to lack of CUDA C++11 support)
+ int assertStackTraceExit(const char* expr, const char* function, const char* file, long line);
+ #ifndef assert
+-#define assert(expr) (void)((expr) ? 0 : assertStackTraceExit(#expr, __func__, __FILE__, __LINE__))
++#define myassert(expr) (void)((expr) ? 0 : assertStackTraceExit(#expr, __func__, __FILE__, __LINE__))
+ #endif
+
+ //! Struct to wrap a fixed size array for passing to templated functions
+@@ -36,7 +36,7 @@
+ template<typename T, int N>
+ struct array
+ {	T arr[N];
+-	array(const std::vector<T>& vec) { assert(N==int(vec.size()));  for(int s=0; s<N; s++) arr[s]=vec[s]; }
++	array(const std::vector<T>& vec) { myassert(N==int(vec.size()));  for(int s=0; s<N; s++) arr[s]=vec[s]; }
+     __hostanddev__ array(T t=0) { for(int s=0; s<N; s++) arr[s]=t; }
+     __hostanddev__ T& operator[](int i) { return arr[i]; }
+     __hostanddev__ const T& operator[](int i) const { return arr[i]; }
+Index: fluid/Fex_ScalarEOS.cpp
+===================================================================
+--- fluid/Fex_ScalarEOS.cpp	(revision 1197)
++++ fluid/Fex_ScalarEOS.cpp	(working copy)
+@@ -32,10 +32,10 @@
+     double Rhs = 0.;
+     for(const auto& s: molecule.sites)
+         if(s->Rhs)
+-		{	assert(!Rhs); //Ensure single hard sphere site
++		{	myassert(!Rhs); //Ensure single hard sphere site
+             Rhs = s->Rhs;
+         }
+-	assert(Rhs);
++	myassert(Rhs);
+     Vhs = (4*M_PI/3) * pow(Rhs,3);
+
+     //Initialize the mean field kernel:
+Index: fluid/FluidComponent.cpp
+===================================================================
+--- fluid/FluidComponent.cpp	(revision 1197)
++++ fluid/FluidComponent.cpp	(working copy)
+@@ -85,7 +85,7 @@
+             case CustomAnion:
+             return Anion;
+         default:
+-			assert(!"Unknown component type");
++			myassert(!"Unknown component type");
+             return Solvent;
+     }
+ }
+@@ -113,6 +113,7 @@
+             case Octanol: return 5.646e-4;
+             case Glyme: return 8.586e-4;
+             case EthyleneGlycol: return 1.60e-3;
++			case CustomSolvent: return 5.e-3;  // HACK!
+             default: throw string("Not yet implemented.");
+         }
+     }
+@@ -452,6 +453,7 @@
+             pMol = 0.;
+             break;
+         }
++		case CustomSolvent: break;
+         case Hydronium:
+             case HydratedHydronium:
+         case CustomCation: break;
+@@ -577,7 +579,7 @@
+ }
+
+ void FluidComponent::addToFluidMixture(FluidMixture* fluidMixture)
+-{	assert(!idealGas);
++{	myassert(!idealGas);
+         const GridInfo& gInfo = fluidMixture->gInfo;
+     if(!molecule) molecule.setup(gInfo, Rvdw);
+
+@@ -602,19 +604,19 @@
+     //Initialize excess functional:
+     switch(functional)
+     {	case ScalarEOS:
+-			assert(eos);
++			myassert(eos);
+             fex = std::make_shared<Fex_ScalarEOS>(fluidMixture, this, *eos);
+             break;
+         case BondedVoids:
+-			assert(name == H2O);
++			myassert(name == H2O);
+             fex = std::make_shared<Fex_H2O_BondedVoids>(fluidMixture, this);
+             break;
+         case FittedCorrelations:
+-			assert(name == H2O);
++			myassert(name == H2O);
+             fex = std::make_shared<Fex_H2O_FittedCorrelations>(fluidMixture, this);
+             break;
+         case MeanFieldLJ:
+-			assert(molecule.sites[0]->Rhs > 0.);
++			myassert(molecule.sites[0]->Rhs > 0.);
+             fex = std::make_shared<Fex_LJ>(fluidMixture, this, epsLJ);
+             break;
+         case FunctionalNone:
+Index: fluid/FluidMixture.cpp
+===================================================================
+--- fluid/FluidMixture.cpp	(revision 1197)
++++ fluid/FluidMixture.cpp	(working copy)
+@@ -39,7 +39,7 @@
+ {	logPrintf("Adjusting fluid pressure to p=%lf bar\n", p/Bar);
+     //Compute the maximum possible density (core packed limit)
+     double Nguess=0., n3=0.;
+-	assert(component.size());
++	myassert(component.size());
+     for(const FluidComponent* c: component)
+     {	Nguess += c->Nbulk;
+         n3 += c->Nbulk * c->molecule.getVhs();
+@@ -46,7 +46,7 @@
+     }
+     const double mulStep = 0.99;
+     double Nstart = Nguess;
+-	if(n3 > mulStep) Nstart *= mulStep/n3; //ensure that mixtyure doesn;t exceed packing limit
++	if(n3 > mulStep) Nstart *= mulStep/n3; //ensure that mixture doesn't exceed packing limit
+     double pTest = compute_p(Nstart);
+     //Find an interval of N that brackets P:
+     double Nlo, Nhi;
+Index: fluid/FluidMixtureCompute.cpp
+===================================================================
+--- fluid/FluidMixtureCompute.cpp	(revision 1197)
++++ fluid/FluidMixtureCompute.cpp	(working copy)
+@@ -47,7 +47,7 @@
+ {	static StopWatch watch("FluidMixture::operator()"); watch.start();
+
+     //logPrintf("indep.size: %d nIndep: %d\n",indep.size(),nIndep);
+-	assert(indep.size()==get_nIndep());
++	myassert(indep.size()==get_nIndep());
+
+     //---------- Compute site densities from the independent variables ---------
+     ScalarFieldTildeArray Ntilde(nDensities); //site densities (in reciprocal space)
+Index: fluid/FluidSolver.cpp
+===================================================================
+--- fluid/FluidSolver.cpp	(revision 1197)
++++ fluid/FluidSolver.cpp	(working copy)
+@@ -115,7 +115,7 @@
+         coupling = std::make_shared<ConvCoupling>(fluidMixture, fsp.exCorr);
+
+         //Create van der Waals mixing functional
+-		assert(e.vanDerWaals);
++		myassert(e.vanDerWaals);
+         vdwCoupling = std::make_shared<VDWCoupling>(fluidMixture, atpos, e.vanDerWaals,
+             e.vanDerWaals->getScaleFactor(fsp.exCorr.getName(), fsp.vdwScale));
+
+@@ -244,7 +244,7 @@
+
+     double get_Adiel_and_grad_internal(ScalarFieldTilde& Adiel_rhoExplicitTilde, ScalarFieldTilde& Adiel_nCavityTilde, IonicGradient* extraForces, bool electricOnly) const
+     {
+-		assert(this->Adiel_rhoExplicitTilde); //Ensure that set() was called before calling get_Adiel_and_grad()
++		myassert(this->Adiel_rhoExplicitTilde); //Ensure that set() was called before calling get_Adiel_and_grad()
+         Adiel_rhoExplicitTilde = clone(this->Adiel_rhoExplicitTilde);
+         Adiel_nCavityTilde = 0; //clear previous, accumulate below
+         if(extraForces) extraForces->init(e.iInfo);
+@@ -359,7 +359,7 @@
+         case FluidClassicalDFT:
+             return new ConvolutionJDFT(e, fsp);
+         default:
+-			assert(!"Unknown fluid type");
++			myassert(!"Unknown fluid type");
+             return 0;
+     }
+ }
+Index: fluid/FluidSolverParams.cpp
+===================================================================
+--- fluid/FluidSolverParams.cpp	(revision 1197)
++++ fluid/FluidSolverParams.cpp	(working copy)
+@@ -68,7 +68,7 @@
+
+ void FluidSolverParams::setPCMparams()
+ {
+-	assert(solvents.size()==1);
++	myassert(solvents.size()==1);
+
+     //Set PCM fit parameters:
+     switch(pcmVariant)
+@@ -95,7 +95,7 @@
+                     initWarnings += "WARNING: SALSA has not been parametrized for this solvent, using 1.0 as the Van der Waals scale factor!\n";
+                     break;
+             }
+-			assert(fluidType == FluidSaLSA);
++			myassert(fluidType == FluidSaLSA);
+             break;
+         }
+         case PCM_CANDLE:
+@@ -134,7 +134,7 @@
+                         initWarnings += "WARNING: CANDLE LinearPCM has not been parametrized for this solvent, using fit parameters for water\n";
+                     break;
+             }
+-			assert(fluidType == FluidLinearPCM);
++			myassert(fluidType == FluidLinearPCM);
+             break;
+         }
+         case PCM_SGA13:
+@@ -333,7 +333,7 @@
+             break;
+         }
+         case_PCM_SCCS_any:
+-		{	assert(fluidType == FluidLinearPCM);
++		{	myassert(fluidType == FluidLinearPCM);
+             if(solvents[0]->name != FluidComponent::H2O)
+             {	initWarnings +=
+                     "WARNING: SCCS varinats have not been parametrized for this solvent; using water parameters\n";
+Index: fluid/IdealGas.h
+===================================================================
+--- fluid/IdealGas.h	(revision 1197)
++++ fluid/IdealGas.h	(working copy)
+@@ -56,7 +56,7 @@
+     //! the implicit dependence through N is handled by FluidMixture.
+     virtual double compute(const ScalarField* indep, const ScalarField* N, ScalarField* Phi_N, const double Nscale, double& Phi_Nscale) const=0;
+
+-	//! Compute Phi_indep, the total gradients w.r.t indep, given th egradients of the entire
++	//! Compute Phi_indep, the total gradients w.r.t indep, given the gradients of the entire
+     //! functional w.r.t site densities, Phi_N,  and polarization density G=0 Phi_P0.
+     //! Nscale will be the same as in compute()
+     virtual void convertGradients(const ScalarField* indep, const ScalarField* N, const ScalarField* Phi_N, const vector3<>& Phi_P0, ScalarField* Phi_indep, const double Nscale) const=0;
+Index: fluid/IdealGasMonoatomic.cpp
+===================================================================
+--- fluid/IdealGasMonoatomic.cpp	(revision 1197)
++++ fluid/IdealGasMonoatomic.cpp	(working copy)
+@@ -21,7 +21,7 @@
+ #include <core/BlasExtra.h>
+
+ IdealGasMonoatomic::IdealGasMonoatomic(const FluidMixture* fluidMixture, const FluidComponent* comp): IdealGas(1,fluidMixture,comp)
+-{	assert(molecule.isMonoatomic()); //IdealGasMonoatomic must be used only with single site molecules.
++{	myassert(molecule.isMonoatomic()); //IdealGasMonoatomic must be used only with single site molecules.
+ }
+
+ void IdealGasMonoatomic::initState(const ScalarField* Vex, ScalarField* psi, double scale, double Elo, double Ehi) const
+Index: fluid/Molecule.cpp
+===================================================================
+--- fluid/Molecule.cpp	(revision 1197)
++++ fluid/Molecule.cpp	(working copy)
+@@ -386,7 +386,7 @@
+     }
+     //correct for double counting:
+     for(auto& bondEntry: bond)
+-	{	assert(bondEntry.second % 2 == 0);
++	{	myassert(bondEntry.second % 2 == 0);
+         bondEntry.second /= 2;
+     }
+     return bond;
+Index: fluid/NonlinearPCM.cpp
+===================================================================
+--- fluid/NonlinearPCM.cpp	(revision 1197)
++++ fluid/NonlinearPCM.cpp	(working copy)
+@@ -58,7 +58,7 @@
+     //Check and setup ionic screening:
+     if(fsp.cations.size() > 1) die("NonlinearPCM currently only supports a single cationic component.\n");
+     if(fsp.anions.size() > 1) die("NonlinearPCM currently only supports a single anionic component.\n");
+-	assert(fsp.anions.size() == fsp.cations.size()); //this should be ensured by charge neutrality check in FluidSolver constructor
++	myassert(fsp.anions.size() == fsp.cations.size()); //this should be ensured by charge neutrality check in FluidSolver constructor
+     if(fsp.cations.size())
+     {	//Ensure charge balanced:
+         if(fabs(fsp.cations[0]->molecule.getCharge() + fsp.anions[0]->molecule.getCharge())>1e-12)
+Index: fluid/PCM_internal.cpp
+===================================================================
+--- fluid/PCM_internal.cpp	(revision 1197)
++++ fluid/PCM_internal.cpp	(working copy)
+@@ -103,7 +103,7 @@
+         nullToZero(nEx, n->gInfo);
+         ScalarField nEx_nBar, nEx_DnBarSq;
+         if(A_n)
+-		{	assert(A_nEx);
++		{	myassert(A_nEx);
+             nullToZero(nEx_nBar, n->gInfo);
+             nullToZero(nEx_DnBarSq, n->gInfo);
+         }
+Index: fluid/S2quad.cpp
+===================================================================
+--- fluid/S2quad.cpp	(revision 1197)
++++ fluid/S2quad.cpp	(working copy)
+@@ -29,7 +29,7 @@
+     tmpEuler[2] = s1phase; //S1 phase guess is the third euler angle
+     euler.push_back(tmpEuler);
+     //Add the weight
+-	assert(relWeight > 0.);
++	myassert(relWeight > 0.);
+     weight.push_back(relWeight);
+ }
+
+@@ -39,7 +39,7 @@
+ nAlpha(nAlphaIn ? nAlphaIn : 2*nBeta),
+ nGamma(nGammaIn ? nGammaIn : 2*nBeta)
+ {
+-	assert(nBeta>0);
++	myassert(nBeta>0);
+
+     //Create a nBeta-point Gauss-Legendre quadrature for cos(beta) in [-1,1]
+     gsl_integration_glfixed_table* glTable = gsl_integration_glfixed_table_alloc(nBeta);
+Index: fluid/SO3quad.cpp
+===================================================================
+--- fluid/SO3quad.cpp	(revision 1197)
++++ fluid/SO3quad.cpp	(working copy)
+@@ -116,7 +116,7 @@
+     nS1 = nS1byZn * Zn; //round up to nearest multiple of Zn
+     eulerS2 = s2quad.euler; //copy over S2 quadrature nodes
+     weightS2 = s2quad.weight; //copy over weights
+-	assert(eulerS2.size()==weightS2.size());
++	myassert(eulerS2.size()==weightS2.size());
+     logPrintf("   Generating SO(3)/Z%d quadrature for '%s' with %d nodes:\n", Zn, molecule.name.c_str(), nOrientations());
+
+     //Normalize weights including S1 multiplicity:
+Index: fluid/SaLSA.cpp
+===================================================================
+--- fluid/SaLSA.cpp	(revision 1197)
++++ fluid/SaLSA.cpp	(working copy)
+@@ -150,8 +150,8 @@
+     logPrintf("   Bulk dielectric-constant: %lg", epsBulk);
+     if(k2factor > GzeroTol) logPrintf("   screening-length: %lg bohrs.\n", sqrt(epsBulk/k2factor));
+     else logPrintf("\n");
+-	if(fsp.lMax >= 1) assert(fabs(epsBulk-this->epsBulk) < 1e-3); //verify consistency of correlation factors
+-	assert(fabs(k2factor-this->k2factor) < 1e-3); //verify consistency of site charges
++	if(fsp.lMax >= 1) myassert(fabs(epsBulk-this->epsBulk) < 1e-3); //verify consistency of correlation factors
++	myassert(fabs(k2factor-this->k2factor) < 1e-3); //verify consistency of site charges
+
+     //Initialize preconditioner kernel:
+     std::vector<double> KkernelSamples(nGradial);
+Index: jdftx.cpp
+===================================================================
+--- jdftx.cpp	(revision 1197)
++++ jdftx.cpp	(working copy)
+@@ -25,6 +25,7 @@
+ #include <electronic/LatticeMinimizer.h>
+ #include <electronic/InverseKohnSham.h>
+ #include <electronic/Vibrations.h>
++#include <electronic/VerletMD.h>
+ #include <fluid/FluidSolver.h>
+ #include <core/Util.h>
+ #include <commands/parser.h>
+@@ -82,6 +83,11 @@
+         LatticeMinimizer lmin(e);
+         lmin.minimize(e.latticeMinParams);
+     }
++	else if(e.verletParams.tMax)
++	{	//Molecular Dynamics with Verlet algorithm
++		VerletMD verlet(e);
++		verlet.run();
++	}
+     else
+     {	//Ionic minimization loop (which calls electron/fluid minimization loops)
+         IonicMinimizer imin(e);
+Index: phonon/Phonon.cpp
+===================================================================
+--- phonon/Phonon.cpp	(revision 1197)
++++ phonon/Phonon.cpp	(working copy)
+@@ -84,7 +84,7 @@
+         }
+         iter1++;
+     }
+-	assert(nSymmetrizedCells == cellMap.size());
++	myassert(nSymmetrizedCells == cellMap.size());
+     //--- enforce translational invariance:
+     matrix omegaSqSum;
+     for(const matrix& M: omegaSq)
+@@ -251,10 +251,10 @@
+ }
+
+ void BlockRotationMatrix::set(int rowBlock, int colBlock, const matrix& rot)
+-{	assert(rowBlock >= 0 && rowBlock < nBlocks);
+-	assert(colBlock >= 0 && colBlock < nBlocks);
+-	assert(rot.nRows() == blockSize);
+-	assert(rot.nCols() == blockSize);
++{	myassert(rowBlock >= 0 && rowBlock < nBlocks);
++	myassert(colBlock >= 0 && colBlock < nBlocks);
++	myassert(rot.nRows() == blockSize);
++	myassert(rot.nCols() == blockSize);
+     colOffset[rowBlock] = colBlock;
+     rots[rowBlock] = rot;
+ }
+@@ -265,7 +265,7 @@
+         bool myRot = colOffset[rowBlock]>=0;
+         int haveRot = (myRot ? 1 : 0);
+         mpiUtil->allReduce(haveRot, MPIUtil::ReduceSum);
+-		assert(haveRot == 1);
++		myassert(haveRot == 1);
+         //Reduce:
+         mpiUtil->allReduce(colOffset[rowBlock], MPIUtil::ReduceMax);
+         if(!myRot) rots[rowBlock] = zeroes(blockSize, blockSize);
+@@ -275,8 +275,8 @@
+
+ matrix BlockRotationMatrix::transform(const matrix& in) const
+ {	int matSize = blockSize * nBlocks;
+-	assert(in.nRows() == matSize);
+-	assert(in.nCols() == matSize);
++	myassert(in.nRows() == matSize);
++	myassert(in.nCols() == matSize);
+     //First perform the left multiply by rot:
+     matrix temp = zeroes(matSize, matSize);
+     for(int rowBlock=0; rowBlock<nBlocks; rowBlock++)
+Index: phonon/Phonon_init.cpp
+===================================================================
+--- phonon/Phonon_init.cpp	(revision 1197)
++++ phonon/Phonon_init.cpp	(working copy)
+@@ -222,7 +222,7 @@
+             }
+             projTot += proj[iPert];
+         }
+-		assert(nrm2(projTot - eye(nPert)) < symmThreshold);
++		myassert(nrm2(projTot - eye(nPert)) < symmThreshold);
+         //only select perturbations with distinct subspace projections:
+         std::vector<bool> irred(nPert, true); //whether each perturbation is in irreducible set
+         for(int iPert=0; iPert<nPert; iPert++)
+@@ -263,7 +263,7 @@
+                 kpoints.push_back(kpoint);
+             }
+         }
+-		assert(int(kpoints.size()) == prodSup);
++		myassert(int(kpoints.size()) == prodSup);
+         //Initialize basis and qnum for these states:
+         std::vector<QuantumNumber> qnums(prodSup);
+         std::vector<Basis> basis(prodSup);
+Index: phonon/Phonon_supercell.cpp
+===================================================================
+--- phonon/Phonon_supercell.cpp	(revision 1197)
++++ phonon/Phonon_supercell.cpp	(working copy)
+@@ -91,7 +91,7 @@
+             nqPrev[qSup]++;
+             stateMap.push_back(sme);
+         }
+-	for(int nq: nqPrev) assert(nq == prodSup); //each supercell k-point must be mapped to prod(sup) unit cell kpoints
++	for(int nq: nqPrev) myassert(nq == prodSup); //each supercell k-point must be mapped to prod(sup) unit cell kpoints
+
+     //Map corresponding basis objects:
+     std::vector< matrix3<int> > sym = e.symm.getMatrices();
+@@ -164,7 +164,7 @@
+         for(iModeStart=0; iModeStart<modes.size(); iModeStart++)
+             if(mode.sp==modes[iModeStart].sp && mode.at==modes[iModeStart].at)
+                 break;
+-		assert(iModeStart+3 <= modes.size());
++		myassert(iModeStart+3 <= modes.size());
+
+         //Accumulate dgrad contributions:
+         for(unsigned sp2=0; sp2<eSup->iInfo.species.size(); sp2++)
+@@ -202,7 +202,7 @@
+         if(Hsub) Hsub->resize(nSpins);
+         for(int s=0; s<nSpins; s++)
+         {	int qSup = s*(eSup->eInfo.nStates/nSpins); //Gamma point is always first in the list for each spin
+-			assert(eSup->eInfo.qnums[qSup].k.length_squared() == 0); //make sure that above is true
++			myassert(eSup->eInfo.qnums[qSup].k.length_squared() == 0); //make sure that above is true
+             if(eSup->eInfo.isMine(qSup))
+             {	//Initialize outputs:
+                 (*Hsub)[s] = zeroes(nBandsSup, nBandsSup);
+Index: tests/ElectrostaticRadius.cpp
+===================================================================
+--- tests/ElectrostaticRadius.cpp	(revision 1197)
++++ tests/ElectrostaticRadius.cpp	(working copy)
+@@ -71,7 +71,7 @@
+         RadialFunctionR jl(rArr, dlogr);
+         for(unsigned i=0; i<Garr.size(); i++)
+         {	const double& G = Garr[i];
+-			assert(G > 0);
++			myassert(G > 0);
+             //Create radial part in real space:
+             for(unsigned j=0; j<rArr.size(); j++)
+             {	const double& r = rArr[j];
+@@ -104,10 +104,10 @@
+ void reduceGplanar(const ScalarFieldTilde& x, matrix& xRed)
+ {	const GridInfo& gInfo = x->gInfo;
+     int nG = xRed.nRows()/2;
+-	assert(xRed.nCols() == 1);
+-	assert(gInfo.S[0] == 1);
+-	assert(gInfo.S[1] == 1);
+-	assert(gInfo.S[2] > nG);
++	myassert(xRed.nCols() == 1);
++	myassert(gInfo.S[0] == 1);
++	myassert(gInfo.S[1] == 1);
++	myassert(gInfo.S[2] > nG);
+     callPref(eblas_copy)(xRed.dataPref(), x->dataPref()+1, nG);
+     callPref(eblas_copy)(xRed.dataPref()+nG, x->dataPref()+1, nG);
+     callPref(eblas_dscal)(nG, -1., ((double*)(xRed.dataPref()+nG))+1, 2); //negate the imaginary parts (complex conjugate if inversion symmetry employed)
+@@ -115,10 +115,10 @@
+
+ ScalarField IexpandGplanar(const matrix& xRed, const GridInfo& gInfo, double sigma=0.)
+ {	int nG = xRed.nRows()/2;
+-	assert(xRed.nCols() == 1);
+-	assert(gInfo.S[0] == 1);
+-	assert(gInfo.S[1] == 1);
+-	assert(gInfo.S[2] > nG);
++	myassert(xRed.nCols() == 1);
++	myassert(gInfo.S[0] == 1);
++	myassert(gInfo.S[1] == 1);
++	myassert(gInfo.S[2] > nG);
+     ScalarFieldTilde x; nullToZero(x, gInfo);
+     callPref(eblas_copy)(x->dataPref()+1, xRed.dataPref(), nG);
+     if(sigma) x = gaussConvolve(x, sigma);
+@@ -133,7 +133,7 @@
+     Everything e;
+     parse(readInputFile(argv[1]), e);
+     //Skip reading the wavefunctions and initialzing empty states to save time:
+-	assert(e.dump.polarizability);
++	myassert(e.dump.polarizability);
+     Polarizability& pol = *e.dump.polarizability;
+     int nV = e.eInfo.nElectrons/2;
+     int nC = e.eInfo.nBands - nV;
+@@ -163,7 +163,7 @@
+     logPrintf("Diagonalizing polarizability\n");
+     {	matrix Xext_evecs; diagMatrix Xext_eigs;
+         Xext.diagonalize(Xext_evecs, Xext_eigs);
+-		diagMatrix Xext_eigsSqrt = Xext_eigs; for(double& x: Xext_eigsSqrt) { assert(x<0); x = sqrt(-x); }
++		diagMatrix Xext_eigsSqrt = Xext_eigs; for(double& x: Xext_eigsSqrt) { myassert(x<0); x = sqrt(-x); }
+         V = V * (Xext_evecs * Xext_eigsSqrt);
+     }
+
+Index: tests/SphericalChi.cpp
+===================================================================
+--- tests/SphericalChi.cpp	(revision 1197)
++++ tests/SphericalChi.cpp	(working copy)
+@@ -167,7 +167,7 @@
+     Everything e;
+     parse(readInputFile(argv[1]), e);
+     //Skip reading the wavefunctions and initialzing empty states to save time:
+-	assert(e.dump.polarizability);
++	myassert(e.dump.polarizability);
+     Polarizability& pol = *e.dump.polarizability;
+     int nV = e.eInfo.nElectrons/2;
+     int nC = e.eInfo.nBands - nV;
+Index: wannier/WannierMinimizer.cpp
+===================================================================
+--- wannier/WannierMinimizer.cpp	(revision 1197)
++++ wannier/WannierMinimizer.cpp	(working copy)
+@@ -34,7 +34,7 @@
+
+ WannierGradient clone(const WannierGradient& grad) { return grad; }
+ double dot(const WannierGradient& x, const WannierGradient& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     double result = 0.;
+     for(unsigned ik=x.ikStart(); ik<x.ikStop(); ik++)
+     {	result += dotc(x[ik], y[ik]).real();
+@@ -55,7 +55,7 @@
+     return x;
+ }
+ void axpy(double alpha, const WannierGradient& x, WannierGradient& y)
+-{	assert(x.size()==y.size());
++{	myassert(x.size()==y.size());
+     for(unsigned ik=x.ikStart(); ik<x.ikStop(); ik++)
+         axpy(alpha, x[ik], y[ik]);
+ }
+@@ -79,7 +79,7 @@
+ //---- energy/gradient functions required by Minimizable<WannierGradient> -----
+
+ void WannierMinimizer::step(const WannierGradient& grad, double alpha)
+-{	assert(grad.wmin == this);
++{	myassert(grad.wmin == this);
+     for(unsigned ik=ikStart; ik<ikStop; ik++)
+         axpy(alpha, grad[ik], kMesh[ik].B);
+ }
+@@ -219,7 +219,7 @@
+     /* Pick source ColumnBundle: */ \
+     int q = kpoint.iReduced + iSpin*qCount; \
+     const ColumnBundle& Cin = e.eInfo.isMine(q) ? e.eVars.C[q] : Cother[q]; \
+-	assert(Cin); \
++	myassert(Cin); \
+     const ColumnBundle* C = &Cin; \
+
+ void WannierMinimizer::axpyWfns(double alpha, const matrix& A, const WannierMinimizer::Kpoint& kpoint, int iSpin, ColumnBundle& result) const
+@@ -233,7 +233,7 @@
+         C = &Cout;
+     }
+     //Scatter from reduced basis to common basis with transformations:
+-	assert(C->nCols() == result.nCols());
++	myassert(C->nCols() == result.nCols());
+     transform.scatterAxpy(alpha, *C, result,0,1);
+     watch.stop();
+ }
+@@ -308,7 +308,7 @@
+             if(ao.numericalOrbIndex >= 0)
+             {	const ColumnBundle& Cnum = *(numericalOrbitals.find(kpoint)->second);
+                 //Apply offset to selected column:
+-				assert(ao.numericalOrbIndex < Cnum.nCols());
++				myassert(ao.numericalOrbIndex < Cnum.nCols());
+                 temp = translate(Cnum.getSub(ao.numericalOrbIndex,ao.numericalOrbIndex+1), ao.r);
+                 //Accumulate to result
+                 callPref(eblas_zaxpy)(ret.colLength(), ao.coeff, temp.dataPref(),1, retData,1);
+@@ -338,8 +338,8 @@
+             }
+             const RadialFunctionG& atRadial = (ao.sp<0) ? hRadial : e.iInfo.species[ao.sp]->OpsiRadial->at(od.l)[od.n];
+             //--- Initialize the projector:
+-			assert(od.s < nSpinor);
+-			if(nSpinor > 1) { temp.zero(); assert(od.spinType==SpinZ); } //The relativistic orbitals must be handled above via atom-centered orbitals
++			myassert(od.s < nSpinor);
++			if(nSpinor > 1) { temp.zero(); myassert(od.spinType==SpinZ); } //The relativistic orbitals must be handled above via atom-centered orbitals
+             callPref(Vnl)(basis.nbasis, basis.nbasis, 1, od.l, od.m, kpoint.k, basis.iGarrPref, e.gInfo.G, pos, atRadial, temp.dataPref()+od.s*basis.nbasis);
+             if(ao.sp < 0) hRadial.free();
+             //--- Accumulate to trial orbital:
+Index: wannier/WannierMinimizerFD.cpp
+===================================================================
+--- wannier/WannierMinimizerFD.cpp	(revision 1197)
++++ wannier/WannierMinimizerFD.cpp	(working copy)
+@@ -269,7 +269,7 @@
+
+ WannierGradient WannierMinimizerFD::precondition(const WannierGradient& grad)
+ {	static StopWatch watch("WannierMinimizerFD::precondition"); watch.start();
+-	assert(grad.size()==kMesh.size());
++	myassert(grad.size()==kMesh.size());
+     WannierGradient Kgrad = grad;
+     constrain(Kgrad);
+     if(!kHelmholtzInv) //helmholtz preconditioning is disabled
+Index: wannier/WannierMinimizer_save.cpp
+===================================================================
+--- wannier/WannierMinimizer_save.cpp	(revision 1197)
++++ wannier/WannierMinimizer_save.cpp	(working copy)
+@@ -584,7 +584,7 @@
+             if(roundErr < symmThreshold) //integral => commensurate with supercell
+                 ikArr.push_back(ik);
+         }
+-		assert(int(ikArr.size()) == prodPhononSup);
++		myassert(int(ikArr.size()) == prodPhononSup);
+         //--- generate pairs of commensurate k-points along with pointer to Wannier rotation
+         struct KpointPair { vector3<> k1, k2; int ik1, ik2; };
+         std::vector<KpointPair> kpointPairs; //pairs of k-points in the same order as matrices in phononHsub

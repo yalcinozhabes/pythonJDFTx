@@ -10,7 +10,7 @@ from Cython.Build import cythonize
 
 # Use parallel compilation on this number of cores.
 nthreads = int(os.environ.get('COMPILE_NTHREADS', 0))
-nthreads = 1
+nthreads = 2
 
 def make_extension(ext_name, ext_libraries=(), is_directory=False):
     ext_path = ext_name
@@ -22,7 +22,7 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
         include_dirs=(["../../jdftx", "."]),
         language="c++",
         libraries=ext_libraries,
-        library_dirs=["/home/zatarra/JDFT_latest/build"],
+        library_dirs=["../"],
         extra_compile_args=['-std=c++11'],
         #depends=["jdftx/libjdftx.so"],
     )
@@ -32,7 +32,7 @@ extensions = [
 ]
 
 setup(**{
-    "name": "PyDFT",
+    "name": "pythonJDFTx",
     "packages": [
         "core",
         "electronic",
