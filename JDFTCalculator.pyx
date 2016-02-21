@@ -18,6 +18,7 @@ from electronic.Dump cimport DumpFrequency, DumpFreq_End, DumpVariable, DumpNone
 from electronic.ElecInfo cimport QuantumNumber
 # from electronic.ExCorr cimport ExCorr
 from core.MPIUtil cimport MPIUtil
+from core.Thread cimport *
 from core.Util cimport *
 from core.GridInfo cimport GridInfo
 from core.Coulomb cimport CoulombParams
