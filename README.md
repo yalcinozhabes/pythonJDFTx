@@ -1,5 +1,5 @@
 pythonJDFTx
-===========================
+===========
 This is a computational quantum chemistry tool, written in [Cython](http://cython.org),
 which brings a fast C++ package (`JDFTx`)
 to the Python environment where lots of fun stuff happen.
@@ -18,10 +18,10 @@ only Joint Density Functional Theory but many other theories to understand and e
 physical phenomena much easily.
 
 Technical details
-===========================
+=================
 
 Installation
----------------------------
+------------
 `pythonJDFTx` needs both ASE and JDFTx installed on your computer. Right now, it has not
 been tested in Python 2.7 (works in Python 3.4). Also small changes in `JDFTx` is needed
 to make some class variables and methods public and accessible in Python. You can find a
@@ -36,7 +36,7 @@ modification if you cloned this folder in your `build` directory.
     python3 setup.py build_ext --inplace
 
 Pseudopotential Files
----------------------------
+---------------------
 Support for Ultrasoft Pseudopotential format has been implemented. Support for
 norm conserving pseudo-potentials is under development. `pythonJDFTx` looks for
 an environmental variable, `PSEUDOPOT_HOME`, at runtime. Make sure this variable shows
