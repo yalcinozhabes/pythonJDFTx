@@ -7,18 +7,29 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake-Modules/")
 #Package configuration:
 set(CPACK_PACKAGE_NAME "JDFTx")
 set(CPACK_PACKAGE_DESCRIPTION "The playground for joint density functional theory")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "R&D code from the Arias group @ Cornell Physics")
-set(CPACK_PACKAGE_VERSION_MAJOR "0")
-set(CPACK_PACKAGE_VERSION_MINOR "99")
-set(CPACK_PACKAGE_VERSION_PATCH "alpha")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Toolkit for rapid development of density-functional methods")
+set(CPACK_PACKAGE_VERSION_MAJOR "1")
+set(CPACK_PACKAGE_VERSION_MINOR "0")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(VERSION_STRING "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
-#Get the subversion revision number
-find_package(Subversion)
-if(Subversion_FOUND)
-        Subversion_WC_INFO(${CMAKE_CURRENT_SOURCE_DIR} ER)
-        set(SUBVERSION_REVISION ${ER_WC_REVISION})
-        message(STATUS "SVN revision number: ${SUBVERSION_REVISION}")
+#Get revision information
+find_package(Git)
+if(GIT_FOUND)
+	execute_process(
+		COMMAND ${GIT_EXECUTABLE} rev-parse --is-inside-work-tree
+		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+		OUTPUT_VARIABLE IS_GIT
+		ERROR_QUIET
+		OUTPUT_STRIP_TRAILING_WHITESPACE)
+	if("true" STREQUAL "${IS_GIT}")	
+		execute_process(
+			COMMAND ${GIT_EXECUTABLE} log -1 --format=%h
+			WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+			OUTPUT_VARIABLE GIT_HASH
+			OUTPUT_STRIP_TRAILING_WHITESPACE)
+		message(STATUS "Git revision hash: ${GIT_HASH}")
+	endif()
 endif()
 
 find_package(GSL REQUIRED)
@@ -84,15 +95,24 @@ check_cxx_compiler_flag(-Wno-unused-result HAS_NO_UNUSED_RESULT)
 if(HAS_NO_UNUSED_RESULT)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-result")
 endif()
-#--- Link-time optimizations (GCC)
-check_cxx_compiler_flag(-flto HAS_FLTO)
-if(HAS_FLTO)
-	set(JDFTX_CPU_FLAGS "${JDFTX_CPU_FLAGS} -flto")
+#--- Link-time optimizations (GCC / CLang)
+if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU") OR ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang"))
+	check_cxx_compiler_flag(-flto HAS_FLTO)
+	if(HAS_FLTO)
+		set(JDFTX_CPU_FLAGS "${JDFTX_CPU_FLAGS} -flto")
+	endif()
 endif()
 #--- Link-time optimizations (ICC)
-check_cxx_compiler_flag(-ipo HAS_IPO)
-if(HAS_IPO)
-	set(JDFTX_CPU_FLAGS "${JDFTX_CPU_FLAGS} -ipo")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+	check_cxx_compiler_flag(-ipo HAS_IPO)
+	if(HAS_IPO)
+		set(JDFTX_CPU_FLAGS "${JDFTX_CPU_FLAGS} -ipo")
+	endif()
+endif()
+#--- Template recursion depth (more needed in Clang)
+check_cxx_compiler_flag(-ftemplate-depth-512 HAS_TEMPLATE_DEPTH)
+if(HAS_TEMPLATE_DEPTH)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth-512")
 endif()
 
 #Architecture dependent optimizations
@@ -134,7 +154,6 @@ add_library(jdftxlib SHARED ${jdftxlibSources})
 target_link_libraries(jdftxlib ${EXTERNAL_LIBS})
 set_target_properties(jdftxlib PROPERTIES OUTPUT_NAME "jdftx")
 set_JDFTx_flags(jdftxlib OFF)
-install(TARGETS jdftxlib DESTINATION lib/)
 
 #--------------- Nvidia GPU support using CUDA -----------------------
 #----- Add another set of libraries and executables with a _gpu suffix
@@ -163,7 +182,6 @@ if(EnableCUDA)
 	target_link_libraries(jdftxlib_gpu ${EXTERNAL_LIBS} gpukernels)
 	set_target_properties(jdftxlib_gpu PROPERTIES OUTPUT_NAME "jdftx_gpu")
 	set_JDFTx_flags(jdftxlib_gpu ON)
-        install(TARGETS jdftxlib_gpu DESTINATION lib/)
 endif()
 
 #------------- Macro to add an executable pair (regular and GPU) -------------
@@ -173,13 +191,11 @@ macro(add_JDFTx_executable execName execSources)
 	add_executable(${execName} ${execSources})
 	target_link_libraries(${execName} jdftxlib)
 	set_JDFTX_flags(${execName} OFF)
-        install(TARGETS ${execName} DESTINATION bin/)
 	
 	if(EnableCUDA) #GPU version
 	        add_executable(${execName}_gpu ${execSources})
 	        target_link_libraries(${execName}_gpu jdftxlib_gpu)
 	        set_JDFTx_flags(${execName}_gpu ON)
-                install(TARGETS ${execName}_gpu DESTINATION bin/)
 	endif()
 endmacro()
 

@@ -5,6 +5,7 @@ import sys, os, shutil, site
 import multiprocessing
 import subprocess as sb
 import tempfile as tmp
+import mpi4py
 
 from distutils.core import setup
 from distutils.extension import Extension
@@ -19,12 +20,13 @@ nthreads = int(os.environ.get('COMPILE_NTHREADS', multiprocessing.cpu_count() ))
 
 class inTempFolder:
     def __enter__(self):
-        self.currentDir = os.getcwd()
+        self.originalDir = os.getcwd()
         self.tmpdir = tmp.mkdtemp()
         os.chdir(self.tmpdir)
-        return self.tmpdir, self.currentDir
+        return self.tmpdir, self.originalDir
     def __exit__(self, type, value, traceback):
         shutil.rmtree(self.tmpdir)
+        os.chdir(self.originalDir)
         # pass
 
 def installJDFTx():
@@ -51,7 +53,8 @@ def installJDFTx():
         shutil.move("libjdftx.so", jdftxLibDir)
         if enableGPU:
             shutil.move("libjdftx_gpu.so", jdftxLibDir)
-        shutil.move("pseudopotentials", jdftxLibDir)
+        if not os.path.exists(os.path.join(site.USER_BASE, "jdftx/pseudopotentials")):
+            shutil.move("pseudopotentials", jdftxLibDir)
         try:
             os.symlink("/usr/local/jdftx/libjdftx.so", \
                        "/usr/lib/libjdftx.so")
@@ -65,7 +68,7 @@ def installJDFTx():
 
 #check if libjdftx is available
 try:
-    sb.check_call(["ld", "-ljdftx"])
+    sb.check_call(["ld", "-ljdftx"], stderr=open("/dev/null"))
     if enableGPU:
         sb.check_call(["ld", "-ljdftx_gpu"])
     jdftxLibDir = ""
@@ -79,18 +82,23 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
     return Extension(
         ext_name,
         [ext_path.replace(".", os.path.sep) + ".pyx"],
-        include_dirs=(["jdftx", "."]),
+        include_dirs=["jdftx", ".","/usr/lib/openmpi/include", mpi4py.get_include()],
         language="c++",
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
         runtime_library_dirs=[jdftxLibDir],
-        extra_compile_args=['-std=c++11'],
+        extra_compile_args=['-std=c++11', '-O3'],
         #depends=["jdftx/libjdftx.so"],
     )
 
 extensions = [
     make_extension("JDFTCalculator", ["jdftx"]),
 ]
+
+for e in extensions:
+    e.cython_directives = {"boundscheck": False,
+                           "wraparound": False,
+                           "infer_types": True}
 
 setup(**{
     "name": "pythonJDFTx",
