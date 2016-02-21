@@ -14,6 +14,7 @@ from ase.units import *
 from ElectronicMinimize import ElectronicMinimize
 
 import numpy as np
+from mpi4py import MPI
 
 # 2x2-Al(001) surface with 3 layers and an
 # Au atom adsorbed in a hollow site:
@@ -36,12 +37,13 @@ def slabCalculation():
 
     slab.set_constraint([fixlayers, plane])
 
-    print(slab.cell)
+    print(slab.cell / Bohr)
 
-    calc = ElectronicMinimize(atoms = slab)
-    ##slab.set_calculator(calc)
 
-    ##slab.get_feorces()
+    # calc = ElectronicMinimize(atoms = slab)
+    # slab.set_calculator(calc)
+    #
+    # slab.get_potential_energy()
 
 def waterMolecule():
     atoms = molecule('H2O')
@@ -58,13 +60,13 @@ def optimizeWater():
                   positions=[(d, 0, 0),
                              (d * np.cos(t), d * np.sin(t), 0),
                              (0, 0, 0)],
-                  cell = np.eye(3) * 5.0)
-    water.calc = ElectronicMinimize(atoms = water, log = False)
+                  cell = np.eye(3) * 7.0)
+    water.calc = ElectronicMinimize(atoms = water, log = True)
     water.calc.dragWavefunctions = False
     # dyn = SciPyFminBFGS(water, callback_always=True)
-    dyn = BFGSLineSearch(water)
+    # dyn = BFGSLineSearch(water)
     # dyn = BFGS(water)
-    dyn.run(fmax=0.000005, steps = 10)
+    # dyn.run(fmax=0.000005, steps = 10)
     print(water.get_potential_energy() / Hartree)
 
 def compareForces():

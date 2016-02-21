@@ -1,0 +1,20 @@
+symmetries None
+
+ion-species ${PSEUDOPOT_HOME}h.uspp
+ion-species ${PSEUDOPOT_HOME}o.uspp
+
+ion H   1.809412604976671   0.000000000000000   0.000000000000000 1
+ion H  -0.453346471502041   1.751699446773078   0.000000000000000 1
+ion O   0.000000000000000   0.000000000000000   0.000000000000000 1
+
+coords-type cartesian
+lattice    9.448629791000890          0          0  \
+                 0    9.448629791000890          0  \
+                 0          0    9.448629791000890
+
+ionic-minimize \
+    knormThreshold 1e-10 \
+    nIterations 0   \
+    energyDiffThreshold 1e-10
+
+dump End None
