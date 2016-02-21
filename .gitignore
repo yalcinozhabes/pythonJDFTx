@@ -3,3 +3,4 @@ help.txt
 *.so
 .fftw-wisdom
 JDFTCalculator.cpp
+test/*.out
