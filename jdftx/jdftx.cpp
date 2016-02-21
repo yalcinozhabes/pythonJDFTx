@@ -16,6 +16,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with JDFTx.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------*/
+#include <ctime>
 
 #include <electronic/Everything.h>
 #include <electronic/ColumnBundle.h>
@@ -34,19 +35,26 @@ int main(int argc, char** argv)
 {	//Parse command line, initialize system and logs:
 	string inputFilename; bool dryRun, printDefaults;
 	initSystemCmdline(argc, argv, "Performs Joint Density Functional Theory calculations.", inputFilename, dryRun, printDefaults);
-	
+
 	//Parse input file and setup
 	Everything e; //the parent data structure for, well, everything
 	ElecVars& eVars = e.eVars;
 	parse(readInputFile(inputFilename), e, printDefaults);
+	auto t0 = std::chrono::high_resolution_clock::now();
+	auto c0 = std::clock();
 	e.setup();
+	auto tf = std::chrono::high_resolution_clock::now();
+	auto elasped = std::chrono::duration<double, std::milli>(tf - t0);
+	logPrintf("Wall time: e.setup takes %lg seconds\n", elasped.count()/1000);
+	logPrintf("Process time: e.setup takes %lg seconds\n", double(std::clock()-c0) / CLOCKS_PER_SEC);
+
 	Citations::print();
 	if(dryRun)
 	{	logPrintf("Dry run successful: commands are valid and initialization succeeded.\n");
 		finalizeSystem();
 		return 0;
 	}
-	
+
 	if(e.cntrl.dumpOnly)
 	{	//Single energy calculation so that all dependent quantities have been initialized:
 		logPrintf("\n----------- Energy evaluation at fixed state -------------\n"); logFlush();
@@ -64,7 +72,7 @@ int main(int argc, char** argv)
 				eVars.EdensityAndVscloc(e.ener); //update Vscloc
 			}
 		}
-		e.iInfo.augmentDensityGridGrad(eVars.Vscloc); //update Vscloc atom projections for ultrasoft psp's 
+		e.iInfo.augmentDensityGridGrad(eVars.Vscloc); //update Vscloc atom projections for ultrasoft psp's
 		if(e.cntrl.invertKS) //Inverse Kohn-Sham problem (sequence of band structure calculations)
 		{	InverseKohnSham inverseKS(e);
 			inverseKS.minimize(e.inverseKSminParams);
@@ -85,12 +93,20 @@ int main(int argc, char** argv)
 	else
 	{	//Ionic minimization loop (which calls electron/fluid minimization loops)
 		IonicMinimizer imin(e);
+		auto t0 = std::chrono::high_resolution_clock::now();
+		auto c0 = std::clock();
+
 		imin.minimize(e.ionicMinParams);
+
+		auto tf = std::chrono::high_resolution_clock::now();
+		auto elasped = std::chrono::duration<double, std::milli>(tf - t0);
+		logPrintf("Wall time: elecmin takes %lg seconds\n", elasped.count()/1000);
+		logPrintf("Process time: elecmin takes %lg seconds\n", double(std::clock()-c0) / CLOCKS_PER_SEC);
 	}
 
 	//Final dump:
 	e.dump(DumpFreq_End, 0);
-	
+
 	finalizeSystem();
 	return 0;
 }

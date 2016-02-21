@@ -7,9 +7,9 @@ from ase import Atoms
 from ase.units import Bohr, Hartree
 from JDFTCalculator import JDFTCalculator
 
-import sys
+import sys, time
 
-class ElectronicMinimize(Calculator,JDFTCalculator):
+class ElectronicMinimize(Calculator, JDFTCalculator):
     implemented_properties = ['energy', 'forces']
 
     @staticmethod
@@ -72,7 +72,11 @@ class ElectronicMinimize(Calculator,JDFTCalculator):
         self.R = atoms.cell
         for atom in atoms:
             self.add_ion(atom)
+        t0 = time.time()
+        c0 = time.clock()
         self.setup()
+        print("Wall Time for e.setup()", time.time()-t0, "seconds")
+        print("Process Time for e.setup()", time.clock()-c0, "seconds")
 
     def updateAtomicPositions(self):
         dpos = self.atoms.positions - self._fromJDFTOrder(self.readIonicPositions()*Bohr)
@@ -86,7 +90,13 @@ class ElectronicMinimize(Calculator,JDFTCalculator):
             self.updateAtomicPositions()
         else:
             print(system_changes)
+
+        t0 = time.time()
+        c0 = time.clock()
         self.runElecMin()
+        print("Wall Time for self.runElecMin()", time.time()-t0, "seconds")
+        print("Process Time for self.runElecMin()", time.clock()-c0, "seconds")
+
         energy = self.readTotalEnergy() * Hartree
         forces = np.asarray(self.readForces(), dtype = np.double)
         forces.resize((len(atoms),3))
