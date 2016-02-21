@@ -1,3 +1,6 @@
+cimport mpi4py.libmpi as mpi
+
 cdef extern from "core/MPIUtil.h" nogil:
     cdef cppclass MPIUtil:
-        MPIUtil(int argc, char** argv)
+        MPIUtil(mpi.MPI_Comm)
+        int nProcesses() const

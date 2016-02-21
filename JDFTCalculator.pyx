@@ -1,6 +1,7 @@
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.pair cimport pair
+cimport mpi4py.libmpi as mpi
 
 from includes.string cimport string
 from includes.file cimport *
@@ -40,9 +41,6 @@ from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 import numpy as np
 
 from ase.calculators.calculator import Calculator, all_changes
-from ase import Atoms
-
-
 from ase.units import Bohr, Hartree
 cdef:
     double cBohr = Bohr
@@ -55,10 +53,9 @@ def _makePspPath(symbol):
     pspFolder = os.getenv("PSEUDOPOT_HOME")
     return bytes(os.path.join(pspFolder, symbol.lower() + ".uspp"), "utf-8")
 
-cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile,
-                                             vector3[double] pos):
-    cdef SpeciesInfo* speciePtr = new SpeciesInfo()
-    cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](speciePtr)
+cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile):
+    # cdef SpeciesInfo* speciePtr = new SpeciesInfo()
+    cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](new SpeciesInfo())
     deref(specie).potfilename.assign(pspFile)
     deref(specie).fromWildcard = False
     deref(specie).name = id
@@ -68,19 +65,16 @@ cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile,
 cdef class JDFTCalculator:
     # cdef VerletParams v
     cdef Everything e
-    cdef string inputFilename
-    cdef bool dryRun, printDefaults
     cdef IonicMinimizer* imin
 
     #c level functions
-    def __cinit__(self,*args,**kwargs):
-        cdef int mpiArgc = 0
-        cdef char* mpiArgv[0]
+    def __cinit__(self, *args,**kwargs):
         global mpiUtil, globalLog, nullLog
+        resumeOperatorThreading()
 
         nullLog = fopen("/dev/null","w")
         # globalLog = nullLog
-        mpiUtil = new MPIUtil(mpiArgc,mpiArgv) #initSystemCmdLine
+        mpiUtil = new MPIUtil(mpi.MPI_COMM_WORLD) #initSystemCmdLine
 
         #Default commands that sets some variables up at the beginning:
         #basis kpoint-dependent
@@ -175,13 +169,16 @@ cdef class JDFTCalculator:
         self.e.symm.mode = SymmetryMode_None
         self.e.symm.shouldMoveAtoms = False
 
-        self.imin = new IonicMinimizer(self.e)
+        # self.imin = new IonicMinimizer(self.e)
+        global nProcsAvailable
+        nProcsAvailable = 4
 
     def __dealloc__(self):
         """finalizeSystem()"""
         global mpiUtil
         del mpiUtil
-        del self.imin
+        if not (self.imin is NULL):
+            del self.imin
 
     #some getters and setters for easy access from python side
     property R:
@@ -251,7 +248,7 @@ cdef class JDFTCalculator:
             deref(sp).atpos.push_back(pos)
         else:
             pspFile = _makePspPath(atom.symbol)
-            sp = createNewSpecie(id, <char*>pspFile, pos)
+            sp = createNewSpecie(id, <char*>pspFile)
             self.e.iInfo.species.push_back(sp)
             deref(sp).atpos.push_back(pos)
 
@@ -261,9 +258,8 @@ cdef class JDFTCalculator:
         deref(sp).constraints.push_back(constraint)
 
     def setup(self):
-        "Runs Everything.setup()"
-        with nogil:
-            self.e.setup()
+        """Runs Everything.setup"""
+        self.e.setup()
 
     def readIonicPositions(self):
         cdef extern vector3[double] operator*(matrix3[double], vector3[double]&)
@@ -279,6 +275,8 @@ cdef class JDFTCalculator:
         return atpos
 
     def updateIonicPositions(self,double[:,:] dpos):
+        if self.imin==NULL:
+            self.imin = new IonicMinimizer(self.e)
         cdef IonicGradient d
         cdef int row = 0
         d.init(self.e.iInfo)
@@ -290,6 +288,10 @@ cdef class JDFTCalculator:
         self.imin.step(d, 1.0)
 
     def runElecMin(self):
+        if self.imin is NULL:
+            self.imin = new IonicMinimizer(self.e)
+        # with nogil:
+        resumeOperatorThreading()
         self.imin.minimize(self.e.ionicMinParams)
 
     def readTotalEnergy(self):

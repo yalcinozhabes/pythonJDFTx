@@ -30,28 +30,46 @@ MPIUtil::MPIUtil(int argc, char** argv)
 	#ifdef MPI_ENABLED
 	int rc = MPI_Init(&argc, &argv);
 	if(rc != MPI_SUCCESS) { printf("Error starting MPI program. Terminating.\n"); MPI_Abort(MPI_COMM_WORLD, rc); }
-	MPI_Comm_size(MPI_COMM_WORLD, &nProcs);
-	MPI_Comm_rank(MPI_COMM_WORLD, &iProc);
+	world = MPI_COMM_WORLD;
+	MPI_Comm_size(world, &nProcs);
+	MPI_Comm_rank(world, &iProc);
+	mpiInitCalled = true;
+	#else
+	//No MPI:
+	nProcs = 1;
+	iProc = 0;
+	mpiInitCalled = false;
+	#endif
+	
+	Random::seed(iProc);
+}
+
+MPIUtil::MPIUtil(MPI_Comm comm)
+{
+	#ifdef MPI_ENABLED
+	MPI_Comm_size(comm, &nProcs);
+	MPI_Comm_rank(comm, &iProc);
+	world = comm;
 	#else
 	//No MPI:
 	nProcs = 1;
 	iProc = 0;
 	#endif
-	
+	mpiInitCalled = false;
 	Random::seed(iProc);
 }
 
 MPIUtil::~MPIUtil()
 {
 	#ifdef MPI_ENABLED
-	MPI_Finalize();
+	if (mpiInitCalled) MPI_Finalize();
 	#endif
 }
 
 void MPIUtil::exit(int errCode) const
 {
 	#ifdef MPI_ENABLED
-	MPI_Abort(MPI_COMM_WORLD, errCode);
+	MPI_Abort(world, errCode);
 	#else
 	::exit(errCode);
 	#endif

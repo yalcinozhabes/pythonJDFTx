@@ -33,12 +33,15 @@ along with JDFTx.  If not, see <http://www.gnu.org/licenses/>.
 class MPIUtil
 {
 	int nProcs, iProc;
+	bool mpiInitCalled;
+	MPI_Comm world;
 public:
 	int iProcess() const { return iProc; } //!< rank of current process
 	int nProcesses() const { return nProcs; }  //!< number of processes
 	bool isHead() const { return iProc==0; } //!< whether this is the root process (makes code more readable)
 
 	MPIUtil(int argc, char** argv);
+	MPIUtil(MPI_Comm comm);
 	~MPIUtil();
 	void exit(int errCode) const; //!< global exit (kill other MPI processes as well)
 
@@ -158,14 +161,14 @@ namespace MPIUtilPrivate
 template<typename T> void MPIUtil::send(const T* data, size_t nData, int dest, int tag) const
 {	using namespace MPIUtilPrivate;
 	#ifdef MPI_ENABLED
-	if(nProcs>1) MPI_Send((T*)data, nData, DataType<T>::get(), dest, tag, MPI_COMM_WORLD);
+	if(nProcs>1) MPI_Send((T*)data, nData, DataType<T>::get(), dest, tag, world);
 	#endif
 }
 
 template<typename T> void MPIUtil::recv(T* data, size_t nData, int src, int tag) const
 {	using namespace MPIUtilPrivate;
 	#ifdef MPI_ENABLED
-	if(nProcs>1) MPI_Recv(data, nData, DataType<T>::get(), src, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	if(nProcs>1) MPI_Recv(data, nData, DataType<T>::get(), src, tag, world, MPI_STATUS_IGNORE);
 	#endif
 }
 
@@ -180,7 +183,7 @@ template<typename T> void MPIUtil::recv(T& data, int src, int tag) const
 template<typename T> void MPIUtil::bcast(T* data, size_t nData, int root) const
 {	using namespace MPIUtilPrivate;
 	#ifdef MPI_ENABLED
-	if(nProcs>1) MPI_Bcast(data, nData, DataType<T>::get(), root, MPI_COMM_WORLD);
+	if(nProcs>1) MPI_Bcast(data, nData, DataType<T>::get(), root, world);
 	#endif
 }
 
@@ -193,11 +196,11 @@ template<typename T> void MPIUtil::allReduce(T* data, size_t nData, MPIUtil::Red
 	#ifdef MPI_ENABLED
 	if(nProcs>1)
 	{	if(safeMode) //Reduce to root node and then broadcast result (to ensure identical values)
-		{	MPI_Reduce(isHead()?MPI_IN_PLACE:data, data, nData, DataType<T>::get(), mpiOp(op), 0, MPI_COMM_WORLD);
+		{	MPI_Reduce(isHead()?MPI_IN_PLACE:data, data, nData, DataType<T>::get(), mpiOp(op), 0, world);
 			bcast(data, nData, 0);
 		}
 		else //standard Allreduce
-			MPI_Allreduce(MPI_IN_PLACE, data, nData, DataType<T>::get(), mpiOp(op), MPI_COMM_WORLD);
+			MPI_Allreduce(MPI_IN_PLACE, data, nData, DataType<T>::get(), mpiOp(op), world);
 	}
 	#endif
 }
@@ -212,7 +215,7 @@ template<typename T> void MPIUtil::allReduce(T& data, int& index, MPIUtil::Reduc
 	if(nProcs>1)
 	{	struct Pair { T data; int index; } pair;
 		pair.data = data; pair.index = index;
-		MPI_Allreduce(MPI_IN_PLACE, &pair, 1, DataTypeIntPair<T>::get(), mpiLocOp(op), MPI_COMM_WORLD);
+		MPI_Allreduce(MPI_IN_PLACE, &pair, 1, DataTypeIntPair<T>::get(), mpiLocOp(op), world);
 		data = pair.data; index = pair.index;
 	}
 	#endif
