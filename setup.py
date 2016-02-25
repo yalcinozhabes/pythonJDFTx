@@ -5,20 +5,26 @@ import sys, os, shutil, site
 import multiprocessing
 import subprocess as sb
 import tempfile as tmp
+
 import mpi4py
 
 from distutils.core import setup
 from distutils.extension import Extension
+from distutils import log
 from Cython.Distutils import build_ext
 from Cython.Build import cythonize
 
-isRoot = os.geteuid()==0 #Do we have root privileges?
-enableGPU = (len(sys.argv)>=2 and sys.argv[1]=="--GPU")
+isRoot = os.geteuid() == 0  # Do we have root privileges?
+enableGPU = (len(sys.argv) >= 2 and "--GPU" in sys.argv)
 
 # Use parallel compilation on this number of cores.
 nthreads = int(os.environ.get('COMPILE_NTHREADS', multiprocessing.cpu_count() ))
 
 class inTempFolder:
+    """Context manager for working in temporary folder.
+
+    Creates a temporary folder enters in it and removes it when done.
+    """
     def __enter__(self):
         self.originalDir = os.getcwd()
         self.tmpdir = tmp.mkdtemp()
@@ -29,20 +35,30 @@ class inTempFolder:
         os.chdir(self.originalDir)
         # pass
 
+
 def installJDFTx():
-    #is there a valid installation in user folders:
+    """Find the path to libjdfx.so and compile jdftx if not found.
+
+    Check user folder for jdftx/libjdftx.so. Unless jdftx library is found
+    compile the source code, copy the library to the user directory and
+    return the path to the library.
+
+
+    """
+    # is there a valid installation in user folders:
     if os.path.exists(os.path.join(site.USER_BASE, "jdftx/libjdftx.so")):
         return os.path.join(site.USER_BASE, "jdftx")
     with inTempFolder() as (jdftxDir, pythonJDFTxDir):
-        print("Running cmake...")
+        log.info("JDFTx Compilation:")
+        log.info("Running cmake...")
         jdftxCodeDir = os.path.join(pythonJDFTxDir, "jdftx")
         if enableGPU:
-            sb.check_call(["cmake", "-D", "EnableCUDA=yes",\
-                            "-D", "EnableProfiling=yes", jdftxCodeDir])
+            sb.check_call(["cmake", "-D", "EnableCUDA=yes",
+                           "-D", "EnableProfiling=yes", jdftxCodeDir])
         else:
             sb.check_call(["cmake", "-D", "EnableProfiling=yes", jdftxCodeDir])
-        print("Running make. This takes a few minutes.")
-        sb.check_call(["make", "-j%d"%nthreads])#, stderr = open("/dev/null") )
+        log.info("Running make. This takes a few minutes.")
+        sb.check_call(["make", "-j%d" % nthreads])
         if isRoot:
             jdftxLibDir = "/usr/local/jdftx"
         else:
@@ -56,17 +72,17 @@ def installJDFTx():
         if not os.path.exists(os.path.join(site.USER_BASE, "jdftx/pseudopotentials")):
             shutil.move("pseudopotentials", jdftxLibDir)
         try:
-            os.symlink("/usr/local/jdftx/libjdftx.so", \
+            os.symlink("/usr/local/jdftx/libjdftx.so",
                        "/usr/lib/libjdftx.so")
             if enableGPU:
-                os.symlink("/usr/local/jdftx/libjdftx_gpu.so", \
+                os.symlink("/usr/local/jdftx/libjdftx_gpu.so",
                            "/usr/lib/libjdftx_gpu.so")
             return ""
         except OSError:
             return jdftxLibDir
 
 
-#check if libjdftx is available
+# check if libjdftx is available
 try:
     sb.check_call(["ld", "-ljdftx"], stderr=open("/dev/null"))
     if enableGPU:
@@ -82,7 +98,7 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
     return Extension(
         ext_name,
         [ext_path.replace(".", os.path.sep) + ".pyx"],
-        include_dirs=["jdftx", ".","/usr/lib/openmpi/include", mpi4py.get_include()],
+        include_dirs=["jdftx", ".", mpi4py.get_include()],
         language="c++",
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
@@ -100,6 +116,10 @@ for e in extensions:
                            "wraparound": False,
                            "infer_types": True}
 
+mpiCompilers = mpi4py.get_config()
+os.environ['CC'] = mpiCompilers['mpicc']
+os.environ['CXX'] = mpiCompilers['mpicxx']
+
 setup(**{
     "name": "pythonJDFTx",
     "packages": [
@@ -108,6 +128,8 @@ setup(**{
         "includes",
         "fluid",
     ],
-    "ext_modules": cythonize(extensions, nthreads=nthreads,compiler_directives = {'language_level':3}),
+    "py_modules":["ElectronicMinimize"],
+    "ext_modules": cythonize(extensions, nthreads=nthreads,
+                             compiler_directives = {'language_level':3}),
     "cmdclass": {'build_ext': build_ext},
 })
