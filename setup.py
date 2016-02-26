@@ -103,7 +103,7 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
         runtime_library_dirs=[jdftxLibDir],
-        extra_compile_args=['-std=c++11', '-O3'],
+        extra_compile_args=['-std=c++0x', '-O3'],
         #depends=["jdftx/libjdftx.so"],
     )
 
