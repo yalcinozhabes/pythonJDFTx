@@ -80,12 +80,12 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
 
     def updateAtomicPositions(self):
         dpos = self.atoms.positions - self._fromJDFTOrder(self.readIonicPositions()*Bohr)
-        super().updateIonicPositions(self._toJDFTOrder(dpos/Bohr))
+        super(ElectronicMinimize, self).updateIonicPositions(self._toJDFTOrder(dpos/Bohr))
 
     def calculate(self, atoms=None, properties=['energy'],
                   system_changes=all_changes):
         """Run one electronic minimize loop"""
-        super().calculate(atoms, properties, system_changes)
+        super(ElectronicMinimize, self).calculate(atoms, properties, system_changes)
         if 'positions' in system_changes:
             self.updateAtomicPositions()
         else:

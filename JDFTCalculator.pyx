@@ -52,7 +52,7 @@ cdef:
 def _makePspPath(symbol):
     import os
     pspFolder = os.getenv("PSEUDOPOT_HOME")
-    return bytes(os.path.join(pspFolder, symbol.lower() + ".uspp"), "utf-8")
+    return os.path.join(pspFolder, symbol.lower() + ".uspp")
 
 cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile):
     # cdef SpeciesInfo* speciePtr = new SpeciesInfo()
@@ -171,8 +171,6 @@ cdef class JDFTCalculator:
         self.e.symm.shouldMoveAtoms = False
 
         # self.imin = new IonicMinimizer(self.e)
-        global nProcsAvailable
-        nProcsAvailable = 4
 
     def __dealloc__(self):
         """finalizeSystem()"""
@@ -232,7 +230,7 @@ cdef class JDFTCalculator:
         globalLog = nullLog
 
     def add_ion(self, atom):
-        symbol = bytes(atom.symbol, "utf-8")
+        symbol = str(atom.symbol)
 
         cdef string id
         cdef vector3[double] pos
