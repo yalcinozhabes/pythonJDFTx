@@ -1,3 +1,6 @@
+# Author: Yalcin Ozhabes
+# email: yalcinozhabes@gmail.com
+
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.pair cimport pair

@@ -1,4 +1,9 @@
+#!/usr/bin/python3
+# Author: Yalcin Ozhabes
+# email: yalcinozhabes@gmail.com
+
 import copy
+import time
 import numpy as np
 
 from ase.calculators.calculator import Calculator, all_changes
@@ -7,9 +12,9 @@ from ase import Atoms
 from ase.units import Bohr, Hartree
 from JDFTCalculator import JDFTCalculator
 
-import sys, time
 
 class ElectronicMinimize(Calculator, JDFTCalculator):
+    """"""
     implemented_properties = ['energy', 'forces']
 
     @staticmethod
@@ -28,8 +33,9 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
 
     @staticmethod
     def _createIndexLists(atoms):
-        #JDFT has atoms ordered by their symbols so we need conversion tables of indices:
-        symbols = {} #count number of occurances
+        """JDFT has atoms ordered by their symbols so we need conversion tables
+        of indices:"""
+        symbols = {}  # count number of occurances
         species_order = []
         for atom in atoms:
             try:
@@ -57,13 +63,13 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
         return self._changeOrder(x, self._fromJDFTOrderIndexList)
 
     def __init__(self, restart=None, ignore_bad_restart_file=False,
-                 label="JDFT", atoms=None, log = True, **kwargs):
+                 label="JDFT", atoms=None, log=True, **kwargs):
         Calculator.__init__(self, restart, ignore_bad_restart_file,
                             label, atoms, **kwargs)
         JDFTCalculator.__init__(self)
-        if log == False:
+        if log is False:
             JDFTCalculator.disableLog(self)
-        if atoms == None:
+        if atoms is None:
             return
         elif not isinstance(atoms, Atoms):
             raise TypeError("atoms should be ase.Atoms type.")
@@ -79,8 +85,10 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
         print("Process Time for e.setup()", time.clock()-c0, "seconds")
 
     def updateAtomicPositions(self):
-        dpos = self.atoms.positions - self._fromJDFTOrder(self.readIonicPositions()*Bohr)
-        super(ElectronicMinimize, self).updateIonicPositions(self._toJDFTOrder(dpos/Bohr))
+        """"""
+        dpos = self.atoms.positions - self._fromJDFTOrder(self.readIonicPositions() * Bohr)
+        super(ElectronicMinimize, self).updateIonicPositions(self._toJDFTOrder(dpos / Bohr))
+
 
     def calculate(self, atoms=None, properties=['energy'],
                   system_changes=all_changes):
@@ -98,13 +106,13 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
         print("Process Time for self.runElecMin()", time.clock()-c0, "seconds")
 
         energy = self.readTotalEnergy() * Hartree
-        forces = np.asarray(self.readForces(), dtype = np.double)
-        forces.resize((len(atoms),3))
+        forces = np.asarray(self.readForces(), dtype=np.double)
+        forces.resize((len(atoms), 3))
         forces = forces * Hartree / Bohr
         self.results = {'energy': energy,
-                       'forces': forces,
-                       'stress': np.zeros(6),
-                       'dipole': np.zeros(3),
-                       'charges': np.zeros(len(atoms)),
-                       'magmom': 0.0,
-                       'magmoms': np.zeros(len(atoms))}
+                        'forces': forces,
+                        'stress': np.zeros(6),
+                        'dipole': np.zeros(3),
+                        'charges': np.zeros(len(atoms)),
+                        'magmom': 0.0,
+                        'magmoms': np.zeros(len(atoms))}
