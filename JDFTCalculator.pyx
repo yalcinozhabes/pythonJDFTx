@@ -43,9 +43,12 @@ from fluid.FluidParams cimport FluidSolverParams
 from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
 import numpy as np
+cimport numpy as cnp
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase.units import Bohr, Hartree
+
+#globals
 cdef:
     double cBohr = Bohr
     double cHartree = Hartree
@@ -184,24 +187,21 @@ cdef class JDFTCalculator:
 
     #some getters and setters for easy access from python side
     property R:
-        """Lattice vectors in Angstrom. Handles the conversion internally."""
+        """Lattice vectors in Angstrom. Handles the conversion internally.
+
+        Handles both the unit conversion and row major to column major
+        conversion. It is a 3x3 matrix with row vectors being lattice vectors."""
         def __get__(self):
-            cdef double unitConvertedEntry
-            out = np.zeros((3,3), dtype=np.double)
+            out = cnp.zeros((3,3), dtype=cnp.double)
             for i in range(3):
                 for j in range(3):
-                    unitConvertedEntry = self.e.gInfo.R(i,j) * cBohr
-                    out[i,j] = unitConvertedEntry
+                    out[i,j] = <double>self.e.gInfo.R(j,i) * cBohr
             return out
 
-        def __set__(self, value):
-            cdef double unitConvertedEntry
-            cdef double& tmpR
+        def __set__(self, cnp.ndarray value):
             for i in range(3):
                 for j in range(3):
-                    unitConvertedEntry = value[i,j] / cBohr
-                    # self.e.gInfo.R(i,j) = unitConvertedEntry
-                    (&self.e.gInfo.R(i,j))[0] = unitConvertedEntry
+                    (&self.e.gInfo.R(j,i))[0] = <double>value[i,j] / cBohr
 
     property spin:
         """ In order to match the convention of ASE, skip 0 when counting
