@@ -18,7 +18,7 @@ from electronic.SpeciesInfo cimport Uspp as PseudoPotentialFormat_Uspp
 from electronic.SpeciesInfo cimport Constraint as Species_Constraint
 from electronic.SpeciesInfo cimport None as Species_Constraint_None
 from electronic.Dump cimport DumpFrequency, DumpFreq_End, DumpVariable, DumpNone
-from electronic.ElecInfo cimport QuantumNumber
+from electronic.QuantumNumber cimport QuantumNumber, addQnum, clearQnums
 # from electronic.ExCorr cimport ExCorr
 from core.MPIUtil cimport MPIUtil
 from core.Thread cimport *
@@ -43,7 +43,7 @@ from fluid.FluidParams cimport FluidSolverParams
 from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
 import numpy as np
-cimport numpy as cnp
+cimport numpy as np
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase.units import Bohr, Hartree
@@ -53,7 +53,6 @@ cdef:
     double cBohr = Bohr
     double cHartree = Hartree
     int i, j, k
-
 
 def _makePspPath(symbol):
     import os
@@ -68,6 +67,7 @@ cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile):
     deref(specie).name = id
     deref(specie).pspFormat = PseudoPotentialFormat_Uspp
     return specie
+
 
 cdef class JDFTCalculator:
     # cdef VerletParams v
@@ -136,12 +136,7 @@ cdef class JDFTCalculator:
         self.e.ionicMinParams.nIterations = 0
 
         #kpoint   0.000000000000   0.000000000000   0.000000000000  1.00000000000000
-        cdef QuantumNumber qnum
-        for i in range(3):
-            (&(qnum.k[i]))[0] = 0.0
-            qnum.weight = 1.0
-        self.e.eInfo.qnums.push_back(qnum)
-        self.e.eInfo.nStates = self.e.eInfo.qnums.size()
+        # self.kpts = 'Gamma'
 
         # kpoint-folding 1 1 1
         for i in range(3):
@@ -192,13 +187,13 @@ cdef class JDFTCalculator:
         Handles both the unit conversion and row major to column major
         conversion. It is a 3x3 matrix with row vectors being lattice vectors."""
         def __get__(self):
-            out = cnp.zeros((3,3), dtype=cnp.double)
+            out = np.zeros((3,3), dtype=np.double)
             for i in range(3):
                 for j in range(3):
                     out[i,j] = <double>self.e.gInfo.R(j,i) * cBohr
             return out
 
-        def __set__(self, cnp.ndarray value):
+        def __set__(self, np.ndarray value):
             for i in range(3):
                 for j in range(3):
                     (&self.e.gInfo.R(j,i))[0] = <double>value[i,j] / cBohr
@@ -223,6 +218,37 @@ cdef class JDFTCalculator:
 
         def __set__(self, value):
             self.e.cntrl.dragWavefunctions = <bool>value
+
+    property kpts:
+        """k-points interface with JDFTx
+
+        JDFTx takes k-points by explicit coordinates with weights and a grid to
+        fold the k-points over. ASE has a dft.kpoints module where various
+        Brillouin-zone sampling schemes are implemented.
+
+        kpts: list of tuples of kpoints and weights, all in cell coordinates.
+        kpts = [(np.asarray(k), w) for k, w in zip(kpoints, weights)]
+        """
+        def __get__(self):
+            kpts = []
+            for qnum in self.e.eInfo.qnums:
+                # kpt = np.ndarray(qnum.k[0], qnum.k[1], qnum.k[2]])
+                kpt = np.asarray([ qnum.k[0], qnum.k[1], qnum.k[2] ])
+                weight = qnum.weight
+                kpts.append((kpt, weight))
+            return kpts
+
+        def __set__(self, kpts):
+            clearQnums(self.e)
+            cdef QuantumNumber qnum
+            if kpts=='Gamma':
+                addQnum(self.e, np.zeros(3), 1.0)
+                return
+            # else:
+            cdef np.ndarray kpt
+            cdef double weight
+            for kpt, weight in kpts:
+                addQnum(self.e, kpt, weight)
 
     #python level functions
     def __init__(self, *args, **kwargs):

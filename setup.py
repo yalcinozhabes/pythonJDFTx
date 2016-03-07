@@ -108,6 +108,7 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
     )
 
 extensions = [
+    make_extension("electronic.QuantumNumber"),
     make_extension("JDFTCalculator", ["jdftx"]),
 ]
 
@@ -120,6 +121,8 @@ mpiCompilers = mpi4py.get_config()
 os.environ['CC'] = mpiCompilers['mpicc']
 os.environ['CXX'] = mpiCompilers['mpicxx']
 
+pyVersion = sys.version_info[0]
+
 setup(**{
     "name": "pythonJDFTx",
     "packages": [
@@ -130,6 +133,6 @@ setup(**{
     ],
     "py_modules":["ElectronicMinimize"],
     "ext_modules": cythonize(extensions, nthreads=nthreads,
-                             compiler_directives = {'language_level':3}),
+                        compiler_directives = {'language_level': pyVersion}),
     "cmdclass": {'build_ext': build_ext},
 })

@@ -81,6 +81,23 @@ def compareForces():
     print(water.get_forces())
     print(water.calc.calculate_numerical_forces(water))
 
+def lithiumBulk():
+    d = 3.5
+    li = Atoms('Li2',
+                  positions=[(0, 0, 0),
+                             (0.5*d, 0.5*d, 0.5*d)
+                            ],
+                  cell = np.eye(3) * d)
+    from ase.dft import kpoints
+    kpointList = kpoints.monkhorst_pack((4,4,4))
+    kpointList += np.asarray([.125, .125, .125])
+    w = 1.0/len(kpointList)
+    li.calc = ElectronicMinimize(atoms = li, log = True,
+                                 kpts = [(k,w) for k in kpointList])
+    li.calc.dragWavefunctions = False
+
+    print(li.get_potential_energy() / Hartree)
+
 def die():
     d = 0.9575
     t = np.pi / 180 * 104.51
@@ -93,4 +110,4 @@ def die():
     dyn.run(fmax=0.05)
 
 if __name__=="__main__":
-    optimizeWater()
+    lithiumBulk()
