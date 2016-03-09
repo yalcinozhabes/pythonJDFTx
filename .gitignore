@@ -2,5 +2,5 @@ build
 help.txt
 *.so
 .fftw-wisdom
-JDFTCalculator.cpp
+*.cpp
 test/*.out
