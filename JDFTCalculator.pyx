@@ -193,7 +193,7 @@ cdef class JDFTCalculator:
                     out[i,j] = <double>self.e.gInfo.R(j,i) * cBohr
             return out
 
-        def __set__(self, np.ndarray value):
+        def __set__(self, double[:, :] value):
             for i in range(3):
                 for j in range(3):
                     (&self.e.gInfo.R(j,i))[0] = <double>value[i,j] / cBohr
@@ -245,7 +245,7 @@ cdef class JDFTCalculator:
                 addQnum(self.e, np.zeros(3), 1.0)
                 return
             # else:
-            cdef np.ndarray kpt
+            cdef double[:] kpt
             cdef double weight
             for kpt, weight in kpts:
                 addQnum(self.e, kpt, weight)
