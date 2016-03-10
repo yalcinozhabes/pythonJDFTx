@@ -1,5 +1,6 @@
 # Author: Yalcin Ozhabes
 # email: yalcinozhabes@gmail.com
+include "electronic/QuantumNumber.pyx"
 
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
@@ -18,7 +19,7 @@ from electronic.SpeciesInfo cimport Uspp as PseudopotentialFormat_Uspp
 from electronic.SpeciesInfo cimport Constraint as Species_Constraint
 from electronic.SpeciesInfo cimport None as Species_Constraint_None
 from electronic.Dump cimport DumpFrequency, DumpFreq_End, DumpVariable, DumpNone
-from electronic.QuantumNumber cimport QuantumNumber, addQnum, clearQnums
+from electronic.QuantumNumber cimport QuantumNumber
 # from electronic.ExCorr cimport ExCorr
 from core.MPIUtil cimport MPIUtil
 from core.Thread cimport *
@@ -44,7 +45,6 @@ from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
 cimport numpy as np
 import numpy as np
-from builtins import bytes
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase.units import Bohr, Hartree

@@ -103,12 +103,12 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False):
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
         runtime_library_dirs=[jdftxLibDir],
-        extra_compile_args=['-std=c++0x', '-O3'],
+        extra_compile_args=['-std=c++0x', '-O3', '-DMPI_ENABLED'],
         #depends=["jdftx/libjdftx.so"],
     )
 
 extensions = [
-    make_extension("electronic.QuantumNumber"),
+    # make_extension("electronic.QuantumNumber"),
     make_extension("JDFTCalculator", ["jdftx"]),
 ]
 
