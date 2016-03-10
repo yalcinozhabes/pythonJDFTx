@@ -206,6 +206,8 @@ cdef class JDFTCalculator:
         mpiUtil = self._mpiUtil
         if mpiUtil.isHead():
             globalLog = self._globalLog
+        else:
+            globalLog = self._nullLog
         nullLog = self._nullLog
 
     #some getters and setters for easy access from python side
