@@ -5,6 +5,7 @@
 import copy
 import time
 import numpy as np
+from mpi4py import MPI
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase import Atoms
@@ -14,7 +15,9 @@ from JDFTCalculator import JDFTCalculator
 
 
 class ElectronicMinimize(Calculator, JDFTCalculator):
-    """"""
+    """
+    A calculator derived from JDFTCalculator.
+    """
     implemented_properties = ['energy', 'forces']
 
     @staticmethod
@@ -90,7 +93,7 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
 
     def updateAtomicPositions(self):
         """"""
-        dpos = self.atoms.positions - self._fromJDFTOrder(self.readIonicPositions() * Bohr)
+        dpos = self.atoms.positions - self._fromJDFTOrder(self.getIonicPositions() * Bohr)
         super(ElectronicMinimize, self).updateIonicPositions(self._toJDFTOrder(dpos / Bohr))
 
     def calculate(self, atoms=None, properties=['energy'],

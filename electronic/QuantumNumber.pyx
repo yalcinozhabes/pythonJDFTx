@@ -2,7 +2,7 @@ cimport electronic.QuantumNumber
 from electronic.Everything cimport Everything
 cimport numpy as cnp
 
-cdef void addQnum(Everything& e, cnp.ndarray kpt, double weight):
+cdef void addQnum(Everything& e, double[:] kpt, double weight):
     """add kpoint with weight.
 
     kpt must be an ndarray of size 3 representing a vector in cell coordinates.

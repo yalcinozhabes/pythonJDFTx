@@ -20,5 +20,5 @@ cdef extern from "electronic/ElecInfo.h" nogil:
 
     cdef inline vector3[double] getCoord(QuantumNumber& qnum)
 
-cdef void addQnum(Everything& e, cnp.ndarray kpt, double weight)
+cdef void addQnum(Everything& e, double[:] kpt, double weight)
 cdef void clearQnums(Everything& e)

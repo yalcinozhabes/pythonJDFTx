@@ -42,8 +42,9 @@ from electronic.Symmetries cimport SymmetriesNone as SymmetryMode_None
 from fluid.FluidParams cimport FluidSolverParams
 from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
-import numpy as np
 cimport numpy as np
+import numpy as np
+from builtins import bytes
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase.units import Bohr, Hartree
@@ -68,20 +69,31 @@ cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile):
     deref(specie).pspFormat = PseudoPotentialFormat_Uspp
     return specie
 
+from cpython cimport PY_MAJOR_VERSION
+cdef char* strToCharStar(object text):
+    if isinstance(text, unicode): # most common case first
+        utf8_data = text.encode('UTF-8')
+    elif (PY_MAJOR_VERSION < 3) and isinstance(text, str):
+        text.decode('ASCII') # trial decoding, or however you want to check for plain ASCII data
+        utf8_data = text
+    else:
+        raise ValueError("requires text input, got %s" % type(text))
+    return utf8_data
 
 cdef class JDFTCalculator:
     # cdef VerletParams v
     cdef Everything e
+    cdef MPIUtil* _mpiUtil
+    cdef FILE* _globalLog
+    cdef FILE* _nullLog
     cdef IonicMinimizer* imin
 
     #c level functions
     def __cinit__(self, *args,**kwargs):
-        global mpiUtil, globalLog, nullLog
-        resumeOperatorThreading()
+        self._nullLog = fopen("/dev/null", "w")
+        self._globalLog = stdout
 
-        nullLog = fopen("/dev/null","w")
-        # globalLog = nullLog
-        mpiUtil = new MPIUtil(mpi.MPI_COMM_WORLD) #initSystemCmdLine
+        self._mpiUtil = new MPIUtil(mpi.MPI_COMM_WORLD) #initSystemCmdLine
 
         #Default commands that sets some variables up at the beginning:
         #basis kpoint-dependent
@@ -175,10 +187,25 @@ cdef class JDFTCalculator:
 
     def __dealloc__(self):
         """finalizeSystem()"""
-        global mpiUtil
-        del mpiUtil
+        del self._mpiUtil
+        fclose(self._nullLog)
         if not (self.imin is NULL):
             del self.imin
+
+    cdef inline void setGlobalsInline(self):
+        """
+        Set the global namespace for the current calculator.
+
+        JDFTx has variables in global namespace which we can't replicate for
+        each calculator. The only way to go is to call a function that modifies
+        the global namespace everytime the scheduler decides to make progress
+        with a calculator.
+        """
+        global mpiUtil, globalLog, nullLog
+        mpiUtil = self._mpiUtil
+        if mpiUtil.isHead():
+            globalLog = self._globalLog
+        nullLog = self._nullLog
 
     #some getters and setters for easy access from python side
     property R:
@@ -254,16 +281,20 @@ cdef class JDFTCalculator:
     def __init__(self, *args, **kwargs):
         self.spin = 1
 
+    def setGlobals(self):
+        self.setGlobalsInline()
+
     def disableLog(self):
-        global globalLog, nullLog
-        globalLog = nullLog
+        self._globalLog = self._nullLog
 
     def add_ion(self, atom):
-        symbol = str(atom.symbol)
+        """
+        """
+        cdef char* symbol = strToCharStar(atom.symbol)
 
         cdef string id
         cdef vector3[double] pos
-        id.assign(<char*>symbol)
+        id.assign(symbol)
         cdef shared_ptr[SpeciesInfo] sp
         sp = findSpecies(id, self.e)
 
@@ -276,7 +307,7 @@ cdef class JDFTCalculator:
             deref(sp).atpos.push_back(pos)
         else:
             pspFile = _makePspPath(atom.symbol)
-            sp = createNewSpecie(id, <char*>pspFile)
+            sp = createNewSpecie(id, strToCharStar(pspFile))
             self.e.iInfo.species.push_back(sp)
             deref(sp).atpos.push_back(pos)
 
@@ -286,10 +317,20 @@ cdef class JDFTCalculator:
         deref(sp).constraints.push_back(constraint)
 
     def setup(self):
-        """Runs Everything.setup"""
+        """
+        Runs Everything.setup()
+        """
+        self.setGlobalsInline()
+        print("globals are set")
         self.e.setup()
 
-    def readIonicPositions(self):
+    def getIonicPositions(self):
+        """
+        Getter for ionic positions.
+
+        Returns np.ndarray of ionic positions in cartesian coordinates,
+        in JDFTx order.
+        """
         cdef extern vector3[double] operator*(matrix3[double], vector3[double]&)
         cdef shared_ptr[SpeciesInfo] sp
         atpos = []
@@ -302,7 +343,8 @@ cdef class JDFTCalculator:
         atpos.resize((len(atpos)/3,3))
         return atpos
 
-    def updateIonicPositions(self,double[:,:] dpos):
+    def updateIonicPositions(self, double[:,:] dpos):
+        self.setGlobalsInline()
         if self.imin==NULL:
             self.imin = new IonicMinimizer(self.e)
         cdef IonicGradient d
@@ -316,6 +358,7 @@ cdef class JDFTCalculator:
         self.imin.step(d, 1.0)
 
     def runElecMin(self):
+        self.setGlobalsInline()
         if self.imin is NULL:
             self.imin = new IonicMinimizer(self.e)
         # with nogil:
