@@ -14,7 +14,7 @@ cdef extern from "electronic/SpeciesInfo.h" namespace "SpeciesInfo::Constraint" 
         Planar
 
 cdef extern from "electronic/SpeciesInfo.h" namespace "SpeciesInfo" nogil:
-    enum PseudoPotentialFormat:
+    enum PseudopotentialFormat:
         Fhi
         Uspp
         UPF
@@ -28,7 +28,7 @@ cdef extern from "electronic/SpeciesInfo.h" nogil:
         string name
         string potfilename, pulayfilename
         bool fromWildcard
-        PseudoPotentialFormat pspFormat
+        PseudopotentialFormat pspFormat
 
         vector[vector3[double]] atpos
         vector[Constraint] constraints

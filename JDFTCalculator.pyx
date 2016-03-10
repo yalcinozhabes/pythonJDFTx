@@ -14,7 +14,7 @@ from includes.matrix3 cimport matrix3
 from electronic.Everything cimport Everything
 from electronic.Basis cimport Basis
 from electronic.SpeciesInfo cimport SpeciesInfo, findSpecies
-from electronic.SpeciesInfo cimport Uspp as PseudoPotentialFormat_Uspp
+from electronic.SpeciesInfo cimport Uspp as PseudopotentialFormat_Uspp
 from electronic.SpeciesInfo cimport Constraint as Species_Constraint
 from electronic.SpeciesInfo cimport None as Species_Constraint_None
 from electronic.Dump cimport DumpFrequency, DumpFreq_End, DumpVariable, DumpNone
@@ -66,7 +66,7 @@ cdef shared_ptr[SpeciesInfo] createNewSpecie(string id, char* pspFile):
     deref(specie).potfilename.assign(pspFile)
     deref(specie).fromWildcard = False
     deref(specie).name = id
-    deref(specie).pspFormat = PseudoPotentialFormat_Uspp
+    deref(specie).pspFormat = PseudopotentialFormat_Uspp
     return specie
 
 from cpython cimport PY_MAJOR_VERSION
@@ -109,7 +109,8 @@ cdef class JDFTCalculator:
         self.e.coulombParams.geometry =  Geometry_Periodic
 
         #dump End None
-        self.e.dump.insert(pair[DumpFrequency,DumpVariable](DumpFreq_End, DumpNone))
+        self.e.dump.insert(<const pair[DumpFrequency,DumpVariable]>
+                      pair[DumpFrequency,DumpVariable](DumpFreq_End, DumpNone))
 
         #elec-cutoff 20
         self.e.cntrl.Ecut = 20.0
