@@ -1,0 +1,21 @@
+symmetries None
+
+ion-species ${PSEUDOPOT_HOME}li.uspp
+
+ion Li  0 0 0 0
+ion Li  .5 .5 .5 0
+#kpoint 0.125 0.125 0.125 1
+kpoint-folding 4 4 4
+
+coords-type lattice
+lattice    6.614040853700622          0          0  \
+                 0    6.614040853700622          0  \
+                 0          0    6.614040853700622
+
+ionic-minimize \
+    knormThreshold 1e-10 \
+    nIterations 0   \
+    energyDiffThreshold 1e-10
+
+dump End None
+debug KpointsBasis
