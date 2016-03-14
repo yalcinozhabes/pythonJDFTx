@@ -66,10 +66,10 @@ class ElectronicMinimize(Calculator, JDFTCalculator):
         return self._changeOrder(x, self._fromJDFTOrderIndexList)
 
     def __init__(self, restart=None, ignore_bad_restart_file=False,
-                 atoms=None, log=True, **kwargs):
+                 atoms=None, log=True, comm=None, **kwargs):
         Calculator.__init__(self, restart, ignore_bad_restart_file,
                             "JDFT", atoms, **kwargs)
-        JDFTCalculator.__init__(self)
+        JDFTCalculator.__init__(self, comm=comm)
 
         if 'kpts' in kwargs:
             self.kpts = kwargs["kpts"]

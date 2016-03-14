@@ -81,7 +81,7 @@ def compareForces():
     print(water.get_forces())
     print(water.calc.calculate_numerical_forces(water))
 
-def lithiumBulk():
+def lithiumBulk(comm):
     d = 3.5
     li = Atoms('Li2',
                   positions=[(0, 0, 0),
@@ -93,7 +93,8 @@ def lithiumBulk():
     kpointList += np.asarray([.125, .125, .125])
     w = 1.0/len(kpointList)
     li.calc = ElectronicMinimize(atoms = li, log = True,
-                                 kpts = [(k,w) for k in kpointList])
+                                 kpts = [(k,w) for k in kpointList],
+                                 comm = comm)
     li.calc.dragWavefunctions = False
 
     print(li.get_potential_energy() / Hartree)
@@ -110,4 +111,5 @@ def die():
     dyn.run(fmax=0.05)
 
 if __name__=="__main__":
-    lithiumBulk()
+    comm = MPI.COMM_WORLD
+    lithiumBulk(comm)

@@ -1,11 +1,13 @@
-# Author: Yalcin Ozhabes
 # email: yalcinozhabes@gmail.com
+# Author: Yalcin Ozhabes
 include "electronic/QuantumNumber.pyx"
 
 from cython.operator cimport dereference as deref
 from libcpp cimport bool
 from libcpp.pair cimport pair
-cimport mpi4py.libmpi as mpi
+from mpi4py.MPI cimport Comm as pyComm
+cimport mpi4py.libmpi as cmpi
+cdef extern from "includes/mpi-compat.h": pass
 
 from includes.string cimport string
 from includes.file cimport *
@@ -45,9 +47,13 @@ from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
 cimport numpy as np
 import numpy as np
+import multiprocessing, socket
+from mpi4py import MPI as mpi
 
 from ase.calculators.calculator import Calculator, all_changes
 from ase.units import Bohr, Hartree
+
+from core import utils
 
 #globals
 cdef:
@@ -84,17 +90,16 @@ cdef class JDFTCalculator:
     # cdef VerletParams v
     cdef Everything e
     cdef MPIUtil* _mpiUtil
+    cdef pyComm comm
+    cdef cmpi.MPI_Comm _comm
     cdef FILE* _globalLog
     cdef FILE* _nullLog
+    cdef int _nThreads
     cdef IonicMinimizer* imin
+
 
     #c level functions
     def __cinit__(self, *args,**kwargs):
-        self._nullLog = fopen("/dev/null", "w")
-        self._globalLog = stdout
-
-        self._mpiUtil = new MPIUtil(mpi.MPI_COMM_WORLD) #initSystemCmdLine
-
         #Default commands that sets some variables up at the beginning:
         #basis kpoint-dependent
         self.e.cntrl.basisKdep = BasisKdep_BasisKpointDep
@@ -202,8 +207,9 @@ cdef class JDFTCalculator:
         the global namespace everytime the scheduler decides to make progress
         with a calculator.
         """
-        global mpiUtil, globalLog, nullLog
+        global mpiUtil, globalLog, nullLog, nProcsAvailable
         mpiUtil = self._mpiUtil
+        nProcsAvailable = self._nThreads
         if mpiUtil.isHead():
             globalLog = self._globalLog
         else:
@@ -281,7 +287,28 @@ cdef class JDFTCalculator:
                 addQnum(self.e, kpt, weight)
 
     #python level functions
-    def __init__(self, *args, **kwargs):
+    def __init__(self, comm = None, nThreads = None, **kwargs):
+        """"""
+        # set up the parallelization and global values
+        if comm is None:
+            self.comm = mpi.COMM_WORLD
+        elif isinstance(comm, pyComm):
+            self.comm = comm
+        else:
+            raise TypeError("comm has to be of type mpi4py.MPI.Comm")
+        self._comm = self.comm.ob_mpi
+        self._mpiUtil = new MPIUtil(self._comm)
+        if nThreads is None:
+            self._nThreads = utils.nThreads(self.comm)
+        elif isinstance(nThreads, int):
+            self._nThreads = nThreads
+        else:
+            raise TypeError("nThreads has to be of type int")
+
+        # global variables (global in JDFTx not in pythonJDFTx)
+        self._nullLog = fopen("/dev/null", "w")
+        self._globalLog = stdout
+
         self.spin = 1
 
     def setGlobals(self):
