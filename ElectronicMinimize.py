@@ -14,9 +14,9 @@ from ase.units import Bohr, Hartree
 from JDFTCalculator import JDFTCalculator
 from JDFTCalculatorGPU import JDFTCalculatorGPU
 
-class ElectronicMinimize(JDFTCalculator, Calculator):
+class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
     """
-    A calculator derived from JDFTCalculator.
+    A calculator derived from JDFTCalculatorCPU.
     """
     implemented_properties = ['energy', 'forces']
 
@@ -122,7 +122,7 @@ class ElectronicMinimize(JDFTCalculator, Calculator):
                         'charges': np.zeros(len(atoms)),
                         'magmom': 0.0,
                         'magmoms': np.zeros(len(atoms))}
-                        
+
 class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
     """
     A calculator derived from JDFTCalculatorGPU.
