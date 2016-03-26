@@ -27,7 +27,7 @@ along with JDFTx.  If not, see <http://www.gnu.org/licenses/>.
 
 //Copied from Util.h (which cannot be included here due to lack of CUDA C++11 support)
 int assertStackTraceExit(const char* expr, const char* function, const char* file, long line);
-#ifndef assert
+#ifndef myassert
 #define myassert(expr) (void)((expr) ? 0 : assertStackTraceExit(#expr, __func__, __FILE__, __LINE__))
 #endif
 

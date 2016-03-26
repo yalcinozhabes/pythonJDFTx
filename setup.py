@@ -16,6 +16,7 @@ from Cython.Build import cythonize
 
 isRoot = os.geteuid() == 0  # Do we have root privileges?
 enableGPU = (len(sys.argv) >= 2 and "--GPU" in sys.argv)
+if enableGPU: sys.argv.pop(sys.argv.index("--GPU"))
 
 # Use parallel compilation on this number of cores.
 nthreads = int(os.environ.get('COMPILE_NTHREADS', multiprocessing.cpu_count() ))
@@ -47,7 +48,10 @@ def installJDFTx():
     """
     # is there a valid installation in user folders:
     if os.path.exists(os.path.join(site.USER_BASE, "jdftx/libjdftx.so")):
-        return os.path.join(site.USER_BASE, "jdftx")
+        if (not enableGPU) or \
+           os.path.exists(os.path.join(site.USER_BASE, "jdftx/libjdftx_gpu.so")):
+           return os.path.join(site.USER_BASE, "jdftx")           
+        
     with inTempFolder() as (jdftxDir, pythonJDFTxDir):
         log.info("JDFTx Compilation:")
         log.info("Running cmake...")
@@ -91,37 +95,46 @@ try:
 except sb.CalledProcessError:
     jdftxLibDir = installJDFTx()
 
-def make_extension(ext_name, ext_libraries=(), is_directory=False):
+def make_extension(ext_name, ext_libraries=(), is_directory=False, gpu = 0):
     ext_path = ext_name
     if is_directory:
         ext_path += ".__init__"
     return Extension(
         ext_name,
         [ext_path.replace(".", os.path.sep) + ".pyx"],
-        include_dirs=["jdftx", ".", mpi4py.get_include()],
+        include_dirs=["jdftx", ".", mpi4py.get_include(), "/usr/lib/openmpi/include", "/usr/lib/openmpi/include/openmpi"] + gpu*["/usr/local/cuda/include"],
         language="c++",
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
         runtime_library_dirs=[jdftxLibDir],
-        extra_compile_args=['-std=c++0x', '-O3', '-DMPI_ENABLED'],
+        extra_compile_args=['-std=c++0x', '-O3', '-DMPI_ENABLED'] + gpu*['-DGPU_ENABLED'],
         #depends=["jdftx/libjdftx.so"],
     )
-
-extensions = [
+    
+extensions = []
+if enableGPU:
+    extensions.append(
+        make_extension("JDFTCalculatorGPU", ["jdftx_gpu"], gpu=1),
+	)
+        
+extensions.append(
     # make_extension("electronic.QuantumNumber"),
     make_extension("JDFTCalculator", ["jdftx"]),
-]
+)
 
 for e in extensions:
     e.cython_directives = {"boundscheck": False,
                            "wraparound": False,
                            "infer_types": True}
 
-mpiCompilers = mpi4py.get_config()
-os.environ['CC'] = mpiCompilers['mpicc']
-os.environ['CXX'] = mpiCompilers['mpicxx']
+#mpiCompilers = mpi4py.get_config()
+#os.environ['CC'] = mpiCompilers['mpicc']
+#os.environ['CXX'] = mpiCompilers['mpicxx']
 
 pyVersion = sys.version_info[0]
+
+extensions = cythonize(extensions, nthreads=nthreads,
+                        compiler_directives = {'language_level': pyVersion})
 
 setup(**{
     "name": "pythonJDFTx",
@@ -132,7 +145,6 @@ setup(**{
         "fluid",
     ],
     "py_modules":["ElectronicMinimize"],
-    "ext_modules": cythonize(extensions, nthreads=nthreads,
-                        compiler_directives = {'language_level': pyVersion}),
+    "ext_modules": extensions,
     "cmdclass": {'build_ext': build_ext},
 })

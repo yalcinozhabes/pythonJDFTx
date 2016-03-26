@@ -11,8 +11,9 @@ from ase import Atoms
 from ase import Atom
 from ase.units import *
 
-from ElectronicMinimize import ElectronicMinimize
+import sys
 
+from ElectronicMinimize import ElectronicMinimize, ElectronicMinimizeGPU
 import numpy as np
 from mpi4py import MPI
 
@@ -92,7 +93,12 @@ def lithiumBulk(comm):
     kpointList = kpoints.monkhorst_pack((4,4,4))
     kpointList += np.asarray([.125, .125, .125])
     w = 1.0/len(kpointList)
-    li.calc = ElectronicMinimize(atoms = li, log = True,
+    if "--gpu" in sys.argv:
+        li.calc = ElectronicMinimizeGPU(atoms = li, log = True,
+                                 kpts = [(k,w) for k in kpointList],
+                                 comm = comm)
+    else:
+        li.calc = ElectronicMinimize(atoms = li, log = True,
                                  kpts = [(k,w) for k in kpointList],
                                  comm = comm)
     li.calc.dragWavefunctions = False
