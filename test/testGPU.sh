@@ -5,4 +5,4 @@
 #SBATCH --exclusive
 #SBATCH --gres=gpu
 ## mpiexec python test.py
-jdftx/build/jdftx_gpu -i li.in
+../jdftx/build/jdftx_gpu -i li.in
