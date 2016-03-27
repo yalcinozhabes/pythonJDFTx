@@ -58,9 +58,8 @@ from core import utils
 
 #globals
 cdef:
-    double cBohr = Bohr
-    double cHartree = Hartree
-    int i, j, k
+    double cBohr "Bohr" = Bohr
+    double cHartree "Hartree" = Hartree
 
 def _makePspPath(symbol):
     import os

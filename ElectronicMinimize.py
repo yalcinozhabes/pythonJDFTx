@@ -11,7 +11,7 @@ from ase.calculators.calculator import Calculator, all_changes
 from ase import Atoms
 
 from ase.units import Bohr, Hartree
-from JDFTCalculator import JDFTCalculator
+from JDFTCalculatorCPU import JDFTCalculatorCPU
 from JDFTCalculatorGPU import JDFTCalculatorGPU
 
 class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
