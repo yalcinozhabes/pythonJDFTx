@@ -1,3 +1,10 @@
+# This file is modified into JDFTCalculatorCPU.pyx and JDFTCalculatorGPU.pyx
+# by setup.py. `{TARGET}` is replaced by `CPU` and `GPU` for these files.
+# The following line left blank intentionally
+
+# Author: Yalcin Ozhabes
+# email: yalcinozhabes@gmail.com
+
 DEF TARGET = '{TARGET}'
 
 include "JDFTCalculatorBase.pxi"
