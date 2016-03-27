@@ -100,7 +100,7 @@ def make_extension(ext_name, ext_libraries=(), is_directory=False, gpu = 0):
     return Extension(
         ext_name,
         [ext_path.replace(".", os.path.sep) + ".pyx"],
-        include_dirs=["jdftx", ".", mpi4py.get_include(), "/usr/lib/openmpi/include", "/usr/lib/openmpi/include/openmpi"] + gpu*["/usr/local/cuda/include"],
+        include_dirs=["jdftx", ".", mpi4py.get_include()] + gpu*["/usr/local/cuda/include"],
         language="c++",
         libraries=ext_libraries,
         library_dirs=[jdftxLibDir],
@@ -137,9 +137,9 @@ for e in extensions:
                            "wraparound": False,
                            "infer_types": True}
 
-#mpiCompilers = mpi4py.get_config()
-#os.environ['CC'] = mpiCompilers['mpicc']
-#os.environ['CXX'] = mpiCompilers['mpicxx']
+mpiCompilers = mpi4py.get_config()
+os.environ['CC'] = mpiCompilers['mpicc']
+os.environ['CXX'] = mpiCompilers['mpicxx']
 
 pyVersion = sys.version_info[0]
 
