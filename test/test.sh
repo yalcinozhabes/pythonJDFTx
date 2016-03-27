@@ -7,4 +7,4 @@
 #SBATCH -x node[1024,2001-2020]
 
 ## mpiexec python test.py
-mpirun -np 4 /home/yalcin/JDFTx_latest/build/jdftx -i test/li.in
+mpirun -np 4 /home/yalcin/JDFTx_latest/build/jdftx -i li.in
