@@ -234,15 +234,21 @@ cdef class JDFTCalculator{TARGET}:
 
         # global variables (global in JDFTx not in pythonJDFTx)
         self._nullLog = fopen("/dev/null", "w")
-        self._globalLog = stdout
+        if 'log' in kwargs:
+            log = kwargs['log']
+        if log is True:
+            self._globalLog = stdout
+        elif isinstance(log, str):
+            self._globalLog = fopen(strToCharStar(log), "w")
+        elif (log is False) or (log is None):
+            self._globalLog = self._nullLog
+        else:
+            raise TypeError("log must be one of True, False, None or a string")
 
         self.spin = 1
 
     def setGlobals(self):
         self.setGlobalsInline()
-
-    def disableLog(self):
-        self._globalLog = self._nullLog
 
     def add_ion(self, atom):
         """
@@ -256,17 +262,35 @@ cdef class JDFTCalculator{TARGET}:
         sp = findSpecies(id, self.e)
 
         invR = np.linalg.inv(self.R)
-        positionInLatticeCoordinates = invR.dot(atom.position)
+        positionInLatticeCoordinates = atom.position.dot(invR)
         for i in range(3):
             pos[i] = <double>positionInLatticeCoordinates[i]
 
         if sp != 0:
-            deref(sp).atpos.push_back(pos)
+            pass
+        elif hasattr(atom, 'pseudopotential'):
+            if atom.pseudopotential.lower() in ['uspp', 'fhi', 'upf']:
+                pspFile = _makePspPath(atom.symbol, atom.pseudopotential.lower())
+            elif os.path.exists(atom.pseudopotential):
+                pspFile = atom.pseudopotential
+            else:
+                raise ValueError("Can't find file " + atom.pseudopotential +
+                                 " or unknown format.")
+
+            if pspFile.lower().endswith("uspp"):
+                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Uspp)
+            elif pspFile.lower().endswith("fhi"):
+                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Fhi)
+            elif pspFile.lower().endswith("upf"):
+                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_UPF)
+            else:
+                raise ValueError("pseudopotential format is not supported\n" +
+                                  pspFile)
         else:
             pspFile = _makePspPath(atom.symbol)
-            sp = createNewSpecies(id, strToCharStar(pspFile))
+            sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Uspp)
             self.e.iInfo.species.push_back(sp)
-            deref(sp).atpos.push_back(pos)
+        deref(sp).atpos.push_back(pos)
 
         cdef Species_Constraint constraint
         constraint.moveScale = 0.0

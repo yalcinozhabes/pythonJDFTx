@@ -17,7 +17,10 @@ from includes.matrix3 cimport matrix3
 from electronic.Everything cimport Everything
 from electronic.Basis cimport Basis
 from electronic.SpeciesInfo cimport SpeciesInfo, findSpecies
-from electronic.SpeciesInfo cimport Uspp as PseudopotentialFormat_Uspp
+from electronic.SpeciesInfo cimport Uspp as PspFormat_Uspp
+from electronic.SpeciesInfo cimport Fhi as PspFormat_Fhi
+from electronic.SpeciesInfo cimport UPF as PspFormat_UPF
+from electronic.SpeciesInfo cimport PseudopotentialFormat as PspFormat
 from electronic.SpeciesInfo cimport Constraint as Species_Constraint
 from electronic.SpeciesInfo cimport None as Species_Constraint_None
 from electronic.Dump cimport DumpFrequency, DumpFreq_End, DumpVariable, DumpNone
@@ -48,7 +51,7 @@ from fluid.FluidParams cimport FluidNone as FluidType_FluidNone
 
 cimport numpy as np
 import numpy as np
-import multiprocessing, socket
+import multiprocessing, socket, os
 from mpi4py import MPI as mpi
 
 from ase.calculators.calculator import Calculator, all_changes
@@ -61,19 +64,19 @@ cdef:
     double cBohr "Bohr" = Bohr
     double cHartree "Hartree" = Hartree
 
-def _makePspPath(symbol):
-    import os
+def _makePspPath(symbol, pspType='uspp'):
     pspFolder = os.getenv("PSEUDOPOT_HOME")
-    return os.path.join(pspFolder, symbol.lower() + ".uspp")
+    return os.path.join(pspFolder, symbol.lower() + '.' + pspType)
 
-cdef shared_ptr[SpeciesInfo] createNewSpecies "createNewSpecies" (string id, char* pspFile):
+cdef shared_ptr[SpeciesInfo] newSpecies (string id, char* pspFile,
+                                         PspFormat pspFormat):
     # cdef SpeciesInfo* speciePtr = new SpeciesInfo()
-    cdef shared_ptr[SpeciesInfo] specie = shared_ptr[SpeciesInfo](new SpeciesInfo())
-    deref(specie).potfilename.assign(pspFile)
-    deref(specie).fromWildcard = False
-    deref(specie).name = id
-    deref(specie).pspFormat = PseudopotentialFormat_Uspp
-    return specie
+    cdef shared_ptr[SpeciesInfo] species = shared_ptr[SpeciesInfo](new SpeciesInfo())
+    deref(species).potfilename.assign(pspFile)
+    deref(species).fromWildcard = False
+    deref(species).name = id
+    deref(species).pspFormat = pspFormat
+    return species
 
 from cpython cimport PY_MAJOR_VERSION
 cdef char* strToCharStar(object text):
