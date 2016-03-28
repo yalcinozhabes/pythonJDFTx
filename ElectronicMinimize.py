@@ -87,7 +87,7 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
         if 'pseudopotential' in atoms.info:
             pspots = [atoms.info[pseudopotential]] * len(atoms)
         elif 'pseudopotentials' in atoms.info:
-            pspots = atoms.info[pseudopotentials]
+            pspots = atoms.info['pseudopotentials']
             assert len(pspots) == len(atoms)
         else:
             pspots = None
