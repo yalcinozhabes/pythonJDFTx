@@ -83,7 +83,17 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
 
         self._toJDFTOrderIndexList, self._fromJDFTOrderIndexList = self._createIndexLists(atoms)
         self.R = atoms.cell
-        for atom in atoms:
+
+        if 'pseudopotential' in atoms.info:
+            pspots = [atoms.info[pseudopotential]] * len(atoms)
+        elif 'pseudopotentials' in atoms.info:
+            pspots = atoms.info[pseudopotentials]
+            assert len(pspots) == len(atoms)
+        else:
+            pspots = None
+        for i, atom in enumerate(atoms):
+            if pspots:
+                atom.data['pseudopotential'] = pspots[i]
             self.add_ion(atom)
         t0 = time.time()
         c0 = time.clock()
