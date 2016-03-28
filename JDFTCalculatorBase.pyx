@@ -296,13 +296,13 @@ cdef class JDFTCalculator{TARGET}:
 
         if sp != 0:
             pass
-        elif hasattr(atom, 'pseudopotential'):
-            if atom.pseudopotential.lower() in ['uspp', 'fhi', 'upf']:
-                pspFile = _makePspPath(atom.symbol, atom.pseudopotential.lower())
-            elif os.path.exists(atom.pseudopotential):
-                pspFile = atom.pseudopotential
+        elif 'pseudopotential' in atom.data:
+            if atom.data[pseudopotential].lower() in ['uspp', 'fhi', 'upf']:
+                pspFile = _makePspPath(atom.symbol, atom.data[pseudopotential].lower())
+            elif os.path.exists(atom.data[pseudopotential]):
+                pspFile = atom.data[pseudopotential]
             else:
-                raise ValueError("Can't find file " + atom.pseudopotential +
+                raise ValueError("Can't find file " + atom.data[pseudopotential] +
                                  " or unknown format.")
 
             if pspFile.lower().endswith("uspp"):
