@@ -374,6 +374,7 @@ cdef class JDFTCalculator{TARGET}:
             self.imin = new IonicMinimizer(self.e)
         # with nogil:
         resumeOperatorThreading()
+        self.e.iInfo.printPositions(self._globalLog)
         self.imin.minimize(self.e.ionicMinParams)
 
     def readTotalEnergy(self):

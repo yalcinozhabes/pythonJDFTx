@@ -153,12 +153,12 @@ def main():
 
     setup(**{
         "name": "pythonJDFTx",
-        "packages": [
-            "core",
-            "electronic",
-            "includes",
-            "fluid",
-        ],
+        # "packages": [
+        #     "core",
+        #     "electronic",
+        #     "includes",
+        #     "fluid",
+        # ],
         "py_modules":["ElectronicMinimize"],
         "ext_modules": extensions,
         "cmdclass": {'build_ext': build_ext},
