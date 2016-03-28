@@ -19,12 +19,12 @@ cdef class JDFTCalculator{TARGET}:
     cdef FILE* _nullLog "_nullLog"
     cdef int _nThreads "_nThreads"
     cdef IonicMinimizer* imin "imin"
+    cdef bool didSetupRun "didSetupRun"
 
 
     #c level functions
     def __cinit__(self, *args,**kwargs):
-        #Default commands that sets some variables up at the beginning:
-        #basis kpoint-dependent
+        self.didSetupRun = False
 
         IF TARGET == 'GPU':
             gpuInit(stdout)
@@ -56,6 +56,7 @@ cdef class JDFTCalculator{TARGET}:
 
         #electronic-minimize energyDiffThreshold  1e-08
         self.e.elecMinParams.energyDiffThreshold = 1e-8
+        self.e.elecMinParams.nIterations = 400
 
         #exchange-regularization WignerSeitzTruncated
         self.e.coulombParams.exchangeRegularization = XReg_WignerSeitzTruncated
@@ -213,6 +214,33 @@ cdef class JDFTCalculator{TARGET}:
             for kpt, weight in kpts:
                 addQnum(self.e, kpt, weight)
 
+    property settings:
+        """Dictionary that holds the initial settings.
+
+        The settings are fixed after the first run of setup()."""
+        def __set__(self, settings):
+            if self.didSetupRun:
+                raise AttributeError("Can't change settings after setup() runs.")
+            if 'Ecut' in settings:
+                self.e.cntrl.Ecut = <double>settings['Ecut']
+            if 'kT' in settings:
+                self.e.eInfo.kT = <double>settings['kT']
+                self.e.eInfo.mixInterval = 0
+                if settings['kT'] > 0:
+                    self.e.eInfo.fillingsUpdate = FermiFillingsAux
+                else:
+                    self.e.eInfo.fillingsUpdate = ConstantFillings
+            if 'nBands' in settings:
+                self.e.eInfo.nBands = <int>settings['nBands']
+
+        def __get__(self):
+            settings = dict()
+            settings['Ecut']   = self.e.cntrl.Ecut
+            settings['kT']     = self.e.eInfo.kT
+            settings['nBands'] = self.e.eInfo.nBands
+            return settings
+
+
     #python level functions
     def __init__(self, comm = None, nThreads = None, **kwargs):
         """"""
@@ -301,9 +329,11 @@ cdef class JDFTCalculator{TARGET}:
         """
         Runs Everything.setup()
         """
+        if self.didSetupRun:
+            raise RuntimeError("setup() has already run once")
         self.setGlobalsInline()
-        print("globals are set")
         self.e.setup()
+        self.didSetupRun = True
 
     def getIonicPositions(self):
         """

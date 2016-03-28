@@ -72,7 +72,9 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
         super(ElectronicMinimize, self).__init__(comm=comm, log = log)
 
         if 'kpts' in kwargs:
-            self.kpts = kwargs["kpts"]
+            self.kpts = kwargs['kpts']
+        if 'settings' in kwargs:
+            self.settings = kwargs['settings']
 
         if atoms is None:
             return

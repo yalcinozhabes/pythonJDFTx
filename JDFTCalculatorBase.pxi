@@ -37,6 +37,8 @@ from core.Coulomb cimport WignerSeitzTruncated as XReg_WignerSeitzTruncated
 from core.EnergyComponents cimport EnergyComponents
 from electronic.Control cimport Control, ElecEigenDavidson
 from electronic.Control cimport BasisKpointDep as BasisKdep_BasisKpointDep
+from electronic.ElecInfo cimport FermiFillingsAux
+from electronic.ElecInfo cimport ConstantFillings
 from electronic.IonInfo cimport IonInfo
 from electronic.IonInfo cimport CoordsCartesian as CoordsType_CoordsCartesian
 from electronic.IonInfo cimport ForcesCoordsCartesian as ForcesOutput_Cartesian
