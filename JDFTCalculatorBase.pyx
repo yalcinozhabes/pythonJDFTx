@@ -314,6 +314,7 @@ cdef class JDFTCalculator{TARGET}:
             else:
                 raise ValueError("pseudopotential format is not supported\n" +
                                   pspFile)
+            self.e.iInfo.species.push_back(sp)
         else:
             pspFile = _makePspPath(atom.symbol)
             sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Uspp)
