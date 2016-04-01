@@ -22,15 +22,16 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
 
     @staticmethod
     def _changeOrder(x, indexList):
-        out = copy.copy(x)
         if isinstance(x, np.ndarray):
+            out = copy.copy(x)
             for i, ind in enumerate(indexList):
-                out[i] = x[ind]
+                out[ind] = x[i]
             return out
         elif isinstance(x, Atoms):
+            out = [0] * len(x)
             for i, ind in enumerate(indexList):
-                out[i] = copy.copy(x[ind])
-            return out
+                out[ind] = copy.copy(x[i])
+            return Atoms(out)
         else:
             raise TypeError("Can change the order of np.ndarray or ase.Atoms")
 
@@ -143,15 +144,16 @@ class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
 
     @staticmethod
     def _changeOrder(x, indexList):
-        out = copy.copy(x)
         if isinstance(x, np.ndarray):
+            out = copy.copy(x)
             for i, ind in enumerate(indexList):
-                out[i] = x[ind]
+                out[ind] = x[i]
             return out
         elif isinstance(x, Atoms):
+            out = [0] * len(x)
             for i, ind in enumerate(indexList):
-                out[i] = copy.copy(x[ind])
-            return out
+                out[ind] = copy.copy(x[i])
+            return Atoms(out)
         else:
             raise TypeError("Can change the order of np.ndarray or ase.Atoms")
 
