@@ -69,7 +69,9 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
                  atoms=None, log=True, comm=None, **kwargs):
         Calculator.__init__(self, restart, ignore_bad_restart_file,
                             "JDFT", atoms, **kwargs)
-        super(ElectronicMinimize, self).__init__(comm=comm, log = log)
+        nThreads = kwargs['nThreads'] if 'nThreads' in kwargs else None
+        super(ElectronicMinimize, self).__init__(comm=comm, nThreads=nThreads,
+                                                 log = log)
 
         if 'kpts' in kwargs:
             self.kpts = kwargs['kpts']
@@ -189,7 +191,9 @@ class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
         print "ElecMinGPU init running"
         Calculator.__init__(self, restart, ignore_bad_restart_file,
                             "JDFT", atoms, **kwargs)
-        super(ElectronicMinimizeGPU, self).__init__(comm=comm, log = log)
+        nThreads = kwargs['nThreads'] if 'nThreads' in kwargs else None
+        super(ElectronicMinimizeGPU, self).__init__(comm=comm, nThreads=nThreads,
+                                                    log = log)
 
         if 'kpts' in kwargs:
             self.kpts = kwargs["kpts"]
