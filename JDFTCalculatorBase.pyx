@@ -10,7 +10,16 @@ DEF TARGET = '{TARGET}'
 include "JDFTCalculatorBase.pxi"
 
 cdef class JDFTCalculator{TARGET}:
-    # cdef VerletParams v
+    """ JDFTCalculator base class.
+
+    Defines the interface between Python and C++ objects. None of the inheriting
+    classes should worry about the unit conversion (ASE uses Angstroms and eV
+    whereas JDFTx uses Bohrs and Hartrees) or indexing order differences between
+    ASE objects and JDFTx objects (for example ASE specifies the lattice vectors
+    as row vectors, in JDFTx they are column vectors).
+
+
+    """
     cdef Everything e "e"
     cdef MPIUtil* _mpiUtil "_mpiUtil"
     cdef pyComm comm "comm"
@@ -145,7 +154,7 @@ cdef class JDFTCalculator{TARGET}:
         nullLog = self._nullLog
 
     #some getters and setters for easy access from python side
-    property R:
+    property cell:
         """Lattice vectors in Angstrom. Handles the conversion internally.
 
         Handles both the unit conversion and row major to column major
@@ -267,7 +276,7 @@ cdef class JDFTCalculator{TARGET}:
         if log is True:
             self._globalLog = stdout
         elif isinstance(log, str):
-            self._globalLog = fopen(strToCharStar(log), "w")
+            self._globalLog = fopen(pyStrToCharStar(log), "w")
         elif (log is False) or (log is None):
             self._globalLog = self._nullLog
         else:
@@ -281,7 +290,7 @@ cdef class JDFTCalculator{TARGET}:
     def add_ion(self, atom):
         """
         """
-        cdef char* symbol = strToCharStar(atom.symbol)
+        cdef char* symbol = pyStrToCharStar(atom.symbol)
 
         cdef string id
         cdef vector3[double] pos
@@ -306,18 +315,18 @@ cdef class JDFTCalculator{TARGET}:
                                  " or unknown format.")
 
             if pspFile.lower().endswith("uspp"):
-                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Uspp)
+                sp = newSpecies(id, pyStrToCharStar(pspFile), PspFormat_Uspp)
             elif pspFile.lower().endswith("fhi"):
-                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Fhi)
+                sp = newSpecies(id, pyStrToCharStar(pspFile), PspFormat_Fhi)
             elif pspFile.lower().endswith("upf"):
-                sp = newSpecies(id, strToCharStar(pspFile), PspFormat_UPF)
+                sp = newSpecies(id, pyStrToCharStar(pspFile), PspFormat_UPF)
             else:
                 raise ValueError("pseudopotential format is not supported\n" +
                                   pspFile)
             self.e.iInfo.species.push_back(sp)
         else:
             pspFile = _makePspPath(atom.symbol)
-            sp = newSpecies(id, strToCharStar(pspFile), PspFormat_Uspp)
+            sp = newSpecies(id, pyStrToCharStar(pspFile), PspFormat_Uspp)
             self.e.iInfo.species.push_back(sp)
         deref(sp).atpos.push_back(pos)
 

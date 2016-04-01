@@ -81,7 +81,7 @@ cdef shared_ptr[SpeciesInfo] newSpecies (string id, char* pspFile,
     return species
 
 from cpython cimport PY_MAJOR_VERSION
-cdef char* strToCharStar(object text):
+cdef char* pyStrToCharStar(object text):
     if isinstance(text, unicode): # most common case first
         utf8_data = text.encode('UTF-8')
     elif (PY_MAJOR_VERSION < 3) and isinstance(text, str):
