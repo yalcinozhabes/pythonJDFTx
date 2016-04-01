@@ -298,8 +298,8 @@ cdef class JDFTCalculator{TARGET}:
         cdef shared_ptr[SpeciesInfo] sp
         sp = findSpecies(id, self.e)
 
-        invR = np.linalg.inv(self.R)
-        positionInLatticeCoordinates = atom.position.dot(invR)
+        invCell = np.linalg.inv(self.cell)
+        positionInLatticeCoordinates = atom.position.dot(invCell)
         for i in range(3):
             pos[i] = <double>positionInLatticeCoordinates[i]
 
@@ -342,6 +342,7 @@ cdef class JDFTCalculator{TARGET}:
         if self.didSetupRun:
             raise RuntimeError("setup() has already run once")
         self.setGlobalsInline()
+        self.e.iInfo.printPositions(self._globalLog)
         self.e.setup()
         self.didSetupRun = True
 

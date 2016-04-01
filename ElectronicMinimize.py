@@ -82,7 +82,7 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
             raise TypeError("atoms should be ase.Atoms type.")
 
         self._toJDFTOrderIndexList, self._fromJDFTOrderIndexList = self._createIndexLists(atoms)
-        self.R = atoms.cell
+        self.cell = atoms.cell
 
         if 'pseudopotential' in atoms.info:
             pspots = [atoms.info[pseudopotential]] * len(atoms)
@@ -200,7 +200,7 @@ class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
             raise TypeError("atoms should be ase.Atoms type.")
 
         self._toJDFTOrderIndexList, self._fromJDFTOrderIndexList = self._createIndexLists(atoms)
-        self.R = atoms.cell
+        self.cell = atoms.cell
         for atom in atoms:
             self.add_ion(atom)
         t0 = time.time()
