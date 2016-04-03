@@ -342,7 +342,6 @@ cdef class JDFTCalculator{TARGET}:
         if self.didSetupRun:
             raise RuntimeError("setup() has already run once")
         self.setGlobalsInline()
-        self.e.iInfo.printPositions(self._globalLog)
         self.e.setup()
         self.didSetupRun = True
 

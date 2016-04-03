@@ -12,7 +12,10 @@ from ase import Atoms
 
 from ase.units import Bohr, Hartree
 from JDFTCalculatorCPU import JDFTCalculatorCPU
-from JDFTCalculatorGPU import JDFTCalculatorGPU
+try:
+    from JDFTCalculatorGPU import JDFTCalculatorGPU
+except ImportError:
+    JDFTCalculatorGPU = JDFTCalculatorCPU
 
 class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
     """
@@ -127,6 +130,7 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
         energy = self.readTotalEnergy() * Hartree
         forces = np.asarray(self.readForces(), dtype=np.double)
         forces.resize((len(atoms), 3))
+        forces = self._fromJDFTOrder(forces)
         forces = forces * Hartree / Bohr
         self.results = {'energy': energy,
                         'forces': forces,
@@ -238,6 +242,7 @@ class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
         energy = self.readTotalEnergy() * Hartree
         forces = np.asarray(self.readForces(), dtype=np.double)
         forces.resize((len(atoms), 3))
+        forces = self._fromJDFTOrder(forces)
         forces = forces * Hartree / Bohr
         self.results = {'energy': energy,
                         'forces': forces,
