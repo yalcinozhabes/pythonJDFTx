@@ -11,15 +11,15 @@ from ase.calculators.calculator import Calculator, all_changes
 from ase import Atoms
 
 from ase.units import Bohr, Hartree
-from JDFTCalculatorCPU import JDFTCalculatorCPU
+from JDFTxCalcCPU import JDFTxCalcCPU
 try:
-    from JDFTCalculatorGPU import JDFTCalculatorGPU
+    from JDFTxCalcGPU import JDFTxCalcGPU
 except ImportError:
-    JDFTCalculatorGPU = JDFTCalculatorCPU
+    JDFTxCalcGPU = JDFTxCalcCPU
 
-class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
+class ElectronicMinimize(JDFTxCalcCPU, Calculator):
     """
-    A calculator derived from JDFTCalculatorCPU.
+    A calculator derived from JDFTxCalcCPU.
     """
     implemented_properties = ['energy', 'forces']
 
@@ -140,9 +140,9 @@ class ElectronicMinimize(JDFTCalculatorCPU, Calculator):
                         'magmom': 0.0,
                         'magmoms': np.zeros(len(atoms))}
 
-class ElectronicMinimizeGPU(JDFTCalculatorGPU, Calculator):
+class ElectronicMinimizeGPU(JDFTxCalcGPU, Calculator):
     """
-    A calculator derived from JDFTCalculatorGPU.
+    A calculator derived from JDFTxCalcGPU.
     """
     implemented_properties = ['energy', 'forces']
 

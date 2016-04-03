@@ -1,4 +1,4 @@
-# This file is modified into JDFTCalculatorCPU.pyx and JDFTCalculatorGPU.pyx
+# This file is modified into JDFTxCalcCPU.pyx and JDFTxCalcGPU.pyx
 # by setup.py. `{TARGET}` is replaced by `CPU` and `GPU` for these files.
 # The following line left blank intentionally
 
@@ -7,10 +7,10 @@
 
 DEF TARGET = '{TARGET}'
 
-include "JDFTCalculatorBase.pxi"
+include "JDFTxCalcBase.pxi"
 
-cdef class JDFTCalculator{TARGET}:
-    """ JDFTCalculator base class.
+cdef class JDFTxCalc{TARGET}:
+    """ JDFTxCalc base class.
 
     Defines the interface between Python and C++ objects. None of the inheriting
     classes should worry about the unit conversion (ASE uses Angstroms and eV
